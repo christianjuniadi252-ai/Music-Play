@@ -333,8 +333,6 @@ onSnapshot(q, snapshot => {
                       : `<img class="msg-avatar" src="${msg.photo}">`
                   }
               `;
-          }
-          
           } else {
           
               div.innerHTML = `

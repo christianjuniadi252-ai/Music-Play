@@ -80,7 +80,6 @@ header {
   
 .input-area{
     display:flex;
-    flex-direction: column;
     gap:10px;  
     padding:15px;  
     background:#1f1f1f;
@@ -300,19 +299,13 @@ button:hover{
 
 </div>
 
-<div class="input-area">
-    <div id="replyPreview" style="display:none">
-
-        <div id="replyText">
-        </div>
-    
-        <button id="cancelReply">
-            ✕
-        </button>
-    
-    </div>
-    <div>
-      <input
+<div>
+  <div id="replyPreview" style="display:none">
+    <div id="replyText"></div>
+    <button id="cancelReply">✕</button>
+  </div>
+  <div class="input-area">
+    <input
         type="search"
         inputmode="text"
         enterkeyhint="send"
@@ -320,10 +313,10 @@ button:hover{
         id="commandInput"
         placeholder="Pesan atau /play URL">
 
-      <button id="sendBtn">
+    <button id="sendBtn">
         <i data-lucide="send-horizontal"></i>
-      </button>
-    </div>
+    </button>
+  </div>
 </div>
 
 <script type="module" src="app.js"></script>

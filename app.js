@@ -258,10 +258,6 @@ async function sendMessage() {
 
 sendBtn.onclick = sendMessage;
 
-input.addEventListener("keydown", e => {
-    if (e.key === "Enter") sendMessage();
-});
-
 /* ================= SWIPE REPLY ================= */
 
 function setReply(msg) {
@@ -419,4 +415,19 @@ document.addEventListener("visibilitychange", () => {
 
     }
 
+});
+
+input.addEventListener("input", () => {
+    input.style.height = "44px"; // kembali ke tinggi awal
+
+    if (input.scrollHeight > 44) {
+        input.style.height = Math.min(input.scrollHeight, 120) + "px";
+    }
+});
+
+input.addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
 });

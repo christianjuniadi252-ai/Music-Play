@@ -283,74 +283,85 @@ let previousUid = "";
 let previousDate = "";
 
 onSnapshot(q, snapshot => {
-    
+
     chat.innerHTML = "";
+
     previousUid = "";
     previousDate = "";
-    
-    const date = msg.timestamp?.toDate();
-
-      if (date) {
-      
-          const dateKey = date.toDateString();
-      
-          if (dateKey !== previousDate) {
-      
-              const separator = document.createElement("div");
-              separator.className = "date-separator";
-      
-              const today = new Date();
-              const yesterday = new Date();
-              yesterday.setDate(today.getDate() - 1);
-      
-              if (date.toDateString() === today.toDateString()) {
-      
-                  separator.textContent = "Hari ini";
-      
-              } else if (date.toDateString() === yesterday.toDateString()) {
-      
-                  separator.textContent = "Kemarin";
-      
-              } else {
-      
-                  separator.textContent = date.toLocaleDateString("id-ID", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric"
-                  });
-      
-              }
-      
-              chat.appendChild(separator);
-      
-              previousDate = dateKey;
-          }
-      
-      }
 
     snapshot.forEach(docSnap => {
 
         const msg = docSnap.data();
+
+        /* ===== TANGGAL ===== */
+
+        const date = msg.timestamp?.toDate?.();
+
+        if (date) {
+
+            const dateKey = date.toDateString();
+
+            if (dateKey !== previousDate) {
+
+                const separator = document.createElement("div");
+                separator.className = "date-separator";
+
+                const today = new Date();
+
+                const yesterday = new Date();
+                yesterday.setDate(today.getDate() - 1);
+
+                if (date.toDateString() === today.toDateString()) {
+
+                    separator.textContent = "Hari ini";
+
+                } else if (date.toDateString() === yesterday.toDateString()) {
+
+                    separator.textContent = "Kemarin";
+
+                } else {
+
+                    separator.textContent = date.toLocaleDateString("id-ID", {
+                        weekday: "long",
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric"
+                    });
+
+                }
+
+                chat.appendChild(separator);
+
+                previousDate = dateKey;
+            }
+
+        }
+
+        /* ===== DATA ===== */
+
+        const own = auth.currentUser &&
+                    msg.uid === auth.currentUser.uid;
+
         const sameUser = previousUid === msg.uid;
-        const own = auth.currentUser && msg.uid === auth.currentUser.uid;
 
-        const div = document.createElement("div");
-
-        div.className = `msg ${sameUser ? "msg-group" : ""} ${own ? "own" : ""}`;
+        const showHeader = !sameUser || !!msg.replyTo;
 
         const time = msg.timestamp?.toDate
             ? msg.timestamp.toDate().toLocaleTimeString("id-ID", {
-                hour: "2-digit",
-                minute: "2-digit"
-            })
+                  hour: "2-digit",
+                  minute: "2-digit"
+              })
             : "";
 
-        // Tampilkan avatar & header jika:
-        // - user berbeda
-        // - atau pesan reply
-        const showHeader = !sameUser || !!msg.replyTo;
+        /* ===== CHAT ===== */
+
+        const div = document.createElement("div");
+
+        div.className =
+            `msg ${sameUser ? "msg-group" : ""} ${own ? "own" : ""}`;
 
         const messageHtml = `
+
             ${showHeader ? `
                 <div class="msg-header">
                     <span class="msg-name">${msg.name}</span>
@@ -368,39 +379,45 @@ onSnapshot(q, snapshot => {
             <div class="msg-text">
                 ${msg.message}
             </div>
+
         `;
 
         if (own) {
 
             div.innerHTML = `
+
                 <div class="msg-content own-content">
                     ${messageHtml}
                 </div>
 
                 ${
                     showHeader
-                    ? `<img class="msg-avatar" src="${msg.photo}">`
+                    ? `<img class="msg-avatar" src="${msg.photo}" alt="">`
                     : `<div class="msg-avatar-placeholder"></div>`
                 }
+
             `;
 
         } else {
 
             div.innerHTML = `
+
                 ${
                     showHeader
-                    ? `<img class="msg-avatar" src="${msg.photo}">`
+                    ? `<img class="msg-avatar" src="${msg.photo}" alt="">`
                     : `<div class="msg-avatar-placeholder"></div>`
                 }
 
                 <div class="msg-content">
                     ${messageHtml}
                 </div>
+
             `;
 
         }
 
-        // Swipe kanan untuk reply
+        /* ===== SWIPE REPLY ===== */
+
         let startX = 0;
 
         div.addEventListener("touchstart", e => {
@@ -408,14 +425,18 @@ onSnapshot(q, snapshot => {
         });
 
         div.addEventListener("touchend", e => {
-            const diff = e.changedTouches[0].clientX - startX;
+
+            const diff =
+                e.changedTouches[0].clientX - startX;
 
             if (diff > 80) {
                 setReply(msg);
             }
+
         });
 
         chat.appendChild(div);
+
         previousUid = msg.uid;
 
     });

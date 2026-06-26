@@ -60,9 +60,14 @@ let replyData = null;
 let currentVideo = "";
 let ytPlayer = null;
 
-window.onYouTubeIframeAPIReady = () => {
+function createPlayer() {
+    if (!window.YT || !YT.Player) {
+        setTimeout(createPlayer, 100);
+        return;
+    }
 
     alert("YouTube API Ready");
+
     ytPlayer = new YT.Player("playerFrame", {
         width: "100%",
         height: "100%",
@@ -73,8 +78,9 @@ window.onYouTubeIframeAPIReady = () => {
             rel: 0
         }
     });
+}
 
-};
+createPlayer();
 
 /* ================= LOGIN ================= */
 

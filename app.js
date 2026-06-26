@@ -58,6 +58,23 @@ const refreshBtn = document.getElementById("refreshBtn");
 
 let replyData = null;
 let currentVideo = "";
+let ytPlayer = null;
+
+window.onYouTubeIframeAPIReady = () => {
+
+    console.log("YouTube API Ready");
+    ytPlayer = new YT.Player("playerFrame", {
+        width: "100%",
+        height: "100%",
+        playerVars: {
+            autoplay: 1,
+            controls: 0,
+            disablekb: 1,
+            rel: 0
+        }
+    });
+
+};
 
 /* ================= LOGIN ================= */
 

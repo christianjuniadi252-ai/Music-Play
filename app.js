@@ -321,7 +321,7 @@ onSnapshot(q, snapshot => {
               </div>
           `;
           
-        }if (own) {
+          if (own) {
               div.innerHTML = `
                   <div class="msg-content own-content">
                       ${messageHtml}

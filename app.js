@@ -417,22 +417,44 @@ onSnapshot(q, snapshot => {
         }
 
         /* ===== SWIPE REPLY ===== */
-
         let startX = 0;
-
+        let currentX = 0;
+        
         div.addEventListener("touchstart", e => {
+        
             startX = e.touches[0].clientX;
+            div.style.transition = "none";
+        
         });
-
-        div.addEventListener("touchend", e => {
-
-            const diff =
-                e.changedTouches[0].clientX - startX;
-
-            if (diff > 80) {
+        
+        div.addEventListener("touchmove", e => {
+        
+            currentX = e.touches[0].clientX;
+        
+            let diff = currentX - startX;
+        
+            // hanya geser ke kanan
+            if (diff < 0) diff = 0;
+        
+            // batasi maksimal 80px
+            diff = Math.min(diff, 80);
+        
+            div.style.transform = `translateX(${diff}px)`;
+        
+        });
+        
+        div.addEventListener("touchend", () => {
+        
+            div.style.transition = "transform .18s ease";
+        
+            const moved = Math.min(currentX - startX, 80);
+        
+            div.style.transform = "translateX(0)";
+        
+            if (moved > 60) {
                 setReply(msg);
             }
-
+        
         });
 
         chat.appendChild(div);

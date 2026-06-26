@@ -3,6 +3,7 @@
 <meta charset="UTF-8">  
 <meta name="viewport" content="width=device-width, initial-scale=1.0">  
 <title>Music Chat Player</title>
+<script src="https://unpkg.com/lucide@latest"></script>
 <style>  
 *{  
     margin:0;  
@@ -284,7 +285,7 @@ button:hover{
         placeholder="Pesan atau /play URL">
 
     <button id="sendBtn">
-        Kirim
+        <i data-lucide="send-horizontal"></i>
     </button>
 
 </div>
@@ -293,6 +294,6 @@ button:hover{
 type="module"
 src="app.js">
 </script>
-
+<script>lucide.createIcons();</script>
 </body>
 </html>

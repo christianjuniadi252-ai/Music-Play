@@ -210,16 +210,19 @@ cancelReply.onclick = () => {
 };
 
 /* ================= CHAT REALTIME ================= */
+console.log("App berhasil dimuat");
 
 const q = query(collection(db, "messages"), orderBy("timestamp"));
 
 let previousUid = null;
 
 onSnapshot(q, snapshot => {
+    console.log("Jumlah chat:", snapshot.size);
     chat.innerHTML = "";
     previousUid = null;
 
     snapshot.forEach(docSnap => {
+        console.log(docSnap.data());
         const msg = docSnap.data();
 
         const sameUser = previousUid === msg.uid;

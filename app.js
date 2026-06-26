@@ -210,41 +210,36 @@ cancelReply.onclick = () => {
 };
 
 /* ================= CHAT REALTIME ================= */
-console.log("App berhasil dimuat");
 
 const q = query(collection(db, "messages"), orderBy("timestamp"));
 
-let previousUid = null;
-
 onSnapshot(q, snapshot => {
-    console.log("Jumlah chat:", snapshot.size);
     chat.innerHTML = "";
-    previousUid = null;
 
     snapshot.forEach(docSnap => {
-        console.log(docSnap.data());
         const msg = docSnap.data();
 
-        const sameUser = previousUid === msg.uid;
-
         const div = document.createElement("div");
+
+        const own = auth.currentUser && msg.uid === auth.currentUser.uid;
+
+        const time = msg.timestamp?.toDate ?
+            msg.timestamp.toDate().toLocaleTimeString("id-ID", {
+                hour: "2-digit",
+                minute: "2-digit"
+            }) : "";
+
         div.className = "msg";
 
         div.innerHTML = `
-            ${sameUser ? `
-                <div class="msg-avatar-placeholder"></div>
-            ` : `
-                <img class="msg-avatar" src="${msg.photo}">
-            `}
-
+            <img class="msg-avatar" src="${msg.photo}">
+            
             <div class="msg-content">
 
-                ${sameUser ? "" : `
-                    <div class="msg-header">
-                        <span class="msg-name">${msg.name}</span>
-                        <span class="msg-time">${time}</span>
-                    </div>
-                `}
+                <div class="msg-header">
+                    <span class="msg-name">${msg.name}</span>
+                    <span class="msg-time">${time}</span>
+                </div>
 
                 ${
                     msg.replyTo ? `
@@ -262,9 +257,22 @@ onSnapshot(q, snapshot => {
             </div>
         `;
 
-        chat.appendChild(div);
+        /* SWIPE RIGHT REPLY */
+        let startX = 0;
 
-        previousUid = msg.uid;
+        div.addEventListener("touchstart", e => {
+            startX = e.touches[0].clientX;
+        });
+
+        div.addEventListener("touchend", e => {
+            const diff = e.changedTouches[0].clientX - startX;
+
+            if (diff > 80) {
+                setReply(msg);
+            }
+        });
+
+        chat.appendChild(div);
     });
 
     chat.scrollTop = chat.scrollHeight;

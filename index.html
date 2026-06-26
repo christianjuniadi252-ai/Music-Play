@@ -187,7 +187,7 @@ button:hover{
 
 .msg{
     display:flex;
-    gap:14px;
+    gap:16px;
 }
 
 .msg-group{
@@ -293,6 +293,20 @@ button:hover{
     width:40px;
     flex-shrink:0;
 }
+
+#commandInput{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    outline:none;
+    background:#2d2d2d;
+    color:white;
+    resize:none;
+    overflow-y:auto;
+    min-height:48px;
+    max-height:120px;
+}
 </style>
 </head>  
 <body>
@@ -345,13 +359,10 @@ button:hover{
     </button>
   </div>
   <div class="input-area">
-    <input
-        type="search"
-        inputmode="text"
-        enterkeyhint="send"
-        autocomplete="off"
-        id="commandInput"
-        placeholder="Pesan atau /play URL 7">
+    <textarea
+      id="commandInput"
+      rows="1"
+      placeholder="Pesan atau /play URL"></textarea>
 
     <button id="sendBtn">
         <i data-lucide="send-horizontal"></i>

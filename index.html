@@ -70,13 +70,13 @@ header {
     border-top:1px solid #333;  
 }  
   
-#playerFrame{  
-    width:100%;  
-    aspect-ratio:16/9;  
-    border:none;  
-    border-radius:10px;  
-    display:none;  
-}  
+#playerFrame{
+    width:100%;
+    aspect-ratio:16/9;
+    display:none;
+    overflow:hidden;
+    border-radius:10px;
+}
   
 .input-area{
     display:flex;
@@ -328,11 +328,7 @@ button:hover{
 
 <div class="player">
 
-    <iframe
-        id="playerFrame"
-        allow="autoplay"
-        allowfullscreen>
-    </iframe>
+  <div id="playerFrame"></div>
 
 </div>
 
@@ -351,7 +347,7 @@ button:hover{
         enterkeyhint="send"
         autocomplete="off"
         id="commandInput"
-        placeholder="Pesan atau /play URL">
+        placeholder="Pesan atau /play URL 5">
 
     <button id="sendBtn">
         <i data-lucide="send-horizontal"></i>
@@ -359,6 +355,7 @@ button:hover{
   </div>
 </div>
 
+<script src="https://www.youtube.com/iframe_api"></script>
 <script type="module" src="app.js"></script>
 <script>lucide.createIcons();</script>
 </body>

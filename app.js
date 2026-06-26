@@ -213,33 +213,35 @@ cancelReply.onclick = () => {
 
 const q = query(collection(db, "messages"), orderBy("timestamp"));
 
+let previousUid = null;
+
 onSnapshot(q, snapshot => {
     chat.innerHTML = "";
+    previousUid = null;
 
     snapshot.forEach(docSnap => {
         const msg = docSnap.data();
 
+        const sameUser = previousUid === msg.uid;
+
         const div = document.createElement("div");
-
-        const own = auth.currentUser && msg.uid === auth.currentUser.uid;
-
-        const time = msg.timestamp?.toDate ?
-            msg.timestamp.toDate().toLocaleTimeString("id-ID", {
-                hour: "2-digit",
-                minute: "2-digit"
-            }) : "";
-
         div.className = "msg";
 
         div.innerHTML = `
-            <img class="msg-avatar" src="${msg.photo}">
-            
+            ${sameUser ? `
+                <div class="msg-avatar-placeholder"></div>
+            ` : `
+                <img class="msg-avatar" src="${msg.photo}">
+            `}
+
             <div class="msg-content">
 
-                <div class="msg-header">
-                    <span class="msg-name">${msg.name}</span>
-                    <span class="msg-time">${time}</span>
-                </div>
+                ${sameUser ? "" : `
+                    <div class="msg-header">
+                        <span class="msg-name">${msg.name}</span>
+                        <span class="msg-time">${time}</span>
+                    </div>
+                `}
 
                 ${
                     msg.replyTo ? `
@@ -257,22 +259,9 @@ onSnapshot(q, snapshot => {
             </div>
         `;
 
-        /* SWIPE RIGHT REPLY */
-        let startX = 0;
-
-        div.addEventListener("touchstart", e => {
-            startX = e.touches[0].clientX;
-        });
-
-        div.addEventListener("touchend", e => {
-            const diff = e.changedTouches[0].clientX - startX;
-
-            if (diff > 80) {
-                setReply(msg);
-            }
-        });
-
         chat.appendChild(div);
+
+        previousUid = msg.uid;
     });
 
     chat.scrollTop = chat.scrollHeight;

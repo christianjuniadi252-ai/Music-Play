@@ -418,8 +418,21 @@ document.addEventListener("visibilitychange", () => {
 });
 
 input.addEventListener("input", () => {
+
     input.style.height = "44px";
-    input.style.height = Math.min(input.scrollHeight, 120) + "px";
+
+    if (input.scrollHeight <= 120) {
+
+        input.style.height = input.scrollHeight + "px";
+        input.style.overflowY = "hidden";
+
+    } else {
+
+        input.style.height = "120px";
+        input.style.overflowY = "auto";
+
+    }
+
 });
 
 input.addEventListener("keydown", e => {

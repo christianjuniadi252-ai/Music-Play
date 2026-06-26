@@ -62,7 +62,7 @@ let ytPlayer = null;
 
 window.onYouTubeIframeAPIReady = () => {
 
-    console.log("YouTube API Ready");
+    alert("YouTube API Ready");
     ytPlayer = new YT.Player("playerFrame", {
         width: "100%",
         height: "100%",

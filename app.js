@@ -299,40 +299,52 @@ onSnapshot(q, snapshot => {
                 minute: "2-digit"
             }) : "";
 
-          div.className =
-              `msg ${sameUser ? "msg-group" : ""} ${own ? "own" : ""}`;
-
-        div.innerHTML = `
-            ${sameUser
-                  ? `<div class="msg-avatar-placeholder"></div>`
-                  : `<img class="msg-avatar" src="${msg.photo}">`
-              }
-            
-            <div class="msg-content">
-
-                ${sameUser ? "" : `
-                <div class="msg-header">
-                    <span class="msg-name">${msg.name}</span>
-                    <span class="msg-time">${time}</span>
-                </div>
-                `}
-
-                ${
-                    msg.replyTo ? `
-                    <div class="reply-box">
-                        <b>${msg.replyTo.name}</b><br>
-                        ${msg.replyTo.message}
-                    </div>
-                    ` : ""
-                }
-
-                <div class="msg-text">
-                    ${msg.message}
-                </div>
-
-            </div>
-        `;
-
+          div.className = `msg ${sameUser ? "msg-group" : ""} ${own ? "own" : ""}`;
+          
+          const messageHtml = `
+              ${msg.replyTo ? `
+                  <div class="reply-box">
+                      <b>${msg.replyTo.name}</b><br>
+                      ${msg.replyTo.message}
+                  </div>
+              ` : ""}
+          
+              ${sameUser ? "" : `
+                  <div class="msg-header">
+                      <span class="msg-name">${msg.name}</span>
+                      <span class="msg-time">${time}</span>
+                  </div>
+              `}
+          
+              <div class="msg-text">
+                  ${msg.message}
+              </div>
+          `;
+          
+          if (own) {
+          
+              div.innerHTML = `
+                  <div class="msg-content own-content">
+                      ${messageHtml}
+                  </div>
+          
+                  ${sameUser ? "" : `<img class="msg-avatar" src="${msg.photo}">`}
+              `;
+          
+          } else {
+          
+              div.innerHTML = `
+                  ${sameUser
+                      ? `<div class="msg-avatar-placeholder"></div>`
+                      : `<img class="msg-avatar" src="${msg.photo}">`
+                  }
+          
+                  <div class="msg-content">
+                      ${messageHtml}
+                  </div>
+              `;
+          
+          }
         /* SWIPE RIGHT REPLY */
         let startX = 0;
 

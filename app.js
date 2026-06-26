@@ -322,14 +322,18 @@ onSnapshot(q, snapshot => {
           `;
           
           if (own) {
-          
               div.innerHTML = `
                   <div class="msg-content own-content">
                       ${messageHtml}
                   </div>
           
-                  ${sameUser ? "" : `<img class="msg-avatar" src="${msg.photo}">`}
+                  ${
+                      sameUser
+                      ? `<div class="msg-avatar-placeholder"></div>`
+                      : `<img class="msg-avatar" src="${msg.photo}">`
+                  }
               `;
+          }
           
           } else {
           

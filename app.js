@@ -282,71 +282,83 @@ const q = query(collection(db, "messages"), orderBy("timestamp"));
 let previousUid = "";
 
 onSnapshot(q, snapshot => {
+
     chat.innerHTML = "";
     previousUid = "";
 
     snapshot.forEach(docSnap => {
+
         const msg = docSnap.data();
         const sameUser = previousUid === msg.uid;
+        const own = auth.currentUser && msg.uid === auth.currentUser.uid;
 
         const div = document.createElement("div");
 
-        const own = auth.currentUser && msg.uid === auth.currentUser.uid;
+        div.className = `msg ${sameUser ? "msg-group" : ""} ${own ? "own" : ""}`;
 
-        const time = msg.timestamp?.toDate ?
-            msg.timestamp.toDate().toLocaleTimeString("id-ID", {
+        const time = msg.timestamp?.toDate
+            ? msg.timestamp.toDate().toLocaleTimeString("id-ID", {
                 hour: "2-digit",
                 minute: "2-digit"
-            }) : "";
+            })
+            : "";
 
-          div.className = `msg ${sameUser ? "msg-group" : ""} ${own ? "own" : ""}`;
-          
-          const messageHtml = `
-              ${msg.replyTo ? `
-                  <div class="reply-box">
-                      <b>${msg.replyTo.name}</b><br>
-                      ${msg.replyTo.message}
-                  </div>
-              ` : ""}
-          
-              ${sameUser ? "" : `
-                  <div class="msg-header">
-                      <span class="msg-name">${msg.name}</span>
-                      <span class="msg-time">${time}</span>
-                  </div>
-              `}
-          
-              <div class="msg-text">
-                  ${msg.message}
-              </div>
-          `;
-          if (own) {
+        // Tampilkan avatar & header jika:
+        // - user berbeda
+        // - atau pesan reply
+        const showHeader = !sameUser || !!msg.replyTo;
+
+        const messageHtml = `
+            ${showHeader ? `
+                <div class="msg-header">
+                    <span class="msg-name">${msg.name}</span>
+                    <span class="msg-time">${time}</span>
+                </div>
+            ` : ""}
+
+            ${msg.replyTo ? `
+                <div class="reply-box">
+                    <b>${msg.replyTo.name}</b><br>
+                    ${msg.replyTo.message}
+                </div>
+            ` : ""}
+
+            <div class="msg-text">
+                ${msg.message}
+            </div>
+        `;
+
+        if (own) {
+
             div.innerHTML = `
                 <div class="msg-content own-content">
                     ${messageHtml}
                 </div>
-        
+
                 ${
-                    sameUser
-                    ? `<div class="msg-avatar-placeholder"></div>`
-                    : `<img class="msg-avatar" src="${msg.photo}">`
+                    showHeader
+                    ? `<img class="msg-avatar" src="${msg.photo}">`
+                    : `<div class="msg-avatar-placeholder"></div>`
                 }
             `;
-          } else {
-          
-              div.innerHTML = `
-                  ${sameUser
-                      ? `<div class="msg-avatar-placeholder"></div>`
-                      : `<img class="msg-avatar" src="${msg.photo}">`
-                  }
-          
-                  <div class="msg-content">
-                      ${messageHtml}
-                  </div>
-              `;
-          
-          }
-        /* SWIPE RIGHT REPLY */
+
+        } else {
+
+            div.innerHTML = `
+                ${
+                    showHeader
+                    ? `<img class="msg-avatar" src="${msg.photo}">`
+                    : `<div class="msg-avatar-placeholder"></div>`
+                }
+
+                <div class="msg-content">
+                    ${messageHtml}
+                </div>
+            `;
+
+        }
+
+        // Swipe kanan untuk reply
         let startX = 0;
 
         div.addEventListener("touchstart", e => {
@@ -363,9 +375,11 @@ onSnapshot(q, snapshot => {
 
         chat.appendChild(div);
         previousUid = msg.uid;
+
     });
 
     chat.scrollTop = chat.scrollHeight;
+
 });
 
 /* ================= MUSIC ROOM ================= */

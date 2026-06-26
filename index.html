@@ -187,11 +187,9 @@ button:hover{
 }
 
 .msg{
+    position:relative;
     display:flex;
     gap:10px;
-    transition:transform .15s ease;
-    touch-action:pan-y;
-    will-change:transform;
 }
 
 .msg-group {
@@ -218,6 +216,11 @@ button:hover{
 
 .msg.own .msg-content{
     order:1;
+}
+
+.msg.own .reply-icon{
+    left:auto;
+    right:40px;
 }
 
 .msg-avatar, .msg-avatar-placeholder {
@@ -273,6 +276,8 @@ button:hover{
     border-radius: 4px;
     font-size:13px;
     background: rgba(0,0,0,0.2);
+    
+    word-break:break-word;
 }
 
 .header-buttons{
@@ -354,21 +359,25 @@ button:hover{
 }
 
 .reply-icon{
-    width:32px;
-    height:32px;
+    position:absolute;
+
+    left:40px;
+    top:50%;
+    transform:translateY(-50%) scale(.6);
+
+    width:28px;
+    height:28px;
 
     display:flex;
-    align-items:center;
     justify-content:center;
-
-    flex-shrink:0;
+    align-items:center;
 
     opacity:0;
-    transform:scale(.6);
+    pointer-events:none;
 
     transition:
-        opacity .15s,
-        transform .15s;
+        opacity .15s ease,
+        transform .15s ease;
 }
 </style>
 </head>  
@@ -425,7 +434,7 @@ button:hover{
     <textarea
       id="commandInput"
       rows="1"
-      placeholder="Pesan atau /play URL 01"></textarea>
+      placeholder="Pesan atau /play URL 02"></textarea>
 
     <button id="sendBtn">
         <i data-lucide="send-horizontal"></i>

@@ -323,3 +323,15 @@ onSnapshot(roomRef, snap => {
         `&disablekb=1`;
 
 });
+
+let lastHidden = Date.now();
+
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        lastHidden = Date.now();
+    } else {
+        if (Date.now() - lastHidden > 5000) {
+            location.reload();
+        }
+    }
+});

@@ -297,10 +297,7 @@ onSnapshot(roomRef, snap => {
     }
 
     // Jangan reload video yang sama
-    if (
-        currentVideo === data.videoId &&
-        player.src
-    ) {
+    if (currentVideo === data.videoId) {
         return;
     }
 

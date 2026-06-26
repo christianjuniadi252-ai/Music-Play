@@ -52,6 +52,8 @@ const replyPreview = document.getElementById("replyPreview");
 const replyText = document.getElementById("replyText");
 const cancelReply = document.getElementById("cancelReply");
 
+const refreshBtn = document.getElementById("refreshBtn");
+
 /* ================= STATE ================= */
 
 let replyData = null;
@@ -324,14 +326,6 @@ onSnapshot(roomRef, snap => {
 
 });
 
-let lastHidden = Date.now();
-
-document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-        lastHidden = Date.now();
-    } else {
-        if (Date.now() - lastHidden > 5000) {
-            location.reload();
-        }
-    }
+refreshBtn.addEventListener("click", () => {
+    location.reload();
 });

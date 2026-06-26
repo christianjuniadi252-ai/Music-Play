@@ -236,14 +236,19 @@ onSnapshot(q, snapshot => {
         div.className = "msg";
 
         div.innerHTML = `
-            <img class="msg-avatar" src="${msg.photo}">
+            ${sameUser
+                  ? `<div class="msg-avatar-placeholder"></div>`
+                  : `<img class="msg-avatar" src="${msg.photo}">`
+              }
             
             <div class="msg-content">
 
+                ${sameUser ? "" : `
                 <div class="msg-header">
                     <span class="msg-name">${msg.name}</span>
                     <span class="msg-time">${time}</span>
                 </div>
+                `}
 
                 ${
                     msg.replyTo ? `
@@ -277,6 +282,7 @@ onSnapshot(q, snapshot => {
         });
 
         chat.appendChild(div);
+        previousUid = msg.uid;
     });
 
     chat.scrollTop = chat.scrollHeight;

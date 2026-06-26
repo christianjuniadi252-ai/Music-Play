@@ -418,11 +418,8 @@ document.addEventListener("visibilitychange", () => {
 });
 
 input.addEventListener("input", () => {
-    input.style.height = "44px"; // kembali ke tinggi awal
-
-    if (input.scrollHeight > 44) {
-        input.style.height = Math.min(input.scrollHeight, 120) + "px";
-    }
+    input.style.height = "44px";
+    input.style.height = Math.min(input.scrollHeight, 120) + "px";
 });
 
 input.addEventListener("keydown", e => {

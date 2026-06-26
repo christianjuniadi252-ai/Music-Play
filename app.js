@@ -499,6 +499,7 @@ function enableSwipeReply(div, msg){
 
         chat.appendChild(div);
         lucide.createIcons();
+        enableSwipeReply(div, msg);
         previousUid = msg.uid;
 
     });

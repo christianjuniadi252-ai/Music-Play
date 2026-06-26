@@ -171,6 +171,10 @@ function syncPlayer() {
 
     const target = getTargetSecond();
 
+    if (ytPlayer.getPlayerState() !== YT.PlayerState.PLAYING) {
+        return;
+    }
+
     const current = ytPlayer.getCurrentTime();
 
     const diff = Math.abs(target - current);
@@ -390,6 +394,7 @@ function playRoom(data){
         videoId: data.videoId,
         startSeconds: elapsed
     });
+    setTimeout(syncPlayer, 1500);
 
 }
 

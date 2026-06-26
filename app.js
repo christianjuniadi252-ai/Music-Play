@@ -59,6 +59,8 @@ const refreshBtn = document.getElementById("refreshBtn");
 let replyData = null;
 let currentVideo = "";
 let ytPlayer = null;
+let roomData = null;
+let playerReady = false;
 
 function createPlayer() {
     if (!window.YT || !YT.Player) {
@@ -66,18 +68,26 @@ function createPlayer() {
         return;
     }
 
-    alert("YouTube API Ready");
-
     ytPlayer = new YT.Player("playerFrame", {
-        width: "100%",
-        height: "100%",
-        playerVars: {
-            autoplay: 1,
-            controls: 0,
-            disablekb: 1,
-            rel: 0
-        }
-    });
+      width: "100%",
+      height: "100%",
+      playerVars:{
+          autoplay:1,
+          controls:0,
+          disablekb:1,
+          rel:0
+      },
+  
+      events:{
+          onReady(){
+              playerReady = true;
+  
+              if(roomData){
+                  playRoom(roomData);
+              }
+          }
+      }
+  });
 }
 
 createPlayer();
@@ -312,27 +322,15 @@ onSnapshot(q, snapshot => {
 });
 
 /* ================= MUSIC ROOM ================= */
+function playRoom(data){
 
-const roomRef = doc(db, "room", "main");
-
-onSnapshot(roomRef, snap => {
-
-    const data = snap.data();
-
-    if (!data) return;
-
-    if (!data.videoId) {
-
+    if(!data.videoId){
         ytPlayer.stopVideo();
         document.getElementById("playerFrame").style.display = "none";
-
-        currentVideo = "";
-
         return;
     }
 
-    // Jangan reload video yang sama
-    if (currentVideo === data.videoId) {
+    if(currentVideo === data.videoId){
         return;
     }
 
@@ -344,9 +342,7 @@ onSnapshot(roomRef, snap => {
         : Date.now();
 
     const elapsed =
-        Math.floor(
-            (Date.now() - startedAt) / 1000
-        );
+        Math.floor((Date.now() - startedAt) / 1000);
 
     document.getElementById("playerFrame").style.display = "block";
 
@@ -354,6 +350,20 @@ onSnapshot(roomRef, snap => {
         videoId: data.videoId,
         startSeconds: elapsed
     });
+
+}
+
+const roomRef = doc(db, "room", "main");
+
+onSnapshot(roomRef, snap => {
+
+    roomData = snap.data();
+
+    if(!roomData) return;
+
+    if(!playerReady) return;
+
+    playRoom(roomData);
 
 });
 

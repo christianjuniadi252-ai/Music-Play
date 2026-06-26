@@ -191,14 +191,16 @@ button:hover{
     gap:10px;
 }
 
-.msg-group{
+.msg-group {
     margin-top:-8px;
 }
 
-.msg-avatar{
-    width:34px;
-    height:34px;
+.msg-avatar, .msg-avatar-placeholder {
+    width:30px;
+    height:30px;
+    flex-shrink: 0;
     border-radius:50%;
+    margin-left: -4;
 }
 
 .msg-content{
@@ -288,11 +290,6 @@ button:hover{
   background: #1f1f1f;
   padding: 15px;
   gap: 15px;
-}
-
-.msg-avatar-placeholder{
-    width:34px;
-    flex-shrink:0;
 }
 
 #commandInput{

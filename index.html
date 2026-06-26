@@ -68,14 +68,15 @@ header{
     display:none;  
 }  
   
-.input-area{  
+.input-area{
     display:flex;  
+    position: fixed;
     gap:10px;  
     padding:15px;  
     background:#1f1f1f;  
 }  
   
-input{  
+input{
     flex:1;  
     padding:12px;  
     border:none;  
@@ -105,6 +106,7 @@ button:hover{
 
 #userInfo{
     display:flex;
+    justify-content: space-between;
     align-items:center;
     gap:10px;
     padding:10px;
@@ -182,13 +184,8 @@ button:hover{
 </head>  
 <body>
 
-<header>
+<header hidden>
   <h4>🎵 Music Room</h4>
-
-  <div>
-    <button>⚙️</button>
-    <button>🎼</button>
-  </div>
 </header>
 
 <div id="loginContainer">
@@ -198,8 +195,14 @@ button:hover{
 </div>
 
 <div id="userInfo" style="display:none">
+  </div>
     <img id="avatar">
     <span id="username"></span>
+  </div>
+  <div>
+    <button>⚙️</button>
+    <button>🎼</button>
+  </div>
 </div>
 
 <div id="replyPreview" style="display:none">

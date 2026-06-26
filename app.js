@@ -417,6 +417,7 @@ onSnapshot(q, snapshot => {
         }
 
         /* ===== SWIPE REPLY ===== */
+        
         let startX = 0;
         let currentX = 0;
         

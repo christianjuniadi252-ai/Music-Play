@@ -100,7 +100,6 @@ createPlayer();
 /* ================= LOGIN ================= */
 
 loginBtn.onclick = async () => {
-    alert("Tombol diklik");
     try {
         await signInWithPopup(auth, provider);
     } catch (e) {

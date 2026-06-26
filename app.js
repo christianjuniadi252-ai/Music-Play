@@ -323,8 +323,8 @@ onSnapshot(roomRef, snap => {
 
     if (!data.videoId) {
 
-        player.src = "";
-        player.style.display = "none";
+        ytPlayer.stopVideo();
+        document.getElementById("playerFrame").style.display = "none";
 
         currentVideo = "";
 

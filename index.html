@@ -145,6 +145,8 @@ button:hover{
 #replyPreview{
     display:none;
     padding:10px;
+    align-items: flex-start;
+    gap: 10px;
     background: rgba(0,0,0,0.2);
     border-left:4px solid #555;
     border-radius: 6px;
@@ -158,22 +160,29 @@ button:hover{
 }
 
 #cancelReply{
-    position:absolute;
-    top:8px;
-    right:8px;
-
-    width:24px;
-    height:24px;
+    width:28px;
+    height:28px;
     padding:0;
 
     display:flex;
     justify-content:center;
     align-items:center;
 
-    background:#ef4444;
+    background:transparent;
+    color:#aaa;
     border:none;
-    border-radius:50%;
-    cursor:pointer;
+    border-radius:6px;
+    flex-shrink:0;
+}
+
+#cancelReply:hover{
+    background:#333;
+    color:#fff;
+}
+
+#cancelReply svg{
+    width:18px;
+    height:18px;
 }
 
 .msg{
@@ -323,9 +332,12 @@ button:hover{
 </div>
 
 <div class="bottom">
-  <div id="replyPreview" style="display:none">
+  <div id="replyPreview">
     <div id="replyText"></div>
-    <button id="cancelReply">✕</button>
+
+    <button id="cancelReply">
+        <i data-lucide="x"></i>
+    </button>
   </div>
   <div class="input-area">
     <input

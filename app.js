@@ -325,7 +325,7 @@ function enableSwipeReply(div, msg){
         icon.style.opacity = diff / 60;
 
         icon.style.transform =
-            `scale(${0.6 + diff / 200})`;
+            `translateY(-50%) scale(${0.6 + diff / 200})`;
 
     },{passive:false});
 

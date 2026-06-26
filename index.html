@@ -189,6 +189,9 @@ button:hover{
 .msg{
     display:flex;
     gap:10px;
+    transition:transform .15s ease;
+    touch-action:pan-y;
+    will-change:transform;
 }
 
 .msg-group {
@@ -404,7 +407,7 @@ button:hover{
     <textarea
       id="commandInput"
       rows="1"
-      placeholder="Pesan atau /play URL 5"></textarea>
+      placeholder="Pesan atau /play URL 0"></textarea>
 
     <button id="sendBtn">
         <i data-lucide="send-horizontal"></i>

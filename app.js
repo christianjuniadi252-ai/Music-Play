@@ -323,3 +323,10 @@ onSnapshot(roomRef, snap => {
         `&disablekb=1`;
 
 });
+
+window.addEventListener("focusin", () => {
+    console.log(
+        document.documentElement.scrollTop,
+        document.body.scrollTop
+    );
+});

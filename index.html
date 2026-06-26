@@ -361,25 +361,27 @@ button:hover{
 }
 
 .reply-icon{
-    position:absolute;
-
-    left:40px;
-    top:50%;
-    transform:translateY(-50%) scale(.6);
-
-    width:28px;
-    height:28px;
+    width:24px;
+    height:24px;
 
     display:flex;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
 
     opacity:0;
-    pointer-events:none;
+    transform:scale(.7);
 
     transition:
-        opacity .15s ease,
-        transform .15s ease;
+        opacity .15s,
+        transform .15s;
+
+    flex-shrink:0;
+    pointer-events:none;
+}
+
+.reply-icon svg{
+    width:18px;
+    height:18px;
 }
 </style>
 </head>  

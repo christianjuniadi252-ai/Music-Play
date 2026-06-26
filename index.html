@@ -105,16 +105,30 @@ button:hover{
 
 #userInfo{
     display:flex;
-    justify-content: space-between;
-    gap:10px;
-    padding:10px;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 15px;
     background:#1f1f1f;
+    border-bottom:1px solid #333;
+}
+
+.account{
+    display:flex;
+    align-items:center;
+    gap:10px;
 }
 
 #avatar{
     width:40px;
     height:40px;
     border-radius:50%;
+    object-fit:cover;
+}
+
+#username{
+    color:white;
+    font-weight:600;
+    font-size:16px;
 }
 
 #replyPreview{
@@ -179,9 +193,25 @@ button:hover{
     font-size:13px;
 }
 
-.acount {
-  display: flex;
-  gap: 10px;
+.header-buttons{
+    display:flex;
+    gap:10px;
+}
+
+.header-buttons button{
+    width:42px;
+    height:42px;
+    border:none;
+    border-radius:10px;
+    background:#2d2d2d;
+    color:white;
+    cursor:pointer;
+    font-size:18px;
+    transition:.2s;
+}
+
+.header-buttons button:hover{
+    background:#3a3a3a;
 }
 </style>
 </head>  
@@ -198,14 +228,17 @@ button:hover{
 </div>
 
 <div id="userInfo" style="display:none">
-  </div class="acount">
-    <img id="avatar">
-    <span id="username"></span>
-  </div>
-  <div>
-    <button>⚙️</button>
-    <button>🎼</button>
-  </div>
+
+    <div class="account">
+        <img id="avatar" src="" alt="Avatar">
+        <span id="username">Username</span>
+    </div>
+
+    <div class="header-buttons">
+        <button id="settingBtn">⚙️</button>
+        <button id="playlistBtn">🎼</button>
+    </div>
+
 </div>
 
 <div id="replyPreview" style="display:none">

@@ -213,11 +213,15 @@ cancelReply.onclick = () => {
 
 const q = query(collection(db, "messages"), orderBy("timestamp"));
 
+let previousUid = "";
+
 onSnapshot(q, snapshot => {
     chat.innerHTML = "";
+    previousUid = "";
 
     snapshot.forEach(docSnap => {
         const msg = docSnap.data();
+        const sameUser = previousUid === msg.uid;
 
         const div = document.createElement("div");
 

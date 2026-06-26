@@ -458,12 +458,12 @@ onSnapshot(q, snapshot => {
         
             div.innerHTML = `
         
-                <div class="reply-icon">
-                    <i data-lucide="reply"></i>
-                </div>
-        
                 <div class="msg-content own-content">
                     ${messageHtml}
+                </div>
+        
+                <div class="reply-icon">
+                    <i data-lucide="reply"></i>
                 </div>
         
                 ${

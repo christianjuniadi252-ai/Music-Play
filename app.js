@@ -303,7 +303,7 @@ onSnapshot(q, snapshot => {
                 minute: "2-digit"
             }) : "";
 
-        div.className = "msg";
+        div.className = sameUser ? "msg msg-group" : "msg";
 
         div.innerHTML = `
             ${sameUser

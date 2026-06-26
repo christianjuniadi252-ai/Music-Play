@@ -282,6 +282,78 @@ const q = query(collection(db, "messages"), orderBy("timestamp"));
 let previousUid = "";
 let previousDate = "";
 
+function enableSwipeReply(div, msg){
+
+    const bubble = div.querySelector(".msg-content");
+    const icon = div.querySelector(".reply-icon");
+
+    let startX = 0;
+    let startY = 0;
+    let diff = 0;
+    let swiping = false;
+
+    div.addEventListener("touchstart",e=>{
+
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+
+        bubble.style.transition = "none";
+
+    });
+
+    div.addEventListener("touchmove",e=>{
+
+        const dx = e.touches[0].clientX - startX;
+        const dy = e.touches[0].clientY - startY;
+
+        if(Math.abs(dy) > Math.abs(dx)){
+            return;
+        }
+
+        if(dx < 0){
+            return;
+        }
+
+        e.preventDefault();
+
+        swiping = true;
+
+        diff = Math.min(dx,80);
+
+        bubble.style.transform = `translateX(${diff}px)`;
+
+        icon.style.opacity = diff / 60;
+
+        icon.style.transform =
+            `scale(${0.6 + diff / 200})`;
+
+    },{passive:false});
+
+    div.addEventListener("touchend",()=>{
+
+        bubble.style.transition = "transform .18s ease";
+
+        bubble.style.transform = "translateX(0)";
+
+        icon.style.opacity = 0;
+
+        icon.style.transform = "scale(.6)";
+
+        if(swiping && diff > 60){
+
+            navigator.vibrate?.(15);
+
+            setReply(msg);
+
+        }
+
+        swiping = false;
+        diff = 0;
+
+    });
+
+}
+
 onSnapshot(q, snapshot => {
 
     chat.innerHTML = "";
@@ -425,77 +497,6 @@ onSnapshot(q, snapshot => {
         }
 
         /* ===== SWIPE REPLY ===== */
-function enableSwipeReply(div, msg){
-
-    const bubble = div.querySelector(".msg-content");
-    const icon = div.querySelector(".reply-icon");
-
-    let startX = 0;
-    let startY = 0;
-    let diff = 0;
-    let swiping = false;
-
-    div.addEventListener("touchstart",e=>{
-
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-
-        bubble.style.transition = "none";
-
-    });
-
-    div.addEventListener("touchmove",e=>{
-
-        const dx = e.touches[0].clientX - startX;
-        const dy = e.touches[0].clientY - startY;
-
-        if(Math.abs(dy) > Math.abs(dx)){
-            return;
-        }
-
-        if(dx < 0){
-            return;
-        }
-
-        e.preventDefault();
-
-        swiping = true;
-
-        diff = Math.min(dx,80);
-
-        bubble.style.transform = `translateX(${diff}px)`;
-
-        icon.style.opacity = diff / 60;
-
-        icon.style.transform =
-            `scale(${0.6 + diff / 200})`;
-
-    },{passive:false});
-
-    div.addEventListener("touchend",()=>{
-
-        bubble.style.transition = "transform .18s ease";
-
-        bubble.style.transform = "translateX(0)";
-
-        icon.style.opacity = 0;
-
-        icon.style.transform = "scale(.6)";
-
-        if(swiping && diff > 60){
-
-            navigator.vibrate?.(15);
-
-            setReply(msg);
-
-        }
-
-        swiping = false;
-        diff = 0;
-
-    });
-
-}
 
         chat.appendChild(div);
         lucide.createIcons();

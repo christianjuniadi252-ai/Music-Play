@@ -61,6 +61,7 @@ let currentVideo = "";
 let ytPlayer = null;
 let roomData = null;
 let playerReady = false;
+let syncTimer = null;
 
 function createPlayer() {
     if (!window.YT || !YT.Player) {
@@ -81,9 +82,13 @@ function createPlayer() {
       events:{
           onReady(){
               playerReady = true;
-  
+      
               if(roomData){
                   playRoom(roomData);
+              }
+      
+              if (!syncTimer) {
+                  syncTimer = setInterval(syncPlayer, 3000);
               }
           }
       }
@@ -146,6 +151,41 @@ function getYoutubeId(input) {
     }
 }
 
+function getTargetSecond() {
+
+    if (!roomData || !roomData.startedAt) {
+        return 0;
+    }
+
+    return Math.floor(
+        (Date.now() - roomData.startedAt.toMillis()) / 1000
+    );
+
+}
+
+function syncPlayer() {
+
+    if (!ytPlayer) return;
+
+    if (!roomData) return;
+
+    const target = getTargetSecond();
+
+    const current = ytPlayer.getCurrentTime();
+
+    const diff = Math.abs(target - current);
+
+    console.log(
+        "Target:", target,
+        "Current:", current,
+        "Diff:", diff
+    );
+
+    if (diff > 2) {
+        ytPlayer.seekTo(target, true);
+    }
+
+}
 /* ================= SEND MESSAGE ================= */
 
 async function sendMessage() {

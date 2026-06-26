@@ -383,83 +383,122 @@ onSnapshot(q, snapshot => {
         `;
 
         if (own) {
-
+        
             div.innerHTML = `
-
+        
+                <div class="reply-icon">
+                    <i data-lucide="reply"></i>
+                </div>
+        
                 <div class="msg-content own-content">
                     ${messageHtml}
                 </div>
-
+        
                 ${
                     showHeader
                     ? `<img class="msg-avatar" src="${msg.photo}" alt="">`
                     : `<div class="msg-avatar-placeholder"></div>`
                 }
-
+        
             `;
-
+        
         } else {
-
+        
             div.innerHTML = `
-
+        
                 ${
                     showHeader
                     ? `<img class="msg-avatar" src="${msg.photo}" alt="">`
                     : `<div class="msg-avatar-placeholder"></div>`
                 }
-
+        
+                <div class="reply-icon">
+                    <i data-lucide="reply"></i>
+                </div>
+        
                 <div class="msg-content">
                     ${messageHtml}
                 </div>
-
+        
             `;
-
+        
         }
 
         /* ===== SWIPE REPLY ===== */
-        
-        let startX = 0;
-        let currentX = 0;
-        
-        div.addEventListener("touchstart", e => {
-        
-            startX = e.touches[0].clientX;
-            div.style.transition = "none";
-        
-        });
-        
-        div.addEventListener("touchmove", e => {
-        
-            currentX = e.touches[0].clientX;
-        
-            let diff = currentX - startX;
-        
-            // hanya geser ke kanan
-            if (diff < 0) diff = 0;
-        
-            // batasi maksimal 80px
-            diff = Math.min(diff, 80);
-        
-            div.style.transform = `translateX(${diff}px)`;
-        
-        });
-        
-        div.addEventListener("touchend", () => {
-        
-            div.style.transition = "transform .18s ease";
-        
-            const moved = Math.min(currentX - startX, 80);
-        
-            div.style.transform = "translateX(0)";
-        
-            if (moved > 60) {
-                setReply(msg);
-            }
-        
-        });
+function enableSwipeReply(div, msg){
+
+    const bubble = div.querySelector(".msg-content");
+    const icon = div.querySelector(".reply-icon");
+
+    let startX = 0;
+    let startY = 0;
+    let diff = 0;
+    let swiping = false;
+
+    div.addEventListener("touchstart",e=>{
+
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+
+        bubble.style.transition = "none";
+
+    });
+
+    div.addEventListener("touchmove",e=>{
+
+        const dx = e.touches[0].clientX - startX;
+        const dy = e.touches[0].clientY - startY;
+
+        if(Math.abs(dy) > Math.abs(dx)){
+            return;
+        }
+
+        if(dx < 0){
+            return;
+        }
+
+        e.preventDefault();
+
+        swiping = true;
+
+        diff = Math.min(dx,80);
+
+        bubble.style.transform = `translateX(${diff}px)`;
+
+        icon.style.opacity = diff / 60;
+
+        icon.style.transform =
+            `scale(${0.6 + diff / 200})`;
+
+    },{passive:false});
+
+    div.addEventListener("touchend",()=>{
+
+        bubble.style.transition = "transform .18s ease";
+
+        bubble.style.transform = "translateX(0)";
+
+        icon.style.opacity = 0;
+
+        icon.style.transform = "scale(.6)";
+
+        if(swiping && diff > 60){
+
+            navigator.vibrate?.(15);
+
+            setReply(msg);
+
+        }
+
+        swiping = false;
+        diff = 0;
+
+    });
+
+}
 
         chat.appendChild(div);
-
+        lucide.createIcons();
         previousUid = msg.uid;
 
     });

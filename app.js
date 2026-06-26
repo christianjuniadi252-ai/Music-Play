@@ -348,14 +348,12 @@ onSnapshot(roomRef, snap => {
             (Date.now() - startedAt) / 1000
         );
 
-    player.style.display = "block";
+    document.getElementById("playerFrame").style.display = "block";
 
-    player.src =
-        `https://www.youtube.com/embed/${data.videoId}` +
-        `?autoplay=1` +
-        `&start=${elapsed}` +
-        `&controls=0` +
-        `&disablekb=1`;
+    ytPlayer.loadVideoById({
+        videoId: data.videoId,
+        startSeconds: elapsed
+    });
 
 });
 

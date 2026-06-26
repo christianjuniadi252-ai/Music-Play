@@ -280,11 +280,53 @@ cancelReply.onclick = () => {
 const q = query(collection(db, "messages"), orderBy("timestamp"));
 
 let previousUid = "";
+let previousDate = "";
 
 onSnapshot(q, snapshot => {
-
+    
     chat.innerHTML = "";
     previousUid = "";
+    previousDate = "";
+    
+    const date = msg.timestamp?.toDate();
+
+      if (date) {
+      
+          const dateKey = date.toDateString();
+      
+          if (dateKey !== previousDate) {
+      
+              const separator = document.createElement("div");
+              separator.className = "date-separator";
+      
+              const today = new Date();
+              const yesterday = new Date();
+              yesterday.setDate(today.getDate() - 1);
+      
+              if (date.toDateString() === today.toDateString()) {
+      
+                  separator.textContent = "Hari ini";
+      
+              } else if (date.toDateString() === yesterday.toDateString()) {
+      
+                  separator.textContent = "Kemarin";
+      
+              } else {
+      
+                  separator.textContent = date.toLocaleDateString("id-ID", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric"
+                  });
+      
+              }
+      
+              chat.appendChild(separator);
+      
+              previousDate = dateKey;
+          }
+      
+      }
 
     snapshot.forEach(docSnap => {
 

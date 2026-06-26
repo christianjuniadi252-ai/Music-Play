@@ -323,3 +323,10 @@ onSnapshot(roomRef, snap => {
         `&disablekb=1`;
 
 });
+
+const input = document.getElementById("commandInput");
+
+input.addEventListener("input", function () {
+    this.style.height = "auto";
+    this.style.height = this.scrollHeight + "px";
+});

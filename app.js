@@ -299,7 +299,8 @@ onSnapshot(q, snapshot => {
                 minute: "2-digit"
             }) : "";
 
-        div.className = sameUser ? "msg msg-group" : "msg";
+          div.className =
+              `msg ${sameUser ? "msg-group" : ""} ${own ? "own" : ""}`;
 
         div.innerHTML = `
             ${sameUser

@@ -165,30 +165,23 @@ function getTargetSecond() {
 
 function syncPlayer() {
 
-    if (!ytPlayer) return;
-
+    if (!playerReady) return;
     if (!roomData) return;
 
+    if (ytPlayer.getPlayerState() === YT.PlayerState.UNSTARTED) return;
+
     const target = getTargetSecond();
-
-    if (ytPlayer.getPlayerState() !== YT.PlayerState.PLAYING) {
-        return;
-    }
-
     const current = ytPlayer.getCurrentTime();
 
     const diff = Math.abs(target - current);
-
-    console.log(
-        "Target:", target,
-        "Current:", current,
-        "Diff:", diff
-    );
 
     if (diff > 2) {
         ytPlayer.seekTo(target, true);
     }
 
+    if (ytPlayer.getPlayerState() !== YT.PlayerState.PLAYING) {
+        ytPlayer.playVideo();
+    }
 }
 /* ================= SEND MESSAGE ================= */
 
@@ -414,4 +407,16 @@ onSnapshot(roomRef, snap => {
 
 refreshBtn.addEventListener("click", () => {
     location.reload();
+});
+
+document.addEventListener("visibilitychange", () => {
+
+    if (document.visibilityState === "visible") {
+
+        if (roomData && playerReady) {
+            syncPlayer();
+        }
+
+    }
+
 });

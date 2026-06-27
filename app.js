@@ -253,6 +253,23 @@ async function sendMessage() {
     }
 
     /* PLAY SYSTEM (ROOM SYNC) */
+    /* SAY BOT */
+    if (text.startsWith("/say")) {
+    
+        const pesan = text.replace("/say", "").trim();
+    
+        if (!pesan) {
+            alert("Masukkan pesan.");
+            return;
+        }
+    
+        await sendBotMessage(pesan);
+    
+        input.value = "";
+    
+        return;
+    }
+    
     if (text.startsWith("/play")) {
 
         const raw = text.replace("/play", "").trim();

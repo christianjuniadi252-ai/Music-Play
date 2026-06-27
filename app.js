@@ -319,7 +319,7 @@ let previousDate = "";
 
 function enableSwipeReply(bubble, msg){
 
-    const icon = bubble.querySelector(".reply-icon");
+    const icon = bubble.parentElement.querySelector(".reply-icon");
 
     let startX = 0;
     let startY = 0;

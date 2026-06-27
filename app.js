@@ -355,6 +355,13 @@ cancelReply.onclick = () => {
 function openMenu(msg){
 
     selectedMessage = msg;
+    
+    const isOwn =
+        auth.currentUser &&
+        msg.uid === auth.currentUser.uid;
+    
+    editBtn.style.display = isOwn ? "flex" : "none";
+    deleteBtn.style.display = isOwn ? "flex" : "none";
 
     menuPreview.innerHTML = `
         <div class="reply-box">

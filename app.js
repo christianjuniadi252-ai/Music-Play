@@ -515,7 +515,11 @@ onSnapshot(q, snapshot => {
         const own = auth.currentUser &&
                     msg.uid === auth.currentUser.uid;
 
-        const sameUser = previousUid === msg.uid;
+        const isBot = msg.uid === "music-bot";
+        
+        const sameUser =
+            !isBot &&
+            previousUid === msg.uid;
 
         const showHeader = !sameUser || !!msg.replyTo;
 

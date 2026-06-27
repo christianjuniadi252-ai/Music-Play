@@ -273,17 +273,6 @@ async function sendMessage() {
         });
     
         // Kirim ke chat juga
-        await addDoc(collection(db, "messages"), {
-            uid: auth.currentUser.uid,
-            name: auth.currentUser.displayName,
-            photo: auth.currentUser.photoURL,
-            message: text,
-            timestamp: serverTimestamp(),
-            replyTo: replyData,
-            edited: false,
-            deleted: false
-        })
-        
         await sendBotMessage(
         `${auth.currentUser.displayName} memutar
         

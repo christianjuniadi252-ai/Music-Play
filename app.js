@@ -294,7 +294,12 @@ function openMenu(msg){
 
     selectedMessage = msg;
 
-    menuPreview.textContent = msg.message;
+    menuPreview.innerHTML = `
+        <div class="reply-box">
+            <b>${msg.name}</b><br>
+            ${msg.message}
+        </div>
+    `;
 
     menuOverlay.style.display = "flex";
 

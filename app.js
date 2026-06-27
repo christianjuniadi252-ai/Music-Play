@@ -317,9 +317,8 @@ const q = query(collection(db, "messages"), orderBy("timestamp"));
 let previousUid = "";
 let previousDate = "";
 
-function enableSwipeReply(div, msg){
+function enableSwipeReply(bubble, msg){
 
-    const bubble = div.querySelector(".msg-content");
     const icon = div.querySelector(".reply-icon");
 
     let startX = 0;
@@ -327,7 +326,7 @@ function enableSwipeReply(div, msg){
     let diff = 0;
     let swiping = false;
 
-    div.addEventListener("touchstart", e => {
+    bubble.addEventListener("touchstart", e => {
     
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
@@ -347,16 +346,20 @@ function enableSwipeReply(div, msg){
     
     });
 
-    div.addEventListener("touchmove",e=>{
+    bubble.addEventListener("touchmove",e=>{
         const dx = e.touches[0].clientX - startX;
         const dy = e.touches[0].clientY - startY;
         
-        if(Math.abs(dx) > 8 || Math.abs(dy) > 8){
-            swiping = true;
+        if(dx > 12){
             clearTimeout(hold);
         }
+        
+        if (Math.abs(dy) > Math.abs(dx)) {
+            clearTimeout(hold);
+            return;
+        }
 
-        if(dx < 0){
+        if(dx < 15){
             return;
         }
 
@@ -364,7 +367,7 @@ function enableSwipeReply(div, msg){
 
         swiping = true;
 
-        diff = Math.min(dx,40);
+        diff = Math.min(dx - 15,30);
 
         bubble.style.transform = `translateX(${diff}px)`;
 
@@ -375,7 +378,7 @@ function enableSwipeReply(div, msg){
 
     },{passive:false});
 
-    div.addEventListener("touchend",()=>{
+    bubble.addEventListener("touchend",()=>{
         clearTimeout(hold);
         bubble.style.transition = "transform .18s ease";
 
@@ -553,6 +556,7 @@ onSnapshot(q, snapshot => {
 
         chat.appendChild(div);
         lucide.createIcons();
+        const bubble = div.querySelector(".msg-content");
         enableSwipeReply(div, msg);
         
         div.addEventListener("touchend",()=>{

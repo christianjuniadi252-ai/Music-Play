@@ -529,7 +529,7 @@ onSnapshot(q, snapshot => {
             ` : ""}
 
             <div class="msg-text">
-                ${msg.message}
+                <span class="message-content">${msg.message}</span>
             
                 ${msg.edited
                     ? `<span class="edited-label">edited</span>`

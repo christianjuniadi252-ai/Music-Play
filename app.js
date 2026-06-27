@@ -580,7 +580,7 @@ onSnapshot(q, snapshot => {
                     ${msg.message}
             
                     <div class="reply-box music-box">
-                        🎵 ${msg.title}
+                        ${msg.title}
                     </div>
             
                 ` : `

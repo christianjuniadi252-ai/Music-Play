@@ -577,7 +577,7 @@ onSnapshot(q, snapshot => {
             ` : ""}
 
             ${msg.replyTo ? `
-                <div class="reply-box" data-reply="${msg.replyTo.id}">
+                <div class="reply-box message-reply" data-reply="${msg.replyTo.id}">
                     <b>${msg.replyTo.name}</b><br>
                     ${msg.replyTo.message}
                 </div>
@@ -653,9 +653,11 @@ onSnapshot(q, snapshot => {
 
         chat.appendChild(div);
         
-        const replyBox = div.querySelector(".reply-box");
+        const replyBox = div.querySelector(".message-reply");
         
         if (replyBox && msg.replyTo?.id) {
+
+            replyBox.style.cursor = "pointer";
         
             replyBox.onclick = () => {
         
@@ -663,14 +665,18 @@ onSnapshot(q, snapshot => {
                     "msg-" + msg.replyTo.id
                 );
         
-                if (target) {
+                if (!target) return;
         
-                    target.scrollIntoView({
-                        behavior: "smooth",
-                        block: "center"
-                    });
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
         
-                }
+                target.classList.add("jump-highlight");
+        
+                setTimeout(() => {
+                    target.classList.remove("jump-highlight");
+                }, 1500);
         
             };
         
@@ -863,9 +869,3 @@ deleteBtn.onclick = async () => {
 
     menuOverlay.style.display = "none";
 };
-
-target.classList.add("jump-highlight");
-
-setTimeout(() => {
-    target.classList.remove("jump-highlight");
-}, 1500);

@@ -655,12 +655,14 @@ onSnapshot(q, snapshot => {
         
         const replyBox = div.querySelector(".message-reply");
         
+        alert("Test")
+        console.log("Halo")
+        
         if (replyBox && msg.replyTo?.id) {
 
             replyBox.style.cursor = "pointer";
         
             replyBox.onclick = () => {
-                alert("Test")
                 const target = document.getElementById(
                     "msg-" + msg.replyTo.id
                 );

@@ -497,6 +497,26 @@ button:hover{
     font-family:monospace;
     font-size:.9em;
 }
+
+.jump-highlight .msg-content{
+    animation:jumpFlash 1.5s;
+}
+
+@keyframes jumpFlash{
+
+    0%{
+        box-shadow:0 0 0 0 rgba(255,255,255,.8);
+    }
+
+    50%{
+        box-shadow:0 0 0 8px rgba(255,255,255,.15);
+    }
+
+    100%{
+        box-shadow:0 0 0 0 rgba(255,255,255,0);
+    }
+
+}
 </style>
 </head>  
 <body>
@@ -552,7 +572,7 @@ button:hover{
     <textarea
       id="commandInput"
       rows="1"
-      placeholder="Pesan atau /play URL 9"></textarea>
+      placeholder="Pesan atau /play URL"></textarea>
 
     <button id="sendBtn">
         <i data-lucide="send-horizontal"></i>

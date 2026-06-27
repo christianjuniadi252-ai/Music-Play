@@ -77,6 +77,7 @@ let roomData = null;
 let playerReady = false;
 let syncTimer = null;
 let selectedMessage = null;
+let hold = null;
 
 function createPlayer() {
     if (!window.YT || !YT.Player) {
@@ -229,21 +230,15 @@ async function sendMessage() {
         });
     
         // Kirim ke chat juga
-        await addDoc(collection(db,"messages"),{
-        
-            uid:auth.currentUser.uid,
-            name:auth.currentUser.displayName,
-            photo:auth.currentUser.photoURL,
-        
-            message:text,
-        
-            timestamp:serverTimestamp(),
-        
-            replyTo:replyData,
-        
-            edited:false,
-            deleted:false
-        
+        await addDoc(collection(db, "messages"), {
+            uid: auth.currentUser.uid,
+            name: auth.currentUser.displayName,
+            photo: auth.currentUser.photoURL,
+            message: text,
+            timestamp: serverTimestamp(),
+            replyTo: replyData,
+            edited: false,
+            deleted: false
         });
     
         input.value = "";
@@ -548,7 +543,6 @@ onSnapshot(q, snapshot => {
         chat.appendChild(div);
         lucide.createIcons();
         enableSwipeReply(div, msg);
-        let hold;
 
         div.addEventListener("touchstart",()=>{
         

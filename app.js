@@ -655,6 +655,35 @@ onSnapshot(q, snapshot => {
         
         const replyBox = div.querySelector(".message-reply");
         
+        replyBox?.addEventListener("touchstart", e => {
+            e.stopPropagation();
+        });
+        
+        replyBox?.addEventListener("touchend", e => {
+            e.stopPropagation();
+        });
+        
+        replyBox?.addEventListener("click", e => {
+            e.stopPropagation();
+        
+            const target = document.getElementById(
+                "msg-" + replyBox.dataset.reply
+            );
+        
+            if (!target) return;
+        
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+        
+            target.classList.add("jump-highlight");
+        
+            setTimeout(() => {
+                target.classList.remove("jump-highlight");
+            }, 1500);
+        });
+        
         if (replyBox && msg.replyTo?.id) {
 
             replyBox.style.cursor = "pointer";

@@ -219,7 +219,7 @@ async function sendBotMessage(message){
     await addDoc(collection(db, "messages"), {
         uid: "music-bot",
         name: "Music Bot",
-        photo: "music-bot.png",
+        photo: "music-bot2.png",
         message: message,
         timestamp: serverTimestamp()
     });

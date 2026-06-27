@@ -78,6 +78,7 @@ let playerReady = false;
 let syncTimer = null;
 let selectedMessage = null;
 let hold = null;
+let editingMessage = null;
 
 function createPlayer() {
     if (!window.YT || !YT.Player) {
@@ -209,6 +210,23 @@ async function sendMessage() {
         alert("Login dulu");
         return;
     }
+    
+    if(editingMessage){
+    
+        await updateDoc(
+            doc(db,"messages",editingMessage.id),
+            {
+                message: input.value.trim(),
+                edited: true
+            }
+        );
+    
+        editingMessage = null;
+        replyPreview.style.display = "none";
+        input.value = "";
+    
+        return;
+    }
 
     /* PLAY SYSTEM (ROOM SYNC) */
     if (text.startsWith("/play")) {
@@ -286,8 +304,14 @@ function setReply(msg) {
 }
 
 cancelReply.onclick = () => {
+
     replyData = null;
+    editingMessage = null;
+
     replyPreview.style.display = "none";
+
+    input.value = "";
+
 };
 
 function openMenu(msg){
@@ -667,27 +691,13 @@ copyBtn.onclick=()=>{
 
 };
 
-editBtn.onclick = async () => {
+editBtn.onclick = () => {
 
     if(selectedMessage.uid !== auth.currentUser.uid){
         return;
     }
 
-    const text = prompt("Edit pesan", selectedMessage.message);
-
-    if(text === null) return;
-
-    if(text.trim() === "") return;
-
-    await updateDoc(
-        doc(db, "messages", selectedMessage.id),
-        {
-            message: text.trim(),
-            edited: true
-        }
-    );
-
-    menuOverlay.style.display = "none";
+    startEdit(selectedMessage);
 
 };
 
@@ -698,3 +708,20 @@ replyBtn.onclick=()=>{
     menuOverlay.style.display="none";
 
 };
+
+function startEdit(msg){
+
+    editingMessage = msg;
+
+    replyPreview.style.display = "flex";
+
+    replyText.innerHTML = `
+        <b>Mengedit pesan</b><br>
+        ${msg.message}
+    `;
+
+    input.value = msg.message;
+    input.focus();
+
+    menuOverlay.style.display = "none";
+}

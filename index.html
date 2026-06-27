@@ -497,22 +497,30 @@ button:hover{
     font-size:.9em;
 }
 
-.jump-highlight .msg-content{
-    animation:jumpFlash 1.5s;
+.jump-highlight{
+    animation: jumpFlash 1s ease;
 }
 
 @keyframes jumpFlash{
 
     0%{
-        box-shadow:0 0 0 0 rgba(255,255,255,.8);
+        transform:scale(1);
+        box-shadow:none;
+    }
+
+    25%{
+        transform:scale(1.02);
+        box-shadow:0 0 0 2px #4ade80;
     }
 
     50%{
-        box-shadow:0 0 0 8px rgba(255,255,255,.15);
+        transform:scale(1.03);
+        box-shadow:0 0 12px #4ade80;
     }
 
     100%{
-        box-shadow:0 0 0 0 rgba(255,255,255,0);
+        transform:scale(1);
+        box-shadow:none;
     }
 
 }
@@ -571,7 +579,7 @@ button:hover{
     <textarea
       id="commandInput"
       rows="1"
-      placeholder="Pesan atau /play URL"></textarea>
+      placeholder="Pesan atau /play URL 0"></textarea>
 
     <button id="sendBtn">
         <i data-lucide="send-horizontal"></i>

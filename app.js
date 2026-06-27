@@ -333,6 +333,7 @@ sendBtn.onclick = sendMessage;
 
 function setReply(msg) {
     replyData = {
+        id: msg.id,
         name: msg.name,
         message: msg.message
     };
@@ -557,6 +558,8 @@ onSnapshot(q, snapshot => {
         /* ===== CHAT ===== */
 
         const div = document.createElement("div");
+        
+        div.id = "msg-" + msg.id;
 
         div.className =
             `msg
@@ -574,7 +577,7 @@ onSnapshot(q, snapshot => {
             ` : ""}
 
             ${msg.replyTo ? `
-                <div class="reply-box">
+                <div class="reply-box" data-reply="${msg.replyTo.id}">
                     <b>${msg.replyTo.name}</b><br>
                     ${msg.replyTo.message}
                 </div>
@@ -649,6 +652,30 @@ onSnapshot(q, snapshot => {
         /* ===== SWIPE REPLY ===== */
 
         chat.appendChild(div);
+        
+        const replyBox = div.querySelector(".reply-box");
+        
+        if (replyBox && msg.replyTo?.id) {
+        
+            replyBox.onclick = () => {
+        
+                const target = document.getElementById(
+                    "msg-" + msg.replyTo.id
+                );
+        
+                if (target) {
+        
+                    target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+        
+                }
+        
+            };
+        
+        }
+        
         lucide.createIcons();
         const bubble = div.querySelector(".msg-content");
         enableSwipeReply(bubble, msg);
@@ -836,3 +863,9 @@ deleteBtn.onclick = async () => {
 
     menuOverlay.style.display = "none";
 };
+
+target.classList.add("jump-highlight");
+
+setTimeout(() => {
+    target.classList.remove("jump-highlight");
+}, 1500);

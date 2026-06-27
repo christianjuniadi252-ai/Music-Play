@@ -327,17 +327,23 @@ function enableSwipeReply(div, msg){
     let diff = 0;
     let swiping = false;
 
-    div.addEventListener("touchstart",e=>{
+    div.addEventListener("touchstart", e => {
     
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
     
-        hold = setTimeout(()=>{
-            navigator.vibrate?.(20);
-            openMenu(msg);
-        },450);
+        swiping = false;
     
-        bubble.style.transition="none";
+        hold = setTimeout(() => {
+    
+            if(!swiping){
+                navigator.vibrate?.(20);
+                openMenu(msg);
+            }
+    
+        }, 450);
+    
+        bubble.style.transition = "none";
     
     });
 
@@ -346,6 +352,7 @@ function enableSwipeReply(div, msg){
         const dy = e.touches[0].clientY - startY;
         
         if(Math.abs(dx) > 8 || Math.abs(dy) > 8){
+            swiping = true;
             clearTimeout(hold);
         }
 
@@ -369,7 +376,7 @@ function enableSwipeReply(div, msg){
     },{passive:false});
 
     div.addEventListener("touchend",()=>{
-
+        clearTimeout(hold);
         bubble.style.transition = "transform .18s ease";
 
         bubble.style.transform = "translateX(0)";
@@ -547,18 +554,6 @@ onSnapshot(q, snapshot => {
         chat.appendChild(div);
         lucide.createIcons();
         enableSwipeReply(div, msg);
-
-        div.addEventListener("touchstart",()=>{
-        
-            hold=setTimeout(()=>{
-        
-                navigator.vibrate?.(20);
-        
-                openMenu(msg);
-        
-            },450);
-        
-        });
         
         div.addEventListener("touchend",()=>{
         

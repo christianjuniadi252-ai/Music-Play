@@ -652,7 +652,14 @@ function playRoom(data){
         videoId: data.videoId,
         startSeconds: elapsed
     });
-    setTimeout(syncPlayer, 1500);
+    
+    if (data.videoId) {
+        setTimeout(() => {
+            if (roomData?.videoId) {
+                syncPlayer();
+            }
+        }, 1500);
+    }
 
 }
 

@@ -655,8 +655,6 @@ onSnapshot(q, snapshot => {
         
         const replyBox = div.querySelector(".message-reply");
         
-        console.log(replyBox);
-        
         if (replyBox && msg.replyTo?.id) {
 
             replyBox.style.cursor = "pointer";
@@ -685,7 +683,10 @@ onSnapshot(q, snapshot => {
         
         lucide.createIcons();
         const bubble = div.querySelector(".msg-content");
-        enableSwipeReply(bubble, msg);
+        
+        if (!div.querySelector(".message-reply")?.contains(document.activeElement)) {
+            enableSwipeReply(bubble, msg);
+        }
         
         previousUid = msg.uid;
 

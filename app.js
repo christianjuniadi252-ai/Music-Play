@@ -196,6 +196,7 @@ function syncPlayer() {
 
     if (!playerReady) return;
     if (!roomData) return;
+    if (!roomData.videoId) return;
 
     if (ytPlayer.getPlayerState() === YT.PlayerState.UNSTARTED) return;
 
@@ -618,9 +619,16 @@ onSnapshot(q, snapshot => {
 /* ================= MUSIC ROOM ================= */
 function playRoom(data){
 
-    if(!data.videoId){
+    if (!data.videoId) {
+    
+        currentVideo = "";
+    
         ytPlayer.stopVideo();
+    
+        ytPlayer.clearVideo();
+    
         document.getElementById("playerFrame").style.display = "none";
+    
         return;
     }
 

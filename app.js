@@ -302,7 +302,6 @@ function openMenu(msg){
     `;
 
     menuOverlay.style.display = "flex";
-
 }
 
 menuOverlay.onclick = e => {

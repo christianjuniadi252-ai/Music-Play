@@ -319,7 +319,7 @@ let previousDate = "";
 
 function enableSwipeReply(bubble, msg){
 
-    const icon = div.querySelector(".reply-icon");
+    const icon = bubble.querySelector(".reply-icon");
 
     let startX = 0;
     let startY = 0;
@@ -557,19 +557,8 @@ onSnapshot(q, snapshot => {
         chat.appendChild(div);
         lucide.createIcons();
         const bubble = div.querySelector(".msg-content");
-        enableSwipeReply(div, msg);
+        enableSwipeReply(bubble, msg);
         
-        div.addEventListener("touchend",()=>{
-        
-            clearTimeout(hold);
-        
-        });
-        
-        div.addEventListener("touchmove",()=>{
-        
-            clearTimeout(hold);
-        
-        });
         previousUid = msg.uid;
 
     });

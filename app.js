@@ -516,6 +516,8 @@ onSnapshot(q, snapshot => {
                     msg.uid === auth.currentUser.uid;
 
         const isBot = msg.uid === "music-bot";
+
+        const isBot = msg.uid === "music-bot";
         
         const sameUser =
             !isBot &&
@@ -535,7 +537,10 @@ onSnapshot(q, snapshot => {
         const div = document.createElement("div");
 
         div.className =
-            `msg ${sameUser ? "msg-group" : ""} ${own ? "own" : ""}`;
+            `msg
+             ${sameUser ? "msg-group" : ""}
+             ${own ? "own" : ""}
+             ${isBot ? "bot" : ""}`;
 
         const messageHtml = `
 

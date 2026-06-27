@@ -328,21 +328,25 @@ function enableSwipeReply(div, msg){
     let swiping = false;
 
     div.addEventListener("touchstart",e=>{
-
+    
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
-
-        bubble.style.transition = "none";
-
+    
+        hold = setTimeout(()=>{
+            navigator.vibrate?.(20);
+            openMenu(msg);
+        },450);
+    
+        bubble.style.transition="none";
+    
     });
 
     div.addEventListener("touchmove",e=>{
-        clearTimeout(hold);
         const dx = e.touches[0].clientX - startX;
         const dy = e.touches[0].clientY - startY;
-
-        if(Math.abs(dy) > Math.abs(dx)){
-            return;
+        
+        if(Math.abs(dx) > 8 || Math.abs(dy) > 8){
+            clearTimeout(hold);
         }
 
         if(dx < 0){

@@ -660,7 +660,7 @@ onSnapshot(q, snapshot => {
             replyBox.style.cursor = "pointer";
         
             replyBox.onclick = () => {
-        
+                alert("Test")
                 const target = document.getElementById(
                     "msg-" + msg.replyTo.id
                 );

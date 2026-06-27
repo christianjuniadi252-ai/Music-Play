@@ -381,6 +381,61 @@ button:hover{
         opacity .15s ease,
         transform .15s ease;
 }
+
+.menu-overlay{
+
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    display:none;
+
+    justify-content:flex-end;
+    flex-direction:column;
+
+    z-index:9999;
+
+}
+
+.menu-sheet{
+
+    background:#222;
+
+    border-radius:18px 18px 0 0;
+
+    padding:20px;
+
+}
+
+.menu-sheet button{
+
+    width:100%;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:15px;
+
+    background:none;
+
+    border:none;
+
+    color:white;
+
+    font-size:16px;
+
+}
+
+.edited-label{
+    font-size:11px;
+    color:#999;
+    margin-left:8px;
+    font-style:italic;
+}
 </style>
 </head>  
 <body>
@@ -442,6 +497,36 @@ button:hover{
         <i data-lucide="send-horizontal"></i>
     </button>
   </div>
+</div>
+
+<div id="menuOverlay" class="menu-overlay">
+
+    <div class="menu-sheet">
+
+        <div id="menuPreview"></div>
+
+        <button id="copyBtn">
+            <i data-lucide="copy"></i>
+            Copy
+        </button>
+
+        <button id="editBtn">
+            <i data-lucide="pencil"></i>
+            Edit
+        </button>
+
+        <button id="deleteBtn">
+            <i data-lucide="trash-2"></i>
+            Hapus
+        </button>
+
+        <button id="replyBtn">
+            <i data-lucide="reply"></i>
+            Reply
+        </button>
+
+    </div>
+
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>

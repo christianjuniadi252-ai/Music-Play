@@ -725,3 +725,22 @@ function startEdit(msg){
 
     menuOverlay.style.display = "none";
 }
+
+deleteBtn.onclick = async () => {
+
+    if (!auth.currentUser) return;
+
+    if (selectedMessage.uid !== auth.currentUser.uid) {
+        return;
+    }
+
+    const yakin = confirm("Hapus pesan ini?");
+
+    if (!yakin) return;
+
+    await deleteDoc(
+        doc(db, "messages", selectedMessage.id)
+    );
+
+    menuOverlay.style.display = "none";
+};

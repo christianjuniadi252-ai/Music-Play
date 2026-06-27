@@ -16,7 +16,9 @@ import {
     onSnapshot,
     serverTimestamp,
     doc,
-    setDoc
+    setDoc,
+    updateDoc,
+    deleteDoc
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 /* ================= FIREBASE ================= */
@@ -52,6 +54,18 @@ const replyPreview = document.getElementById("replyPreview");
 const replyText = document.getElementById("replyText");
 const cancelReply = document.getElementById("cancelReply");
 
+const menuOverlay=document.getElementById("menuOverlay");
+
+const menuPreview=document.getElementById("menuPreview");
+
+const copyBtn=document.getElementById("copyBtn");
+
+const editBtn=document.getElementById("editBtn");
+
+const deleteBtn=document.getElementById("deleteBtn");
+
+const replyBtn=document.getElementById("replyBtn");
+
 const refreshBtn = document.getElementById("refreshBtn");
 
 /* ================= STATE ================= */
@@ -62,6 +76,7 @@ let ytPlayer = null;
 let roomData = null;
 let playerReady = false;
 let syncTimer = null;
+let selectedMessage = null;
 
 function createPlayer() {
     if (!window.YT || !YT.Player) {
@@ -214,17 +229,22 @@ async function sendMessage() {
         });
     
         // Kirim ke chat juga
-        await addDoc(
-            collection(db, "messages"),
-            {
-                uid: auth.currentUser.uid,
-                name: auth.currentUser.displayName,
-                photo: auth.currentUser.photoURL,
-                message: text,
-                timestamp: serverTimestamp(),
-                system: true
-            }
-        );
+        await addDoc(collection(db,"messages"),{
+        
+            uid:auth.currentUser.uid,
+            name:auth.currentUser.displayName,
+            photo:auth.currentUser.photoURL,
+        
+            message:text,
+        
+            timestamp:serverTimestamp(),
+        
+            replyTo:replyData,
+        
+            edited:false,
+            deleted:false
+        
+        });
     
         input.value = "";
         return;
@@ -275,6 +295,26 @@ cancelReply.onclick = () => {
     replyPreview.style.display = "none";
 };
 
+function openMenu(msg){
+
+    selectedMessage = msg;
+
+    menuPreview.textContent = msg.message;
+
+    menuOverlay.style.display = "flex";
+
+}
+
+menuOverlay.onclick = e => {
+
+    if(e.target === menuOverlay){
+
+        menuOverlay.style.display = "none";
+
+    }
+
+};
+
 /* ================= CHAT REALTIME ================= */
 
 const q = query(collection(db, "messages"), orderBy("timestamp"));
@@ -302,7 +342,7 @@ function enableSwipeReply(div, msg){
     });
 
     div.addEventListener("touchmove",e=>{
-
+        clearTimeout(hold);
         const dx = e.touches[0].clientX - startX;
         const dy = e.touches[0].clientY - startY;
 
@@ -363,7 +403,10 @@ onSnapshot(q, snapshot => {
 
     snapshot.forEach(docSnap => {
 
-        const msg = docSnap.data();
+        const msg = {
+            id: docSnap.id,
+            ...docSnap.data()
+        };
 
         /* ===== TANGGAL ===== */
 
@@ -450,6 +493,10 @@ onSnapshot(q, snapshot => {
 
             <div class="msg-text">
                 ${msg.message}
+            
+                ${msg.edited
+                    ? `<span class="edited-label">edited</span>`
+                    : ""}
             </div>
 
         `;
@@ -501,6 +548,31 @@ onSnapshot(q, snapshot => {
         chat.appendChild(div);
         lucide.createIcons();
         enableSwipeReply(div, msg);
+        let hold;
+
+        div.addEventListener("touchstart",()=>{
+        
+            hold=setTimeout(()=>{
+        
+                navigator.vibrate?.(20);
+        
+                openMenu(msg);
+        
+            },450);
+        
+        });
+        
+        div.addEventListener("touchend",()=>{
+        
+            clearTimeout(hold);
+        
+        });
+        
+        div.addEventListener("touchmove",()=>{
+        
+            clearTimeout(hold);
+        
+        });
         previousUid = msg.uid;
 
     });
@@ -596,3 +668,43 @@ input.addEventListener("keydown", e => {
         sendMessage();
     }
 });
+
+copyBtn.onclick=()=>{
+
+    navigator.clipboard.writeText(selectedMessage.message);
+
+    menuOverlay.style.display="none";
+
+};
+
+editBtn.onclick = async () => {
+
+    if(selectedMessage.uid !== auth.currentUser.uid){
+        return;
+    }
+
+    const text = prompt("Edit pesan", selectedMessage.message);
+
+    if(text === null) return;
+
+    if(text.trim() === "") return;
+
+    await updateDoc(
+        doc(db, "messages", selectedMessage.id),
+        {
+            message: text.trim(),
+            edited: true
+        }
+    );
+
+    menuOverlay.style.display = "none";
+
+};
+
+replyBtn.onclick=()=>{
+
+    setReply(selectedMessage);
+
+    menuOverlay.style.display="none";
+
+};

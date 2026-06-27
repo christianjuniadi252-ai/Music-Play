@@ -651,6 +651,18 @@ function playRoom(data){
         Math.floor((Date.now() - startedAt) / 1000);
 
     document.getElementById("playerFrame").style.display = "block";
+    
+    requestAnimationFrame(() => {
+
+        input.style.height = "44px";
+    
+        if (input.scrollHeight <= 120) {
+            input.style.height = input.scrollHeight + "px";
+        } else {
+            input.style.height = "120px";
+        }
+    
+    });
 
     ytPlayer.loadVideoById({
         videoId: data.videoId,

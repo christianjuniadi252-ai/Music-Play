@@ -168,6 +168,18 @@ function getYoutubeId(input) {
     }
 }
 
+async function getVideoTitle(videoId){
+
+    const res = await fetch(
+        `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`
+    );
+
+    const data = await res.json();
+
+    return data.title || "Video YouTube";
+
+}
+
 function getTargetSecond() {
 
     if (!roomData || !roomData.startedAt) {
@@ -201,6 +213,17 @@ function syncPlayer() {
     }
 }
 /* ================= SEND MESSAGE ================= */
+async function sendBotMessage(message){
+
+    await addDoc(collection(db, "messages"), {
+        uid: "music-bot",
+        name: "🎵 Music Bot",
+        photo: "https://i.imgur.com/4Z7Dz6P.png",
+        message: message,
+        timestamp: serverTimestamp()
+    });
+
+}
 
 async function sendMessage() {
     const text = input.value.trim();
@@ -239,6 +262,8 @@ async function sendMessage() {
             alert("Link tidak valid");
             return;
         }
+        
+        const title = await getVideoTitle(id);
     
         // Update player room
         await setDoc(doc(db, "room", "main"), {
@@ -257,7 +282,13 @@ async function sendMessage() {
             replyTo: replyData,
             edited: false,
             deleted: false
-        });
+        })
+        
+        await sendBotMessage(
+        `${auth.currentUser.displayName} memutar
+        
+        🎵 ${title}`
+        );
     
         input.value = "";
         return;

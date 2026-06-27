@@ -655,8 +655,7 @@ onSnapshot(q, snapshot => {
         
         const replyBox = div.querySelector(".message-reply");
         
-        alert("Test")
-        console.log("Halo")
+        console.log(replyBox);
         
         if (replyBox && msg.replyTo?.id) {
 

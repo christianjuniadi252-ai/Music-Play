@@ -214,13 +214,14 @@ function syncPlayer() {
     }
 }
 /* ================= SEND MESSAGE ================= */
-async function sendBotMessage(message){
+async function sendBotMessage(message, title = null){
 
     await addDoc(collection(db, "messages"), {
         uid: "music-bot",
         name: "Music Bot",
         photo: "music-bot.png",
         message: message,
+        title: title,
         timestamp: serverTimestamp()
     });
 
@@ -292,9 +293,8 @@ async function sendMessage() {
     
         // Kirim ke chat juga
         await sendBotMessage(
-        `${auth.currentUser.displayName} memutar
-        
-        🎵 ${title}`
+            `<b>${auth.currentUser.displayName}</b> memutar <code>/play</code>`,
+            title
         );
     
         input.value = "";
@@ -574,11 +574,25 @@ onSnapshot(q, snapshot => {
             ` : ""}
 
             <div class="msg-text">
-                <span class="message-content">${msg.message}</span>
+            
+                ${msg.title ? `
+            
+                    ${msg.message}
+            
+                    <div class="reply-box music-box">
+                        🎵 ${msg.title}
+                    </div>
+            
+                ` : `
+            
+                    <span class="message-content">${msg.message}</span>
+            
+                `}
             
                 ${msg.edited
                     ? `<span class="edited-label">edited</span>`
                     : ""}
+            
             </div>
 
         `;

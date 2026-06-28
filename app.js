@@ -628,12 +628,23 @@ onSnapshot(q, snapshot => {
             
                 `}
             
-                <span class="message-meta">
-                    ${msg.edited ? "edited • " : ""}
-                    ${time}
-                </span>
+                ${!showHeader ? `
+                    <span class="message-meta">
+                        ${msg.edited ? "edited • " : ""}
+                        ${time}
+                    </span>
+                ` : `
+                    ${msg.edited ? `<span class="edited-label">edited</span>` : ""}
+                `}
             
             </div>
+          
+              <span class="message-meta">
+                  ${msg.edited ? "edited • " : ""}
+                  ${time}
+              </span>
+          
+          </div>
 
         `;
 

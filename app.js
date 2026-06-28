@@ -593,17 +593,12 @@ onSnapshot(q, snapshot => {
 
         const messageHtml = `
 
+            ${showHeader ? `
             <div class="msg-header">
-            
-                ${showHeader ? `
-                    <span class="msg-name">${msg.name}</span>
-                ` : `
-                    <span></span>
-                `}
-            
+                <span class="msg-name">${msg.name}</span>
                 <span class="msg-time">${time}</span>
-            
             </div>
+            ` : ""}
 
             ${msg.replyTo ? `
                 <div class="reply-box message-reply" data-reply="${msg.replyTo.id}">
@@ -628,21 +623,17 @@ onSnapshot(q, snapshot => {
             
                 `}
             
-                ${!showHeader ? `
-                    <span class="message-meta">
-                        ${msg.edited ? "edited • " : ""}
-                        ${time}
-                    </span>
-                ` : `
-                    ${msg.edited ? `<span class="edited-label">edited</span>` : ""}
-                `}
+                ${showHeader
+                    ? `${msg.edited ? `<span class="edited-label">edited</span>` : ""}`
+                    : `
+                        <span class="message-meta">
+                            ${msg.edited ? "edited • " : ""}
+                            ${time}
+                        </span>
+                    `
+                }
             
             </div>
-          
-              <span class="message-meta">
-                  ${msg.edited ? "edited • " : ""}
-                  ${time}
-              </span>
           
           </div>
 

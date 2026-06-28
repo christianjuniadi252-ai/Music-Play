@@ -173,7 +173,35 @@ function getYoutubeId(input) {
     }
 }
 
-async function getVideoTitle(videoId){
+async function getVideoDuration(videoId) {
+
+    return new Promise(resolve => {
+
+        const temp = new YT.Player(document.createElement("div"), {
+
+            videoId,
+
+            events: {
+
+                onReady() {
+
+                    resolve(
+                        Math.floor(temp.getDuration())
+                    );
+
+                    temp.destroy();
+
+                }
+
+            }
+
+        });
+
+    });
+
+}
+
+async function getVideoInfo(videoId){
 
     const res = await fetch(
         `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`
@@ -181,7 +209,10 @@ async function getVideoTitle(videoId){
 
     const data = await res.json();
 
-    return data.title || "Video YouTube";
+    return {
+        title: data.title || "Video YouTube",
+        duration: data.duration || 0
+    };
 
 }
 
@@ -325,19 +356,22 @@ async function sendMessage() {
             return;
         }
         
-        const title = await getVideoTitle(id);
+        const info = await getVideoInfo(id);
+
+        const duration = await getVideoDuration(id);
     
         // Update player room
         await setDoc(doc(db, "room", "main"), {
             videoId: id,
-            startedAt: Date.now() + 5000,
+            startedAt: Date.now() + 3000,
+            duration: duration,
             status: "playing"
         });
     
         // Kirim ke chat juga
         await sendBotMessage(
             `<b>${auth.currentUser.displayName}</b> memutar <i>/play</i>`,
-            title
+            info.title
         );
     
         input.value = "";

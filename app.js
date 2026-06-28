@@ -447,7 +447,7 @@ function enableSwipeReply(bubble, msg){
 
         swiping = true;
 
-        diff = Math.min(dx - 15,60);
+        diff = Math.min(dx - 15,70);
 
         bubble.style.transform = `translateX(${diff}px)`;
 
@@ -469,7 +469,7 @@ function enableSwipeReply(bubble, msg){
 
         icon.style.transform = "scale(.6)";
 
-        if(swiping && diff > 50){
+        if(swiping && diff > 60){
 
             navigator.vibrate?.(10);
 

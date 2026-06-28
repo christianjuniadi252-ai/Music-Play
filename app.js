@@ -313,18 +313,20 @@ async function sendMessage() {
     }
 
     /* CHAT MESSAGE */
-    await addDoc(collection(db, "messages"), {
+    const reply = replyData;
+    
+    replyData = null;
+    replyPreview.style.display = "none";
+    input.value = "";
+    
+    addDoc(collection(db, "messages"), {
         uid: auth.currentUser.uid,
         name: auth.currentUser.displayName,
         photo: auth.currentUser.photoURL,
         message: text,
         timestamp: serverTimestamp(),
-        replyTo: replyData
+        replyTo: reply
     });
-
-    replyData = null;
-    replyPreview.style.display = "none";
-    input.value = "";
 }
 
 sendBtn.onclick = sendMessage;
@@ -732,7 +734,6 @@ onSnapshot(q, snapshot => {
         
         }
         
-        lucide.createIcons();
         const bubble = div.querySelector(".msg-content");
         
         if (!div.querySelector(".message-reply")?.contains(document.activeElement)) {
@@ -742,6 +743,8 @@ onSnapshot(q, snapshot => {
         previousUid = msg.uid;
 
     });
+    
+    lucide.createIcons();
 
     chat.scrollTop = chat.scrollHeight;
 

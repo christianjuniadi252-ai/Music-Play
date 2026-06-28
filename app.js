@@ -600,9 +600,6 @@ onSnapshot(q, snapshot => {
                 ` : `
                     <span></span>
                 `}
-            
-                <span class="msg-time">${time}</span>
-            
             </div>
 
             ${msg.replyTo ? `

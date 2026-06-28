@@ -354,7 +354,7 @@ async function sendMessage() {
         });
     
         await sendBotMessage(
-            `<b>${auth.currentUser.displayName}</b> menghentikan <i>/stop</i>`
+            `<b>${auth.currentUser.displayName}</b> menghentikan <code>/stop</code>`
         );
     
         input.value = "";

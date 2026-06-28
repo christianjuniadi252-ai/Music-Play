@@ -1,5 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
+alert("Script berhasil dimuat");
+
 import {
     getAuth,
     GoogleAuthProvider,

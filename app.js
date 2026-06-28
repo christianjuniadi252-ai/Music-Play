@@ -208,8 +208,6 @@ function syncPlayer() {
     if (target < 0) return;
 
     const current = ytPlayer.getCurrentTime();
-    
-    const current = ytPlayer.getCurrentTime();
 
     const diff = Math.abs(target - current);
 

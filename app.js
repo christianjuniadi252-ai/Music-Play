@@ -656,7 +656,9 @@ onSnapshot(q, snapshot => {
                 </div>
             ` : ""}
 
-            <div class="msg-text ${msg.edited ? 'edited-message' : ''}">
+            <div class="msg-text
+                ${msg.edited ? 'edited-message' : ''}
+                ${!showHeader ? 'same-user-message' : ''}">
             
                 ${msg.title ? `
             

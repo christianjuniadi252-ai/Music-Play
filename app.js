@@ -593,12 +593,17 @@ onSnapshot(q, snapshot => {
 
         const messageHtml = `
 
-            ${showHeader ? `
-                <div class="msg-header">
+            <div class="msg-header">
+            
+                ${showHeader ? `
                     <span class="msg-name">${msg.name}</span>
-                    <span class="msg-time">${time}</span>
-                </div>
-            ` : ""}
+                ` : `
+                    <span></span>
+                `}
+            
+                <span class="msg-time">${time}</span>
+            
+            </div>
 
             ${msg.replyTo ? `
                 <div class="reply-box message-reply" data-reply="${msg.replyTo.id}">

@@ -392,6 +392,8 @@ let previousUid = "";
 let previousDate = "";
 
 function enableSwipeReply(bubble, msg){
+  
+    let ignoreSwipe = false;
 
     const icon = bubble.parentElement.querySelector(".reply-icon");
 
@@ -402,9 +404,9 @@ function enableSwipeReply(bubble, msg){
 
     bubble.addEventListener("touchstart", e => {
       
-        if (e.target.closest(".message-reply")) {
-            return;
-        }
+        ignoreSwipe = !!e.target.closest(".message-reply");
+    
+        if (ignoreSwipe) return;
     
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
@@ -425,6 +427,9 @@ function enableSwipeReply(bubble, msg){
     });
 
     bubble.addEventListener("touchmove",e=>{
+        
+        if (ignoreSwipe) return;
+        
         const dx = e.touches[0].clientX - startX;
         const dy = e.touches[0].clientY - startY;
         
@@ -457,6 +462,20 @@ function enableSwipeReply(bubble, msg){
     },{passive:false});
 
     bubble.addEventListener("touchend",()=>{
+      
+        if (ignoreSwipe){
+        
+            ignoreSwipe = false;
+        
+            bubble.style.transform = "translateX(0)";
+        
+            icon.style.opacity = 0;
+        
+            icon.style.transform = "scale(.6)";
+        
+            return;
+        }
+      
         clearTimeout(hold);
         bubble.style.transition = "transform .18s ease";
 

@@ -401,6 +401,10 @@ function enableSwipeReply(bubble, msg){
     let swiping = false;
 
     bubble.addEventListener("touchstart", e => {
+      
+        if (e.target.closest(".message-reply")) {
+            return;
+        }
     
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
@@ -473,6 +477,21 @@ function enableSwipeReply(bubble, msg){
         swiping = false;
         diff = 0;
 
+    });
+    
+    bubble.addEventListener("touchcancel", () => {
+    
+        clearTimeout(hold);
+    
+        bubble.style.transition = "transform .18s ease";
+        bubble.style.transform = "translateX(0)";
+    
+        icon.style.opacity = 0;
+        icon.style.transform = "scale(.6)";
+    
+        swiping = false;
+        diff = 0;
+    
     });
 
 }

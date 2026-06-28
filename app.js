@@ -331,7 +331,7 @@ async function sendMessage() {
         // Update player room
         await setDoc(doc(db, "room", "main"), {
             videoId: id,
-            startedAt: Date.now() + 3000,
+            startedAt: Date.now(),
             status: "playing"
         });
     
@@ -833,6 +833,15 @@ function playRoom(data){
     );
     
     if (elapsed < 0) {
+    
+        setTimeout(() => {
+    
+            if (roomData && roomData.videoId === data.videoId) {
+                playRoom(roomData);
+            }
+    
+        }, Math.abs(elapsed) * 1000);
+    
         return;
     }
 
@@ -854,10 +863,20 @@ function playRoom(data){
     
         currentVideo = data.videoId;
     
-        ytPlayer.loadVideoById({
-            videoId:data.videoId,
-            startSeconds:elapsed
-        });
+        if (currentVideo !== data.videoId) {
+
+            currentVideo = data.videoId;
+        
+            ytPlayer.loadVideoById({
+                videoId: data.videoId,
+                startSeconds: elapsed
+            });
+        
+        } else {
+        
+            syncPlayer();
+        
+        }
     
     }else{
     

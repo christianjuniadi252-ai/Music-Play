@@ -19,6 +19,7 @@ import {
     setDoc,
     updateDoc,
     deleteDoc
+    getDoc
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 /* ================= FIREBASE ================= */
@@ -96,18 +97,20 @@ function createPlayer() {
           rel:0
       },
   
-      events:{
-          onReady(){
+      events: {
+          onReady() {
               playerReady = true;
       
-              if(roomData){
+              if (roomData) {
                   playRoom(roomData);
               }
       
               if (!syncTimer) {
                   syncTimer = setInterval(syncPlayer, 3000);
               }
-          }
+          },
+      
+          onStateChange: handlePlayerState
       }
   });
 }
@@ -213,6 +216,29 @@ function syncPlayer() {
         ytPlayer.playVideo();
     }
 }
+
+async function handlePlayerState(event) {
+
+    if (event.data !== YT.PlayerState.ENDED) return;
+
+    // pastikan hanya 1 client yang menjalankan
+    const snap = await getDoc(doc(db, "room", "main"));
+
+    if (!snap.exists()) return;
+
+    const room = snap.data();
+
+    if (!room.videoId) return;
+
+    await setDoc(doc(db, "room", "main"), {
+        videoId: "",
+        updatedAt: Date.now()
+    });
+
+    await sendBotMessage(
+        "🎵 Music sudah selesai.<br>Tidak ada lanjutan."
+    );
+}
 /* ================= SEND MESSAGE ================= */
 async function sendBotMessage(message, title = null){
 
@@ -287,7 +313,7 @@ async function sendMessage() {
         // Update player room
         await setDoc(doc(db, "room", "main"), {
             videoId: id,
-            startedAt: serverTimestamp(),
+            startedAt: new Date(Date.now() + 5000),
             status: "playing"
         });
     
@@ -790,8 +816,13 @@ function playRoom(data){
         ? data.startedAt.toMillis()
         : Date.now();
 
-    const elapsed =
+    let elapsed =
         Math.floor((Date.now() - startedAt) / 1000);
+    
+    if (elapsed < 0) {
+        setTimeout(() => playRoom(data), Math.abs(elapsed) * 1000);
+        return;
+    }
 
     document.getElementById("playerFrame").style.display = "block";
     

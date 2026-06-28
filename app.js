@@ -190,7 +190,7 @@ function getTargetSecond() {
     }
 
     return Math.floor(
-        (Date.now() - roomData.startedAt.toMillis()) / 1000
+        (Date.now() - roomData.startedAt) / 1000
     );
 
 }
@@ -811,10 +811,7 @@ function playRoom(data){
 
     currentVideo = data.videoId;
 
-    const startedAt =
-        data.startedAt?.toMillis
-        ? data.startedAt.toMillis()
-        : Date.now();
+    const startedAt = data.startedAt || Date.now();
 
     let elapsed =
         Math.floor((Date.now() - startedAt) / 1000);

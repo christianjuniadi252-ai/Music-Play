@@ -202,6 +202,10 @@ function syncPlayer() {
     if (!playerReady) return;
     if (!roomData) return;
     if (!roomData.videoId) return;
+    
+    if (ytPlayer.getPlayerState() === YT.PlayerState.ENDED) {
+        return;
+    }
 
     if (ytPlayer.getPlayerState() === YT.PlayerState.UNSTARTED) return;
 
@@ -818,12 +822,17 @@ function playRoom(data){
         return;
     }
 
-    if(currentVideo === data.videoId){
-        return;
-    }
-
     currentVideo = data.videoId;
 
+    const startedAt =
+        data.startedAt?.toMillis
+            ? data.startedAt.toMillis()
+            : data.startedAt || Date.now();
+    
+    let elapsed = Math.floor(
+        (Date.now() - startedAt) / 1000
+    );
+    
     const startedAt =
         data.startedAt?.toMillis
             ? data.startedAt.toMillis()

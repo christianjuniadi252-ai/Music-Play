@@ -204,6 +204,11 @@ function syncPlayer() {
     if (ytPlayer.getPlayerState() === YT.PlayerState.UNSTARTED) return;
 
     const target = getTargetSecond();
+    
+    if (target < 0) return;
+
+    const current = ytPlayer.getCurrentTime();
+    
     const current = ytPlayer.getCurrentTime();
 
     const diff = Math.abs(target - current);
@@ -227,17 +232,25 @@ async function handlePlayerState(event) {
     if (!snap.exists()) return;
 
     const room = snap.data();
-
+    
     if (!room.videoId) return;
-
+    
+    // Hanya client yang masih memutar video yang boleh menghentikan
+    if (room.videoId !== currentVideo) return;
+    
     await setDoc(doc(db, "room", "main"), {
         videoId: "",
         updatedAt: Date.now()
     });
-
-    await sendBotMessage(
-        "🎵 Music sudah selesai.<br>Tidak ada lanjutan."
-    );
+    
+    // Cek lagi apakah room sudah dihentikan oleh client lain
+    const check = await getDoc(doc(db, "room", "main"));
+    
+    if (!check.data()?.videoId) {
+        await sendBotMessage(
+            "🎵 Music sudah selesai.<br>Tidak ada lanjutan."
+        );
+    }
 }
 /* ================= SEND MESSAGE ================= */
 async function sendBotMessage(message, title = null){
@@ -313,7 +326,7 @@ async function sendMessage() {
         // Update player room
         await setDoc(doc(db, "room", "main"), {
             videoId: id,
-            startedAt: new Date(Date.now() + 5000),
+            startedAt: Date.now() + 5000,
             status: "playing"
         });
     
@@ -811,13 +824,16 @@ function playRoom(data){
 
     currentVideo = data.videoId;
 
-    const startedAt = data.startedAt || Date.now();
-
-    let elapsed =
-        Math.floor((Date.now() - startedAt) / 1000);
+    const startedAt =
+        data.startedAt?.toMillis
+            ? data.startedAt.toMillis()
+            : data.startedAt || Date.now();
+    
+    let elapsed = Math.floor(
+        (Date.now() - startedAt) / 1000
+    );
     
     if (elapsed < 0) {
-        setTimeout(() => playRoom(data), Math.abs(elapsed) * 1000);
         return;
     }
 

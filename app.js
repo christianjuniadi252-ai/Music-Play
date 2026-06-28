@@ -303,11 +303,16 @@ async function sendMessage() {
 
     /* STOP */
     if (text === "/stop") {
+    
         await setDoc(doc(db, "room", "main"), {
             videoId: "",
             updatedAt: Date.now()
         });
-
+    
+        await sendBotMessage(
+            `<b>${auth.currentUser.displayName}</b> menghentikan <i>/stop</i>`
+        );
+    
         input.value = "";
         return;
     }

@@ -471,7 +471,7 @@ function enableSwipeReply(bubble, msg){
 
         icon.style.transform = "scale(.6)";
 
-        if(swiping && diff > 30){
+        if(swiping && diff > 20){
 
             navigator.vibrate?.(10);
 

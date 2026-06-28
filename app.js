@@ -859,26 +859,16 @@ function playRoom(data){
     
     });
 
-    if(currentVideo !== data.videoId){
+    if (currentVideo !== data.videoId) {
     
         currentVideo = data.videoId;
     
-        if (currentVideo !== data.videoId) {
-
-            currentVideo = data.videoId;
-        
-            ytPlayer.loadVideoById({
-                videoId: data.videoId,
-                startSeconds: elapsed
-            });
-        
-        } else {
-        
-            syncPlayer();
-        
-        }
+        ytPlayer.loadVideoById({
+            videoId: data.videoId,
+            startSeconds: elapsed
+        });
     
-    }else{
+    } else {
     
         syncPlayer();
     

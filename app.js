@@ -171,34 +171,6 @@ function getYoutubeId(input) {
     }
 }
 
-async function getVideoDuration(videoId) {
-
-    return new Promise(resolve => {
-
-        const temp = new YT.Player(document.createElement("div"), {
-
-            videoId,
-
-            events: {
-
-                onReady() {
-
-                    resolve(
-                        Math.floor(temp.getDuration())
-                    );
-
-                    temp.destroy();
-
-                }
-
-            }
-
-        });
-
-    });
-
-}
-
 async function getVideoInfo(videoId){
 
     const res = await fetch(
@@ -355,14 +327,11 @@ async function sendMessage() {
         }
         
         const info = await getVideoInfo(id);
-
-        const duration = await getVideoDuration(id);
     
         // Update player room
         await setDoc(doc(db, "room", "main"), {
             videoId: id,
             startedAt: Date.now() + 3000,
-            duration: duration,
             status: "playing"
         });
     
@@ -854,17 +823,6 @@ function playRoom(data){
         return;
     }
 
-    currentVideo = data.videoId;
-
-    const startedAt =
-        data.startedAt?.toMillis
-            ? data.startedAt.toMillis()
-            : data.startedAt || Date.now();
-    
-    let elapsed = Math.floor(
-        (Date.now() - startedAt) / 1000
-    );
-    
     const startedAt =
         data.startedAt?.toMillis
             ? data.startedAt.toMillis()
@@ -892,10 +850,20 @@ function playRoom(data){
     
     });
 
-    ytPlayer.loadVideoById({
-        videoId: data.videoId,
-        startSeconds: elapsed
-    });
+    if(currentVideo !== data.videoId){
+    
+        currentVideo = data.videoId;
+    
+        ytPlayer.loadVideoById({
+            videoId:data.videoId,
+            startSeconds:elapsed
+        });
+    
+    }else{
+    
+        syncPlayer();
+    
+    }
     
     if (data.videoId) {
         setTimeout(() => {

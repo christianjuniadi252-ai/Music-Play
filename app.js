@@ -628,9 +628,10 @@ onSnapshot(q, snapshot => {
             
                 `}
             
-                ${msg.edited
-                    ? `<span class="edited-label">edited</span>`
-                    : ""}
+                <span class="message-meta">
+                    ${msg.edited ? "edited • " : ""}
+                    ${time}
+                </span>
             
             </div>
 

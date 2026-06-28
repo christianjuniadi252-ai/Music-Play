@@ -337,7 +337,7 @@ async function sendMessage() {
     
         // Kirim ke chat juga
         await sendBotMessage(
-            `<b>${auth.currentUser.displayName}</b> memutar <i>/play</i>`,
+            `<b>${auth.currentUser.displayName}</b> memutar <code>/play</code>`,
             info.title
         );
     

@@ -449,7 +449,7 @@ function enableSwipeReply(bubble, msg){
 
         swiping = true;
 
-        diff = Math.min(dx - 15,40);
+        diff = Math.min(dx - 15,30);
 
         bubble.style.transform = `translateX(${diff}px)`;
 

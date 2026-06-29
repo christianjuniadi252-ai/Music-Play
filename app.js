@@ -36,6 +36,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const roomRef = doc(db,"room","main");
 const provider = new GoogleAuthProvider();
 
 /* ================= ELEMENT ================= */
@@ -258,10 +259,10 @@ async function handlePlayerState(event){
 
     if(event.data!==YT.PlayerState.ENDED)return;
 
-    const roomRef=doc(db,"room","main");
-    
-    onSnapshot(roomRef,(snap)=>{
+    const roomRef = doc(db,"room","main");
 
+    onSnapshot(roomRef,(snap)=>{
+    
         if(!snap.exists()) return;
     
         roomData = snap.data();

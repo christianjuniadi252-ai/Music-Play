@@ -889,18 +889,23 @@ function playRoom(data){
 }
 
 const roomRef = doc(db, "room", "main");
+const snap = await getDoc(roomRef);
 
-onSnapshot(roomRef, snap => {
+if (!snap.exists()) return;
 
-    roomData = snap.data();
+const room = snap.data();
 
-    if(!roomData) return;
+if (room.endMessageSent) return;
 
-    if(!playerReady) return;
-
-    playRoom(roomData);
-
+await updateDoc(roomRef, {
+    videoId: "",
+    status: "stopped",
+    endMessageSent: true
 });
+
+await sendBotMessage(
+    "🎵 Music sudah selesai.<br>Tidak ada lanjutan."
+);
 
 refreshBtn.addEventListener("click", () => {
     location.reload();

@@ -271,6 +271,8 @@ async function handlePlayerState(event){
 
     if(room.videoId!==currentVideo)return;
 
+    const roomRef = doc(db,"room","main");
+
     await updateDoc(roomRef,{
         videoId:"",
         status:"stopped",

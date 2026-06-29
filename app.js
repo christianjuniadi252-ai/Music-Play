@@ -15,6 +15,7 @@ import {
     orderBy,
     limit,
     onSnapshot,
+    getDocs
     serverTimestamp,
     doc,
     setDoc,
@@ -283,10 +284,51 @@ async function handlePlayerState(event){
     );
     
     const next = await getDocs(q);
+    
+    if(next.empty){
+    
+        await updateDoc(roomRef,{
+            videoId:"",
+            title:"",
+            status:"stopped",
+            endMessageSent:true
+        });
+    
+        await sendBotMessage(
+            "🎵 Playlist selesai."
+        );
+    
+        return;
+    
+    }
+    
+    const song = next.docs[0];
+    
+    const data = song.data();
+    
+    await setDoc(roomRef,{
+        videoId:data.videoId,
+        title:data.title,
+        startedAt:Date.now(),
+        status:"playing",
+        endMessageSent:false
+    });
+    
+    await deleteDoc(song.ref);
+    
+    const song = next.docs[0];
+    
+    const data = song.data();
+    
+    await setDoc(roomRef,{
+        videoId:data.videoId,
+        title:data.title,
+        startedAt:Date.now(),
+        status:"playing",
+        endMessageSent:false
+    });
 
-    await sendBotMessage(
-        "🎵 Music sudah selesai.<br>Tidak ada lanjutan."
-    );
+    await deleteDoc(song.ref);
 
 }
 /* ================= SEND MESSAGE ================= */
@@ -374,7 +416,12 @@ async function sendMessage() {
                 endMessageSent:false
             });
         
-        } else {
+            await sendBotMessage(
+                `<b>${auth.currentUser.displayName}</b> memutar musik`,
+                info.title
+            );
+        
+        }else{
         
             await addDoc(playlistRef,{
                 videoId:id,
@@ -383,13 +430,12 @@ async function sendMessage() {
                 timestamp:serverTimestamp()
             });
         
+            await sendBotMessage(
+                `<b>${auth.currentUser.displayName}</b> menambahkan ke playlist`,
+                info.title
+            );
+        
         }
-    
-        // Kirim ke chat juga
-        await sendBotMessage(
-            `<b>${auth.currentUser.displayName}</b> memutar <code>/play</code>`,
-            info.title
-        );
     
         input.value = "";
         return;
@@ -445,6 +491,24 @@ onSnapshot(roomRef, (snap) => {
     }
 
 });
+
+onSnapshot(
+    query(
+        playlistRef,
+        orderBy("timestamp")
+    ),
+    (snapshot)=>{
+
+        console.log("Playlist");
+
+        snapshot.forEach(doc=>{
+
+            console.log(doc.data());
+
+        });
+
+    }
+);
 
 /* ================= SWIPE REPLY ================= */
 

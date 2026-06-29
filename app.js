@@ -398,6 +398,8 @@ async function sendMessage() {
         
         const info = await getVideoInfo(id);
         
+        await sendBotMessage("DEBUG 1");
+        
         const roomSnap = await getDoc(roomRef);
         
         if (!roomSnap.exists() ||
@@ -422,6 +424,8 @@ async function sendMessage() {
         }else{
           
             await sendBotMessage("DEBUG: MASUK PLAYLIST");
+            
+            await sendBotMessage("DEBUG 2");
         
             await addDoc(playlistRef,{
                 videoId:id,

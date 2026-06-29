@@ -13,6 +13,7 @@ import {
     addDoc,
     query,
     orderBy,
+    limit,
     onSnapshot,
     serverTimestamp,
     doc,
@@ -37,6 +38,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const roomRef = doc(db,"room","main");
+const playlistRef = collection(db,"playlist");
 const provider = new GoogleAuthProvider();
 
 /* ================= ELEMENT ================= */
@@ -356,13 +358,30 @@ async function sendMessage() {
         
         const info = await getVideoInfo(id);
         
-        await setDoc(doc(db,"room","main"),{
-            videoId:id,
-            title:info.title,
-            startedAt:Date.now(),
-            status:"playing",
-            endMessageSent:false
-         });
+        const roomSnap = await getDoc(roomRef);
+        
+        if (!roomSnap.exists() ||
+            !roomSnap.data().videoId ||
+            roomSnap.data().status !== "playing") {
+        
+            await setDoc(roomRef,{
+                videoId:id,
+                title:info.title,
+                startedAt:Date.now(),
+                status:"playing",
+                endMessageSent:false
+            });
+        
+        } else {
+        
+            await addDoc(playlistRef,{
+                videoId:id,
+                title:info.title,
+                addedBy:auth.currentUser.displayName,
+                timestamp:serverTimestamp()
+            });
+        
+        }
     
         // Kirim ke chat juga
         await sendBotMessage(

@@ -316,10 +316,6 @@ async function handlePlayerState(event){
     
     await deleteDoc(song.ref);
     
-    const song = next.docs[0];
-    
-    const data = song.data();
-    
     await setDoc(roomRef,{
         videoId:data.videoId,
         title:data.title,

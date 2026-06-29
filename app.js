@@ -171,18 +171,27 @@ function getYoutubeId(input) {
     }
 }
 
-async function getVideoInfo(videoId){
+async function getVideoDuration(videoId){
 
-    const res = await fetch(
-        `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`
-    );
+    return new Promise(resolve=>{
 
-    const data = await res.json();
+        const temp=new YT.Player(document.createElement("div"),{
 
-    return {
-        title: data.title || "Video YouTube",
-        duration: data.duration || 0
-    };
+            videoId,
+
+            events:{
+                onReady(){
+
+                    resolve(Math.floor(temp.getDuration()));
+
+                    temp.destroy();
+
+                }
+            }
+
+        });
+
+    });
 
 }
 
@@ -227,35 +236,44 @@ function syncPlayer() {
     }
 }
 
-async function handlePlayerState(event) {
+async function handlePlayerState(event){
 
-    if (event.data !== YT.PlayerState.ENDED) return;
+    if(event.data!==YT.PlayerState.ENDED)return;
 
-    // pastikan hanya 1 client yang menjalankan
-    const snap = await getDoc(doc(db, "room", "main"));
-
-    if (!snap.exists()) return;
-
-    const room = snap.data();
+    const roomRef=doc(db,"room","main");
     
-    if (!room.videoId) return;
+    onSnapshot(roomRef,(snap)=>{
+
+        if(!snap.exists()) return;
     
-    // Hanya client yang masih memutar video yang boleh menghentikan
-    if (room.videoId !== currentVideo) return;
+        roomData = snap.data();
     
-    await setDoc(doc(db, "room", "main"), {
-        videoId: "",
-        updatedAt: Date.now()
+        if(playerReady){
+            playRoom(roomData);
+        }
+    
     });
-    
-    // Cek lagi apakah room sudah dihentikan oleh client lain
-    const check = await getDoc(doc(db, "room", "main"));
-    
-    if (!check.data()?.videoId) {
-        await sendBotMessage(
-            "🎵 Music sudah selesai.<br>Tidak ada lanjutan."
-        );
-    }
+
+    const snap=await getDoc(roomRef);
+
+    if(!snap.exists())return;
+
+    const room=snap.data();
+
+    if(room.endMessageSent)return;
+
+    if(room.videoId!==currentVideo)return;
+
+    await updateDoc(roomRef,{
+        videoId:"",
+        status:"stopped",
+        endMessageSent:true
+    });
+
+    await sendBotMessage(
+        "🎵 Music sudah selesai.<br>Tidak ada lanjutan."
+    );
+
 }
 /* ================= SEND MESSAGE ================= */
 async function sendBotMessage(message, title = null){
@@ -327,15 +345,16 @@ async function sendMessage() {
         }
         
         const info = await getVideoInfo(id);
+        const duration = await getVideoDuration(id);
         
-        await setDoc(doc(db, "room", "main"), {
-            videoId: id,
-            title: info.title,
-            duration: info.duration || 0,
-            startedAt: Date.now(),
-            status: "playing",
-            endMessageSent: false
-        });
+        await setDoc(doc(db,"room","main"),{
+            videoId:id,
+            title:info.title,
+            duration:duration,
+            startedAt:Date.now(),
+            status:"playing",
+            endMessageSent:false
+         });
     
         // Kirim ke chat juga
         await sendBotMessage(
@@ -350,9 +369,13 @@ async function sendMessage() {
     /* STOP */
     if (text === "/stop") {
     
-        await setDoc(doc(db, "room", "main"), {
-            videoId: "",
-            updatedAt: Date.now()
+        await setDoc(doc(db,"room","main"),{
+        
+            videoId:"",
+            status:"stopped",
+            endMessageSent:true,
+            updatedAt:Date.now()
+        
         });
     
         await sendBotMessage(
@@ -873,6 +896,20 @@ function playRoom(data){
             videoId: data.videoId,
             startSeconds: elapsed
         });
+        
+        setTimeout(async ()=>{
+
+            const duration = Math.floor(ytPlayer.getDuration());
+        
+            if(duration>0){
+        
+                await updateDoc(roomRef,{
+                    duration
+                });
+        
+            }
+        
+        },2000);
     
     } else {
     
@@ -889,25 +926,6 @@ function playRoom(data){
     }
 
 }
-
-const roomRef = doc(db, "room", "main");
-const snap = await getDoc(roomRef);
-
-if (!snap.exists()) return;
-
-const room = snap.data();
-
-if (room.endMessageSent) return;
-
-await updateDoc(roomRef, {
-    videoId: "",
-    status: "stopped",
-    endMessageSent: true
-});
-
-await sendBotMessage(
-    "🎵 Music sudah selesai.<br>Tidak ada lanjutan."
-);
 
 refreshBtn.addEventListener("click", () => {
     location.reload();

@@ -70,6 +70,11 @@ const replyBtn=document.getElementById("replyBtn");
 
 const refreshBtn = document.getElementById("refreshBtn");
 
+const musicHeader = document.getElementById("musicHeader");
+const musicTitle = document.getElementById("musicTitle");
+const musicTime = document.getElementById("musicTime");
+const musicBar = document.getElementById("musicBar");
+
 /* ================= STATE ================= */
 
 let replyData = null;
@@ -855,6 +860,8 @@ onSnapshot(q, snapshot => {
 function playRoom(data){
 
     if (!data.videoId) {
+      
+        musicHeader.style.display = "none";
     
         currentVideo = "";
     
@@ -890,6 +897,9 @@ function playRoom(data){
     }
 
     document.getElementById("playerFrame").style.display = "block";
+    
+    musicHeader.style.display = "block";
+    musicTitle.textContent = data.title || "Unknown";
     
     requestAnimationFrame(() => {
 
@@ -1057,3 +1067,21 @@ function formatTime(sec){
            String(s).padStart(2,"0");
 
 }
+
+setInterval(() => {
+
+    if (!ytPlayer || !playerReady) return;
+
+    if (!currentVideo) return;
+
+    const current = ytPlayer.getCurrentTime() || 0;
+    const duration = ytPlayer.getDuration() || 0;
+
+    musicTime.textContent =
+        formatTime(current) + "/" + formatTime(duration);
+
+    if (duration > 0) {
+        musicBar.style.width = (current / duration * 100) + "%";
+    }
+
+}, 500);

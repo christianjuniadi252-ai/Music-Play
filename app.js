@@ -261,18 +261,6 @@ async function handlePlayerState(event){
 
     const roomRef = doc(db,"room","main");
 
-    onSnapshot(roomRef,(snap)=>{
-    
-        if(!snap.exists()) return;
-    
-        roomData = snap.data();
-    
-        if(playerReady){
-            playRoom(roomData);
-        }
-    
-    });
-
     const snap=await getDoc(roomRef);
 
     if(!snap.exists())return;

@@ -408,6 +408,18 @@ async function sendMessage() {
 
 sendBtn.onclick = sendMessage;
 
+onSnapshot(roomRef, (snap) => {
+
+    if (!snap.exists()) return;
+
+    roomData = snap.data();
+
+    if (playerReady) {
+        playRoom(roomData);
+    }
+
+});
+
 /* ================= SWIPE REPLY ================= */
 
 function setReply(msg) {

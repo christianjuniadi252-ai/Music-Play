@@ -276,11 +276,13 @@ async function handlePlayerState(event){
 
     if(room.videoId!==currentVideo)return;
 
-    await updateDoc(roomRef,{
-        videoId:"",
-        status:"stopped",
-        endMessageSent:true
-    });
+    const q = query(
+        playlistRef,
+        orderBy("timestamp"),
+        limit(1)
+    );
+    
+    const next = await getDocs(q);
 
     await sendBotMessage(
         "🎵 Music sudah selesai.<br>Tidak ada lanjutan."

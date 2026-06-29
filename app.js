@@ -327,14 +327,14 @@ async function sendMessage() {
         }
         
         const info = await getVideoInfo(id);
-    
-        // Update player room
+        
         await setDoc(doc(db, "room", "main"), {
             videoId: id,
-            title:info.title,
-            duration:duration,
+            title: info.title,
+            duration: info.duration || 0,
             startedAt: Date.now(),
-            status: "playing"
+            status: "playing",
+            endMessageSent: false
         });
     
         // Kirim ke chat juga

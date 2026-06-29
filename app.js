@@ -212,7 +212,11 @@ function syncPlayer() {
     if (!playerReady) return;
     if (!roomData) return;
     if (!roomData.videoId) return;
-    
+
+    // Tambahkan di sini
+    if (!roomData.status) return;
+    if (roomData.status !== "playing") return;
+
     if (ytPlayer.getPlayerState() === YT.PlayerState.ENDED) {
         return;
     }
@@ -220,7 +224,7 @@ function syncPlayer() {
     if (ytPlayer.getPlayerState() === YT.PlayerState.UNSTARTED) return;
 
     const target = getTargetSecond();
-    
+
     if (target < 0) return;
 
     const current = ytPlayer.getCurrentTime();
@@ -345,12 +349,10 @@ async function sendMessage() {
         }
         
         const info = await getVideoInfo(id);
-        const duration = await getVideoDuration(id);
         
         await setDoc(doc(db,"room","main"),{
             videoId:id,
             title:info.title,
-            duration:duration,
             startedAt:Date.now(),
             status:"playing",
             endMessageSent:false

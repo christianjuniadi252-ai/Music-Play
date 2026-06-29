@@ -259,8 +259,6 @@ async function handlePlayerState(event){
 
     if(event.data!==YT.PlayerState.ENDED)return;
 
-    const roomRef = doc(db,"room","main");
-
     const snap=await getDoc(roomRef);
 
     if(!snap.exists())return;

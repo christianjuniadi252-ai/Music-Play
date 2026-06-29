@@ -331,6 +331,8 @@ async function sendMessage() {
         // Update player room
         await setDoc(doc(db, "room", "main"), {
             videoId: id,
+            title:info.title,
+            duration:duration,
             startedAt: Date.now(),
             status: "playing"
         });
@@ -1009,3 +1011,16 @@ deleteBtn.onclick = async () => {
 
     menuOverlay.style.display = "none";
 };
+
+function formatTime(sec){
+
+    sec=Math.floor(sec);
+
+    const m=Math.floor(sec/60);
+
+    const s=sec%60;
+
+    return String(m).padStart(2,"0")+":"+
+           String(s).padStart(2,"0");
+
+}

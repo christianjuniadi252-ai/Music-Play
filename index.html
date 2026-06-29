@@ -552,6 +552,84 @@ button:hover{
 .msg-group .msg-text{
     padding-right:45px;
 }
+
+.music-header{
+
+    display:none;
+
+    background:#181818;
+
+    padding:10px 14px;
+
+    border-bottom:1px solid #333;
+
+}
+
+.music-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.music-title-wrapper{
+
+    flex:1;
+
+    overflow:hidden;
+
+    white-space:nowrap;
+
+}
+
+.music-title{
+
+    display:inline-block;
+
+    animation:scrollTitle 12s linear infinite;
+
+}
+
+@keyframes scrollTitle{
+
+    from{
+        transform:translateX(100%);
+    }
+
+    to{
+        transform:translateX(-100%);
+    }
+
+}
+
+.music-progress{
+
+    margin-top:8px;
+
+    height:3px;
+
+    background:#444;
+
+    border-radius:10px;
+
+}
+
+#musicBar{
+
+    width:0%;
+
+    height:100%;
+
+    background:red;
+
+    border-radius:10px;
+
+}
 </style>
 </head>  
 <body>
@@ -580,6 +658,30 @@ button:hover{
         <button id="settingBtn">
             <i data-lucide="settings"></i>
         </button>
+    </div>
+
+</div>
+
+<div id="musicHeader" class="music-header">
+
+    <div class="music-top">
+
+        <div class="music-title-wrapper">
+
+            <div id="musicTitle" class="music-title"></div>
+
+        </div>
+
+        <div id="musicTime" class="music-time">
+            00:00/00:00
+        </div>
+
+    </div>
+
+    <div class="music-progress">
+
+        <div id="musicBar"></div>
+
     </div>
 
 </div>

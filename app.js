@@ -403,6 +403,8 @@ async function sendMessage() {
         if (!roomSnap.exists() ||
             !roomSnap.data().videoId ||
             roomSnap.data().status !== "playing") {
+              
+            await sendBotMessage("DEBUG: PLAY SEKARANG");
         
             await setDoc(roomRef,{
                 videoId:id,
@@ -418,6 +420,8 @@ async function sendMessage() {
             );
         
         }else{
+          
+            await sendBotMessage("DEBUG: MASUK PLAYLIST");
         
             await addDoc(playlistRef,{
                 videoId:id,

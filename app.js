@@ -420,24 +420,36 @@ async function sendMessage() {
                 `<b>${auth.currentUser.displayName}</b> memutar musik`,
                 info.title
             );
-        
+      
         }else{
-          
-            await sendBotMessage("DEBUG: MASUK PLAYLIST");
-            
-            await sendBotMessage("DEBUG 2");
         
-            await addDoc(playlistRef,{
-                videoId:id,
-                title:info.title,
-                addedBy:auth.currentUser.displayName,
-                timestamp:serverTimestamp()
-            });
+            try{
         
-            await sendBotMessage(
-                `<b>${auth.currentUser.displayName}</b> menambahkan ke playlist`,
-                info.title
-            );
+                await sendBotMessage("DEBUG: MASUK PLAYLIST");
+        
+                await sendBotMessage("DEBUG 2");
+        
+                await addDoc(playlistRef,{
+                    videoId:id,
+                    title:info.title,
+                    addedBy:auth.currentUser.displayName,
+                    timestamp:serverTimestamp()
+                });
+        
+                await sendBotMessage("DEBUG 3");
+        
+                await sendBotMessage(
+                    `<b>${auth.currentUser.displayName}</b> menambahkan ke playlist`,
+                    info.title
+                );
+        
+                await sendBotMessage("DEBUG 4");
+        
+            }catch(e){
+        
+                await sendBotMessage("ERROR: "+e.message);
+        
+            }
         
         }
     

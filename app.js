@@ -496,6 +496,30 @@ async function sendMessage() {
         return;
     
     }
+    
+    if (text === "/clear") {
+
+    const snap = await getDocs(playlistRef);
+
+    for (const song of snap.docs) {
+        await deleteDoc(song.ref);
+    }
+
+    await setDoc(roomRef,{
+        videoId:"",
+        title:"",
+        status:"stopped",
+        endMessageSent:true
+    });
+
+    await sendBotMessage(
+        `<b>${auth.currentUser.displayName}</b> menghapus seluruh playlist.`
+    );
+
+    input.value = "";
+    return;
+
+    }
 
     /* CHAT MESSAGE */
     const reply = replyData;

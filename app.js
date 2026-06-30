@@ -433,7 +433,7 @@ async function sendMessage() {
                 });
         
                 await sendBotMessage(
-                    `<b>${auth.currentUser.displayName}</b> menambahkan ke playlist <code>/play<code>`,
+                    `<b>${auth.currentUser.displayName}</b> menambahkan ke playlist <code>/play</code>`,
                     info.title
                 );
         

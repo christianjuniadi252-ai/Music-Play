@@ -12,6 +12,7 @@ import {
     collection,
     addDoc,
     query,
+    where,
     orderBy,
     limit,
     onSnapshot,
@@ -389,6 +390,21 @@ async function sendMessage() {
         const listName = args[2];
     
         const url = args.slice(3).join(" ");
+        
+        const check = await getDocs(
+            query(
+                musicListRef,
+                where("nameLower", "==", listName.toLowerCase())
+            )
+        );
+        
+        if (!check.empty) {
+        
+            alert("Nama tersebut sudah digunakan.");
+        
+            return;
+        
+        }
     
         alert(
             "Nama: " + listName +

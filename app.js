@@ -376,7 +376,6 @@ async function sendMessage() {
     //MUSIK LIST
 
     if (text.startsWith("/list add")) {
-        alert("Test")
     
         const args = text.split(" ");
     

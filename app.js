@@ -450,21 +450,51 @@ async function sendMessage() {
     /* STOP */
     if (text === "/stop") {
     
-        await setDoc(doc(db,"room","main"),{
-        
-            videoId:"",
-            status:"stopped",
-            endMessageSent:true,
-            updatedAt:Date.now()
-        
-        });
-    
-        await sendBotMessage(
-            `<b>${auth.currentUser.displayName}</b> menghentikan <code>/stop</code>`
+        const q = query(
+            playlistRef,
+            orderBy("timestamp"),
+            limit(1)
         );
+    
+        const next = await getDocs(q);
+    
+        if(next.empty){
+    
+            await setDoc(roomRef,{
+                videoId:"",
+                title:"",
+                status:"stopped",
+                endMessageSent:true
+            });
+    
+            await sendBotMessage(
+                `<b>${auth.currentUser.displayName}</b> menghentikan musik.`
+            );
+    
+        }else{
+    
+            const song = next.docs[0];
+            const data = song.data();
+    
+            await setDoc(roomRef,{
+                videoId:data.videoId,
+                title:data.title,
+                startedAt:Date.now(),
+                status:"playing",
+                endMessageSent:false
+            });
+    
+            await deleteDoc(song.ref);
+    
+            await sendBotMessage(
+                `<b>${auth.currentUser.displayName}</b> melewati lagu.`
+            );
+    
+        }
     
         input.value = "";
         return;
+    
     }
 
     /* CHAT MESSAGE */

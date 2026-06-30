@@ -78,6 +78,10 @@ const musicTitle = document.getElementById("musicTitle");
 const musicTime = document.getElementById("musicTime");
 const musicBar = document.getElementById("musicBar");
 
+const playlistBtn = document.getElementById("playlistBtn");
+const playlistModal = document.getElementById("playlistModal");
+const playlistList = document.getElementById("playlistList");
+
 /* ================= STATE ================= */
 
 let replyData = null;
@@ -501,11 +505,33 @@ onSnapshot(
     ),
     (snapshot)=>{
 
-        console.log("Playlist");
+        playlistList.innerHTML = "";
+
+        if(snapshot.empty){
+
+            playlistList.innerHTML =
+                "<div class='playlist-empty'>Playlist kosong</div>";
+
+            return;
+
+        }
 
         snapshot.forEach(doc=>{
 
-            console.log(doc.data());
+            const data = doc.data();
+
+            const item = document.createElement("div");
+
+            item.className = "playlist-item";
+
+            item.innerHTML = `
+                <div class="playlist-title">${data.title}</div>
+                <div class="playlist-user">
+                    Ditambahkan oleh ${data.addedBy}
+                </div>
+            `;
+
+            playlistList.appendChild(item);
 
         });
 
@@ -1041,6 +1067,20 @@ function playRoom(data){
 
 refreshBtn.addEventListener("click", () => {
     location.reload();
+});
+
+playlistBtn.addEventListener("click", () => {
+
+    if (playlistModal.style.display === "block") {
+
+        playlistModal.style.display = "none";
+
+    } else {
+
+        playlistModal.style.display = "block";
+
+    }
+
 });
 
 document.addEventListener("visibilitychange", () => {

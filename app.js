@@ -81,6 +81,7 @@ const musicBar = document.getElementById("musicBar");
 const playlistBtn = document.getElementById("playlistBtn");
 const playlistModal = document.getElementById("playlistModal");
 const playlistList = document.getElementById("playlistList");
+const musicListRef = collection(db,"musicList");
 
 /* ================= STATE ================= */
 
@@ -369,6 +370,33 @@ async function sendMessage() {
         input.value = "";
     
         return;
+    }
+    
+    //MUSIK LIST
+
+    if (text.startsWith("/list add")) {
+    
+        const args = text.split(" ");
+    
+        if (args.length < 4) {
+    
+            alert("Format:\n/list add Nama URL");
+    
+            return;
+    
+        }
+    
+        const listName = args[2];
+    
+        const url = args.slice(3).join(" ");
+    
+        alert(
+            "Nama: " + listName +
+            "\nURL: " + url
+        );
+    
+        return;
+    
     }
 
     /* PLAY SYSTEM (ROOM SYNC) */

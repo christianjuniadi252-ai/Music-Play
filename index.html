@@ -630,6 +630,58 @@ button:hover{
     border-radius:10px;
 
 }
+
+.playlist-modal{
+    position:fixed;
+    left:50%;
+    top:70px;
+    transform:translateX(-50%);
+    width:90%;
+    max-width:420px;
+    max-height:60vh;
+    overflow-y:auto;
+    background:#1e1e1e;
+    border:1px solid #333;
+    border-radius:12px;
+    z-index:999;
+    box-shadow:0 8px 24px rgba(0,0,0,.35);
+}
+
+.playlist-header{
+    padding:14px;
+    font-size:18px;
+    font-weight:bold;
+    border-bottom:1px solid #333;
+    position:sticky;
+    top:0;
+    background:#1e1e1e;
+}
+
+.playlist-item{
+    padding:12px 14px;
+    border-bottom:1px solid #2c2c2c;
+}
+
+.playlist-item:last-child{
+    border-bottom:none;
+}
+
+.playlist-title{
+    font-weight:bold;
+    color:#fff;
+}
+
+.playlist-user{
+    margin-top:4px;
+    font-size:13px;
+    color:#aaa;
+}
+
+.playlist-empty{
+    padding:20px;
+    text-align:center;
+    color:#888;
+}
 </style>
 </head>  
 <body>
@@ -686,7 +738,6 @@ button:hover{
 
 </div>
 
-
 <div class="chat-container" id="chat">
 
 </div>
@@ -709,7 +760,7 @@ button:hover{
     <textarea
       id="commandInput"
       rows="1"
-      placeholder="Pesan atau /play URL 1"></textarea>
+      placeholder="Pesan atau /play URL"></textarea>
 
     <button id="sendBtn">
         <i data-lucide="send-horizontal"></i>
@@ -737,6 +788,16 @@ button:hover{
             Reply
         </button>
     </div>
+</div>
+
+<div id="playlistModal" class="playlist-modal" style="display:none;">
+
+    <div class="playlist-header">
+        Playlist
+    </div>
+
+    <div id="playlistList"></div>
+
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>

@@ -398,16 +398,12 @@ async function sendMessage() {
         
         const info = await getVideoInfo(id);
         
-        await sendBotMessage("DEBUG 1");
-        
         const roomSnap = await getDoc(roomRef);
         
         if (!roomSnap.exists() ||
             !roomSnap.data().videoId ||
             roomSnap.data().status !== "playing") {
               
-            await sendBotMessage("DEBUG: PLAY SEKARANG");
-        
             await setDoc(roomRef,{
                 videoId:id,
                 title:info.title,
@@ -417,17 +413,13 @@ async function sendMessage() {
             });
         
             await sendBotMessage(
-                `<b>${auth.currentUser.displayName}</b> memutar musik`,
+                `<b>${auth.currentUser.displayName}</b> memutar musik <code>/play</code>`,
                 info.title
             );
       
         }else{
         
             try{
-        
-                await sendBotMessage("DEBUG: MASUK PLAYLIST");
-        
-                await sendBotMessage("DEBUG 2");
         
                 await addDoc(playlistRef,{
                     videoId:id,
@@ -436,18 +428,12 @@ async function sendMessage() {
                     timestamp:serverTimestamp()
                 });
         
-                await sendBotMessage("DEBUG 3");
-        
                 await sendBotMessage(
-                    `<b>${auth.currentUser.displayName}</b> menambahkan ke playlist`,
+                    `<b>${auth.currentUser.displayName}</b> menambahkan ke playlist <code>/play<code>`,
                     info.title
                 );
         
-                await sendBotMessage("DEBUG 4");
-        
             }catch(e){
-        
-                await sendBotMessage("ERROR: "+e.message);
         
             }
         

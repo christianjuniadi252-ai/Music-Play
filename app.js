@@ -460,15 +460,16 @@ async function sendMessage() {
         if (text.startsWith("/play")) {
 
             const raw = text.replace("/play", "").trim();
-
-            const id = getYoutubeId(raw);
-
-            if (!id) {
-                alert("Link tidak valid");
-                return;
+            
+            let id = getYoutubeId(raw);
+            
+            let info;
+            
+            if (id) {
+            
+                info = await getVideoInfo(id);
+            
             }
-
-            const info = await getVideoInfo(id);
 
             const roomSnap = await getDoc(roomRef);
 

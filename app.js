@@ -335,14 +335,19 @@ async function handlePlayerState(event){
 
 }
 /* ================= SEND MESSAGE ================= */
-async function sendBotMessage(message, title = null){
+async function sendBotMessage(
+    message,
+    title = null,
+    privateUid = null
+){
 
     await addDoc(collection(db, "messages"), {
         uid: "music-bot",
         name: "Music-Bot",
         photo: "music-bot.png",
-        message: message,
-        title: title,
+        message,
+        title,
+        privateUid,
         timestamp: serverTimestamp()
     });
 
@@ -882,6 +887,13 @@ onSnapshot(q, snapshot => {
             id: docSnap.id,
             ...docSnap.data()
         };
+        
+        if (
+            msg.privateUid &&
+            msg.privateUid !== auth.currentUser?.uid
+        ){
+            return;
+        }
 
         /* ===== TANGGAL ===== */
 

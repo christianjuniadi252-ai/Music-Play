@@ -95,6 +95,7 @@ let syncTimer = null;
 let selectedMessage = null;
 let hold = null;
 let editingMessage = null;
+let sending = false;
 
 function createPlayer() {
     if (!window.YT || !YT.Player) {
@@ -348,274 +349,272 @@ async function sendBotMessage(message, title = null){
 }
 
 async function sendMessage() {
+
+    if (sending) return;
+
     const text = input.value.trim();
+
     if (!text) return;
 
     if (!auth.currentUser) {
         alert("Login dulu");
         return;
     }
-    
-    if(editingMessage){
-    
-        await updateDoc(
-            doc(db,"messages",editingMessage.id),
-            {
-                message: input.value.trim(),
-                edited: true
-            }
-        );
-    
-        editingMessage = null;
-        replyPreview.style.display = "none";
-        input.value = "";
-    
-        return;
-    }
-    
-    //MUSIK LIST
 
-    if (text.startsWith("/list add")) {
-    
-        const args = text.split(" ");
-    
-        if (args.length < 4) {
-    
-            alert("Format:\n/list add Nama URL");
-    
-            return;
-    
-        }
-    
-        const listName = args[2];
-    
-        const url = args.slice(3).join(" ");
-        
-        const check = await getDocs(
-            query(
-                musicListRef,
-                where("nameLower", "==", listName.toLowerCase())
-            )
-        );
-        
-        if (!check.empty) {
-        
-            alert("Nama tersebut sudah digunakan.");
-        
-            return;
-        
-        }
-        
-        const videoId = getYoutubeId(url);
-        
-        if (!videoId) {
-        
-            alert("URL YouTube tidak valid.");
-        
-            return;
-        
-        }
-        
-        const info = await getVideoInfo(videoId);
-        
-        await addDoc(musicListRef,{
-        
-            name: listName,
-        
-            nameLower: listName.toLowerCase(),
-        
-            videoId: videoId,
-        
-            title: info.title,
-        
-            ownerUid: auth.currentUser.uid,
-        
-            ownerName: auth.currentUser.displayName,
-        
-            timestamp: serverTimestamp()
-        
-        });
-        
-        alert("Berhasil menambahkan list.");
-        
-        input.value = "";
-        
-        return; 
-    
-        alert(
-            "Nama: " + listName +
-            "\nURL: " + url
-        );
-    
-        return;
-    
-    }
+    sending = true;
+    sendBtn.disabled = true;
 
-    /* PLAY SYSTEM (ROOM SYNC) */
-    /* SAY BOT */
-    if (text.startsWith("/say")) {
-    
-        const pesan = text.replace("/say", "").trim();
-    
-        if (!pesan) {
-            alert("Masukkan pesan.");
-            return;
-        }
-    
-        await sendBotMessage(pesan);
-    
-        input.value = "";
-    
-        return;
-    }
-    
-    if (text.startsWith("/play")) {
+    try {
 
-        const raw = text.replace("/play", "").trim();
-    
-        const id = getYoutubeId(raw);
-    
-        if (!id) {
-            alert("Link tidak valid");
-            return;
-        }
-        
-        const info = await getVideoInfo(id);
-        
-        const roomSnap = await getDoc(roomRef);
-        
-        if (!roomSnap.exists() ||
-            !roomSnap.data().videoId ||
-            roomSnap.data().status !== "playing") {
-              
-            await setDoc(roomRef,{
-                videoId:id,
-                title:info.title,
-                startedAt:Date.now(),
-                status:"playing",
-                endMessageSent:false
-            });
-        
-            await sendBotMessage(
-                `<b>${auth.currentUser.displayName}</b> memutar musik <code>/play</code>`,
-                info.title
+        /* ================= EDIT ================= */
+
+        if (editingMessage) {
+
+            await updateDoc(
+                doc(db, "messages", editingMessage.id),
+                {
+                    message: text,
+                    edited: true
+                }
             );
-      
-        }else{
-        
-            try{
-        
-                await addDoc(playlistRef,{
-                    videoId:id,
-                    title:info.title,
-                    addedBy:auth.currentUser.displayName,
-                    timestamp:serverTimestamp()
+
+            editingMessage = null;
+            replyPreview.style.display = "none";
+            input.value = "";
+
+            return;
+        }
+
+        /* ================= MUSIC LIST ================= */
+
+        if (text.startsWith("/list add")) {
+
+            const args = text.split(" ");
+
+            if (args.length < 4) {
+                alert("Format:\n/list add Nama URL");
+                return;
+            }
+
+            const listName = args[2];
+            const url = args.slice(3).join(" ");
+
+            const check = await getDocs(
+                query(
+                    musicListRef,
+                    where("nameLower", "==", listName.toLowerCase())
+                )
+            );
+
+            if (!check.empty) {
+                alert("Nama tersebut sudah digunakan.");
+                return;
+            }
+
+            const videoId = getYoutubeId(url);
+
+            if (!videoId) {
+                alert("URL YouTube tidak valid.");
+                return;
+            }
+
+            const info = await getVideoInfo(videoId);
+
+            await addDoc(musicListRef, {
+                name: listName,
+                nameLower: listName.toLowerCase(),
+                videoId,
+                title: info.title,
+                ownerUid: auth.currentUser.uid,
+                ownerName: auth.currentUser.displayName,
+                timestamp: serverTimestamp()
+            });
+
+            alert("Berhasil menambahkan list.");
+
+            input.value = "";
+
+            return;
+        }
+
+        /* ================= SAY ================= */
+
+        if (text.startsWith("/say")) {
+
+            const pesan = text.replace("/say", "").trim();
+
+            if (!pesan) {
+                alert("Masukkan pesan.");
+                return;
+            }
+
+            await sendBotMessage(pesan);
+
+            input.value = "";
+
+            return;
+        }
+
+        /* ================= PLAY ================= */
+
+        if (text.startsWith("/play")) {
+
+            const raw = text.replace("/play", "").trim();
+
+            const id = getYoutubeId(raw);
+
+            if (!id) {
+                alert("Link tidak valid");
+                return;
+            }
+
+            const info = await getVideoInfo(id);
+
+            const roomSnap = await getDoc(roomRef);
+
+            if (
+                !roomSnap.exists() ||
+                !roomSnap.data().videoId ||
+                roomSnap.data().status !== "playing"
+            ) {
+
+                await setDoc(roomRef, {
+                    videoId: id,
+                    title: info.title,
+                    startedAt: Date.now(),
+                    status: "playing",
+                    endMessageSent: false
                 });
-        
+
+                await sendBotMessage(
+                    `<b>${auth.currentUser.displayName}</b> memutar musik <code>/play</code>`,
+                    info.title
+                );
+
+            } else {
+
+                await addDoc(playlistRef, {
+                    videoId: id,
+                    title: info.title,
+                    addedBy: auth.currentUser.displayName,
+                    timestamp: serverTimestamp()
+                });
+
                 await sendBotMessage(
                     `<b>${auth.currentUser.displayName}</b> menambahkan ke playlist <code>/play</code>`,
                     info.title
                 );
-        
-            }catch(e){
-        
             }
-        
+
+            input.value = "";
+
+            return;
         }
-    
-        input.value = "";
-        return;
-    }
 
-    /* STOP */
-    if (text === "/stop") {
-    
-        const q = query(
-            playlistRef,
-            orderBy("timestamp"),
-            limit(1)
-        );
-    
-        const next = await getDocs(q);
-    
-        if(next.empty){
-    
-            await setDoc(roomRef,{
-                videoId:"",
-                title:"",
-                status:"stopped",
-                endMessageSent:true
-            });
-    
-            await sendBotMessage(
-                `<b>${auth.currentUser.displayName}</b> menghentikan musik.`
+        /* ================= STOP ================= */
+
+        if (text === "/stop") {
+
+            const q = query(
+                playlistRef,
+                orderBy("timestamp"),
+                limit(1)
             );
-    
-        }else{
-    
-            const song = next.docs[0];
-            const data = song.data();
-    
-            await setDoc(roomRef,{
-                videoId:data.videoId,
-                title:data.title,
-                startedAt:Date.now(),
-                status:"playing",
-                endMessageSent:false
-            });
-    
-            await deleteDoc(song.ref);
-    
-            await sendBotMessage(
-                `<b>${auth.currentUser.displayName}</b> melewati lagu.`
-            );
-    
+
+            const next = await getDocs(q);
+
+            if (next.empty) {
+
+                await setDoc(roomRef, {
+                    videoId: "",
+                    title: "",
+                    status: "stopped",
+                    endMessageSent: true
+                });
+
+                await sendBotMessage(
+                    `<b>${auth.currentUser.displayName}</b> menghentikan musik.`
+                );
+
+            } else {
+
+                const song = next.docs[0];
+                const data = song.data();
+
+                await setDoc(roomRef, {
+                    videoId: data.videoId,
+                    title: data.title,
+                    startedAt: Date.now(),
+                    status: "playing",
+                    endMessageSent: false
+                });
+
+                await deleteDoc(song.ref);
+
+                await sendBotMessage(
+                    `<b>${auth.currentUser.displayName}</b> melewati lagu.`
+                );
+            }
+
+            input.value = "";
+
+            return;
         }
-    
+
+        /* ================= CLEAR ================= */
+
+        if (text === "/clear") {
+
+            const snap = await getDocs(playlistRef);
+
+            for (const song of snap.docs) {
+                await deleteDoc(song.ref);
+            }
+
+            await setDoc(roomRef, {
+                videoId: "",
+                title: "",
+                status: "stopped",
+                endMessageSent: true
+            });
+
+            await sendBotMessage(
+                `<b>${auth.currentUser.displayName}</b> menghapus seluruh playlist.`
+            );
+
+            input.value = "";
+
+            return;
+        }
+
+        /* ================= CHAT ================= */
+
+        const reply = replyData;
+
+        replyData = null;
+        replyPreview.style.display = "none";
         input.value = "";
-        return;
-    
-    }
-    
-    if (text === "/clear") {
 
-    const snap = await getDocs(playlistRef);
+        await addDoc(collection(db, "messages"), {
+            uid: auth.currentUser.uid,
+            name: auth.currentUser.displayName,
+            photo: auth.currentUser.photoURL,
+            message: text,
+            timestamp: serverTimestamp(),
+            replyTo: reply
+        });
 
-    for (const song of snap.docs) {
-        await deleteDoc(song.ref);
-    }
+    } catch (e) {
 
-    await setDoc(roomRef,{
-        videoId:"",
-        title:"",
-        status:"stopped",
-        endMessageSent:true
-    });
+        console.error(e);
+        alert(e.message);
 
-    await sendBotMessage(
-        `<b>${auth.currentUser.displayName}</b> menghapus seluruh playlist.`
-    );
+    } finally {
 
-    input.value = "";
-    return;
+        sending = false;
+        sendBtn.disabled = false;
 
     }
-
-    /* CHAT MESSAGE */
-    const reply = replyData;
-    
-    replyData = null;
-    replyPreview.style.display = "none";
-    input.value = "";
-    
-    addDoc(collection(db, "messages"), {
-        uid: auth.currentUser.uid,
-        name: auth.currentUser.displayName,
-        photo: auth.currentUser.photoURL,
-        message: text,
-        timestamp: serverTimestamp(),
-        replyTo: reply
-    });
 }
 
 sendBtn.onclick = sendMessage;

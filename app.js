@@ -470,6 +470,33 @@ async function sendMessage() {
                 info = await getVideoInfo(id);
             
             }
+            
+            else {
+            
+                const result = await getDocs(
+                    query(
+                        musicListRef,
+                        where("nameLower", "==", raw.toLowerCase())
+                    )
+                );
+            
+                if (result.empty) {
+            
+                    alert("Musik tidak ditemukan.");
+            
+                    return;
+            
+                }
+            
+                const data = result.docs[0].data();
+            
+                id = data.videoId;
+            
+                info = {
+                    title: data.title
+                };
+            
+            }
 
             const roomSnap = await getDoc(roomRef);
 

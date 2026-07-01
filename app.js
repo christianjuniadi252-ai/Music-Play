@@ -441,6 +441,55 @@ async function sendMessage() {
 
             return;
         }
+        
+        //list
+        
+        if (text === "/list") {
+        
+            const snap = await getDocs(
+                query(
+                    musicListRef,
+                    orderBy("nameLower")
+                )
+            );
+        
+            if (snap.empty) {
+        
+                await sendBotMessage(
+                    "📁 List musik masih kosong.",
+                    null,
+                    auth.currentUser.uid
+                );
+        
+                input.value = "";
+        
+                return;
+        
+            }
+        
+            let pesan = "<b>📁 List Musik</b><br><br>";
+        
+            snap.forEach(doc => {
+        
+                const data = doc.data();
+        
+                pesan +=
+                    `<b>${data.name}</b> - ${data.ownerName}<br>` +
+                    `${data.title}<br><br>`;
+        
+            });
+        
+            await sendBotMessage(
+                pesan,
+                null,
+                auth.currentUser.uid
+            );
+        
+            input.value = "";
+        
+            return;
+        
+        }
 
         /* ================= SAY ================= */
 

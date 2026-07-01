@@ -405,6 +405,42 @@ async function sendMessage() {
             return;
         
         }
+        
+        const videoId = getYoutubeId(url);
+        
+        if (!videoId) {
+        
+            alert("URL YouTube tidak valid.");
+        
+            return;
+        
+        }
+        
+        const info = await getVideoInfo(videoId);
+        
+        await addDoc(musicListRef,{
+        
+            name: listName,
+        
+            nameLower: listName.toLowerCase(),
+        
+            videoId: videoId,
+        
+            title: info.title,
+        
+            ownerUid: auth.currentUser.uid,
+        
+            ownerName: auth.currentUser.displayName,
+        
+            timestamp: serverTimestamp()
+        
+        });
+        
+        alert("Berhasil menambahkan list.");
+        
+        input.value = "";
+        
+        return; 
     
         alert(
             "Nama: " + listName +

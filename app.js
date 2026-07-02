@@ -353,6 +353,15 @@ async function sendBotMessage(
 
 }
 
+function resetInput(){
+
+    input.value = "";
+
+    input.style.height = "44px";
+    input.style.overflowY = "hidden";
+
+}
+
 async function sendMessage() {
 
     if (sending) return;
@@ -385,7 +394,7 @@ async function sendMessage() {
 
             editingMessage = null;
             replyPreview.style.display = "none";
-            input.value = "";
+            resetInput();
 
             return;
         }
@@ -437,7 +446,7 @@ async function sendMessage() {
 
             alert("Berhasil menambahkan list.");
 
-            input.value = "";
+            resetInput();
 
             return;
         }
@@ -478,7 +487,7 @@ async function sendMessage() {
         
             alert("List berhasil dihapus.");
         
-            input.value = "";
+            resetInput();
         
             return;
         }
@@ -538,7 +547,7 @@ async function sendMessage() {
         
             alert("Nama list berhasil diubah.");
         
-            input.value = "";
+            resetInput();
         
             return;
         }
@@ -562,7 +571,7 @@ async function sendMessage() {
                     auth.currentUser.uid
                 );
         
-                input.value = "";
+                resetInput();
         
                 return;
         
@@ -590,7 +599,7 @@ async function sendMessage() {
                 auth.currentUser.uid
             );
         
-            input.value = "";
+            resetInput();
         
             return;
         
@@ -609,7 +618,7 @@ async function sendMessage() {
 
             await sendBotMessage(pesan);
 
-            input.value = "";
+            resetInput();
 
             return;
         }
@@ -693,7 +702,7 @@ async function sendMessage() {
                 );
             }
 
-            input.value = "";
+            resetInput();
 
             return;
         }
@@ -743,7 +752,7 @@ async function sendMessage() {
                 );
             }
 
-            input.value = "";
+            resetInput();
 
             return;
         }
@@ -769,7 +778,7 @@ async function sendMessage() {
                 `<b>${auth.currentUser.displayName}</b> menghapus seluruh playlist.`
             );
 
-            input.value = "";
+            resetInput();
 
             return;
         }
@@ -780,7 +789,7 @@ async function sendMessage() {
 
         replyData = null;
         replyPreview.style.display = "none";
-        input.value = "";
+        resetInput();
 
         await addDoc(collection(db, "messages"), {
             uid: auth.currentUser.uid,
@@ -878,7 +887,7 @@ cancelReply.onclick = () => {
 
     replyPreview.style.display = "none";
 
-    input.value = "";
+    resetInput();
 
 };
 

@@ -456,22 +456,10 @@ async function sendMessage() {
             if (snap.empty) {
         
                 await sendBotMessage(
-                    "<b>📁 List Musik</b>",
+                    "📁 List Musik masih kosong.",
                     null,
                     auth.currentUser.uid
                 );
-                
-                snap.forEach(async(doc)=>{
-                
-                    const data = doc.data();
-                
-                    await sendBotMessage(
-                        `<b>${data.name}</b> - ${data.ownerName}`,
-                        data.title,
-                        auth.currentUser.uid
-                    );
-                
-                });
         
                 input.value = "";
         
@@ -479,23 +467,23 @@ async function sendMessage() {
         
             }
         
-            let pesan = "<b>📁 List Musik</b><br><br>";
-        
-            snap.forEach(doc => {
-        
-                const data = doc.data();
-        
-                pesan +=
-                    `<b>${data.name}</b> - ${data.ownerName}<br>` +
-                    `${data.title}<br><br>`;
-        
-            });
-        
             await sendBotMessage(
-                pesan,
+                "<b>📁 List Musik</b>",
                 null,
                 auth.currentUser.uid
             );
+        
+            for (const docSnap of snap.docs) {
+        
+                const data = docSnap.data();
+        
+                await sendBotMessage(
+                    `<b>${data.name}</b> - ${data.ownerName}`,
+                    data.title,
+                    auth.currentUser.uid
+                );
+        
+            }
         
             input.value = "";
         

@@ -467,23 +467,27 @@ async function sendMessage() {
         
             }
         
+            let pesan = "<b>📁 List Musik</b><br><br>";
+            
+            snap.forEach(doc => {
+            
+                const data = doc.data();
+            
+                pesan += `
+                    <b>${data.name}</b> - ${data.ownerName}
+            
+                    <div class="reply-box music-box">
+                        ${data.title}
+                    </div><br>
+                `;
+            
+            });
+            
             await sendBotMessage(
-                "<b>📁 List Musik</b>",
+                pesan,
                 null,
                 auth.currentUser.uid
             );
-        
-            for (const docSnap of snap.docs) {
-        
-                const data = docSnap.data();
-        
-                await sendBotMessage(
-                    `<b>${data.name}</b> - ${data.ownerName}`,
-                    data.title,
-                    auth.currentUser.uid
-                );
-        
-            }
         
             input.value = "";
         

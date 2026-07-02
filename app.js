@@ -456,10 +456,22 @@ async function sendMessage() {
             if (snap.empty) {
         
                 await sendBotMessage(
-                    "📁 List musik masih kosong.",
+                    "<b>📁 List Musik</b>",
                     null,
                     auth.currentUser.uid
                 );
+                
+                snap.forEach(async(doc)=>{
+                
+                    const data = doc.data();
+                
+                    await sendBotMessage(
+                        `<b>${data.name}</b> - ${data.ownerName}`,
+                        data.title,
+                        auth.currentUser.uid
+                    );
+                
+                });
         
                 input.value = "";
         

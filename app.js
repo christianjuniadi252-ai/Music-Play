@@ -443,15 +443,12 @@ async function sendMessage() {
         }
         
         if (text.startsWith("/list delete")) {
-
+        
             const args = text.split(" ");
         
             if (args.length < 3) {
-        
                 alert("Format:\n/list delete Nama");
-        
                 return;
-        
             }
         
             const listName = args.slice(2).join(" ");
@@ -459,21 +456,31 @@ async function sendMessage() {
             const snap = await getDocs(
                 query(
                     musicListRef,
-                    where("nameLower", "==", listName.toLowerCase())
+                    where("nameLower","==",listName.toLowerCase())
                 )
             );
         
             if (snap.empty) {
-        
                 alert("List tidak ditemukan.");
-        
-                sending = false;
-                sendBtn.disabled = false;
-        
                 return;
-        
             }
         
+            const item = snap.docs[0];
+            const data = item.data();
+        
+            // hanya pemilik yang boleh menghapus
+            if (data.ownerUid !== auth.currentUser.uid) {
+                alert("Hanya pembuat list yang dapat menghapus.");
+                return;
+            }
+        
+            await deleteDoc(item.ref);
+        
+            alert("List berhasil dihapus.");
+        
+            input.value = "";
+        
+            return;
         }
         
         //list

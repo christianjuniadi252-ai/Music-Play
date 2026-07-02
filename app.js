@@ -442,6 +442,40 @@ async function sendMessage() {
             return;
         }
         
+        if (text.startsWith("/list delete")) {
+
+            const args = text.split(" ");
+        
+            if (args.length < 3) {
+        
+                alert("Format:\n/list delete Nama");
+        
+                return;
+        
+            }
+        
+            const listName = args.slice(2).join(" ");
+        
+            const snap = await getDocs(
+                query(
+                    musicListRef,
+                    where("nameLower", "==", listName.toLowerCase())
+                )
+            );
+        
+            if (snap.empty) {
+        
+                alert("List tidak ditemukan.");
+        
+                sending = false;
+                sendBtn.disabled = false;
+        
+                return;
+        
+            }
+        
+        }
+        
         //list
         
         if (text === "/list") {

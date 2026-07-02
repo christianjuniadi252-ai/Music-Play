@@ -484,6 +484,7 @@ async function sendMessage() {
         }
         
         if (text.startsWith("/list rename")) {
+            alert("Test")
         
             const args = text.split(" ");
         

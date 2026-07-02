@@ -508,7 +508,7 @@ async function sendMessage() {
                 const data = doc.data();
             
                 pesan += `
-                    <br><b>${data.name}</b> - ${data.ownerName}
+                    <b>${data.name}</b> - ${data.ownerName}
             
                     <div class="reply-box music-box">
                         ${data.title}

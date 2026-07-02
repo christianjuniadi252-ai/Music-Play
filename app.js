@@ -483,6 +483,65 @@ async function sendMessage() {
             return;
         }
         
+        if (text.startsWith("/list rename")) {
+        
+            const args = text.split(" ");
+        
+            if (args.length < 4) {
+                alert("Format:\n/list rename NamaLama NamaBaru");
+                return;
+            }
+        
+            const oldName = args[2];
+            const newName = args[3];
+        
+            // Cari nama lama
+            const oldSnap = await getDocs(
+                query(
+                    musicListRef,
+                    where("nameLower","==",oldName.toLowerCase())
+                )
+            );
+        
+            if (oldSnap.empty) {
+                alert("List tidak ditemukan.");
+                return;
+            }
+        
+            const item = oldSnap.docs[0];
+            const data = item.data();
+        
+            // Hanya pemilik
+            if (data.ownerUid !== auth.currentUser.uid) {
+                alert("Hanya pembuat list yang dapat mengganti nama.");
+                return;
+            }
+        
+            // Cek nama baru
+            const check = await getDocs(
+                query(
+                    musicListRef,
+                    where("nameLower","==",newName.toLowerCase())
+                )
+            );
+        
+            if (!check.empty) {
+                alert("Nama tersebut sudah digunakan.");
+                return;
+            }
+        
+            await updateDoc(item.ref,{
+                name:newName,
+                nameLower:newName.toLowerCase()
+            });
+        
+            alert("Nama list berhasil diubah.");
+        
+            input.value = "";
+        
+            return;
+        }
+        
         //list
         
         if (text === "/list") {

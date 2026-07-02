@@ -467,18 +467,18 @@ async function sendMessage() {
         
             }
         
-            let pesan = "<b>📁 List Musik</b><br><br>";
+            let pesan = "<b>📁 List Musik</b><br>";
             
             snap.forEach(doc => {
             
                 const data = doc.data();
             
                 pesan += `
-                    <b>${data.name}</b> - ${data.ownerName}
+                    <br><b>${data.name}</b> - ${data.ownerName}
             
                     <div class="reply-box music-box">
                         ${data.title}
-                    </div><br>
+                    </div>
                 `;
             
             });

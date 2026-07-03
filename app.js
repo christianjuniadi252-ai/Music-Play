@@ -791,9 +791,7 @@ async function sendMessage() {
     replyPreview.style.display = "none";
     
     input.value = "";
-    setTimeout(() => {
-        input.blur();
-    }, 300);
+    input.blur();
     
     await new Promise(requestAnimationFrame);
     
@@ -1309,9 +1307,7 @@ onSnapshot(q, snapshot => {
     
     lucide.createIcons();
 
-    setTimeout(() => {
-        chat.scrollTop = chat.scrollHeight;
-    }, 0);
+    chat.scrollTop = chat.scrollHeight;
 
 });
 
@@ -1558,23 +1554,3 @@ setInterval(() => {
     }
 
 }, 500);
-
-const bottom = document.querySelector(".bottom");
-
-if (window.visualViewport) {
-
-    function updateBottom() {
-
-        const offset =
-            window.innerHeight -
-            window.visualViewport.height -
-            window.visualViewport.offsetTop;
-
-        bottom.style.bottom = Math.max(offset, 0) + "px";
-    }
-
-    visualViewport.addEventListener("resize", updateBottom);
-    visualViewport.addEventListener("scroll", updateBottom);
-
-    updateBottom();
-}

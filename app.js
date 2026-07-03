@@ -729,7 +729,7 @@ async function sendMessage() {
                 });
 
                 await sendBotMessage(
-                    `<b>${auth.currentUser.displayName}</b> menghentikan musik. <code>/stop</stop>`
+                    `<b>${auth.currentUser.displayName}</b> menghentikan musik. <code>/stop</code>`
                 );
 
             } else {

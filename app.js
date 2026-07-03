@@ -791,7 +791,7 @@ async function sendMessage() {
         replyPreview.style.display = "none";
         resetInput();
         input.style.height = "44px";
-        input.blur();
+        //input.blur();
 
         await addDoc(collection(db, "messages"), {
             uid: auth.currentUser.uid,

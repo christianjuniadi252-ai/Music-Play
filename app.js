@@ -851,7 +851,7 @@ onSnapshot(
 
         }
 
-        snapshot.forEach(doc=>{
+        snapshot.docs.forEach((doc, index)=>{
 
             const data = doc.data();
 
@@ -880,6 +880,16 @@ onSnapshot(
             
             </div>
             `;
+            
+            item.querySelector(".delete-song").onclick = async ()=>{
+
+                if(!confirm(
+                    `Apakah anda yakin ingin menghapus "${data.title}" dari playlist?`
+                )) return;
+            
+                await deleteDoc(doc.ref);
+            
+            };
 
             playlistList.appendChild(item);
 

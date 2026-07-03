@@ -25,6 +25,7 @@ import {
     getDoc
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
+alert("APP START");
 alert(typeof Sortable);
 /* ================= FIREBASE ================= */
 

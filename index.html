@@ -734,6 +734,12 @@ button:hover{
         <div id="musicTime" class="music-time">
             00:00/00:00
         </div>
+        
+        <div class="player">
+
+          <div id="playerFrame"></div>
+        
+        </div>
 
     </div>
 
@@ -743,13 +749,6 @@ button:hover{
 
     </div>
     
-    <div id="replyPreview">
-      <div id="replyText"></div>
-
-      <button id="cancelReply">
-        <i data-lucide="x"></i>
-      </button>
-    </div>
 
 </div>
 
@@ -757,14 +756,16 @@ button:hover{
 
 </div>
 
-<div class="player">
-
-  <div id="playerFrame"></div>
-
-</div>
-
 <div class="bottom">
   <div class="input-area">
+    <div id="replyPreview">
+      <div id="replyText"></div>
+
+      <button id="cancelReply">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    
     <textarea
       id="commandInput"
       rows="1"

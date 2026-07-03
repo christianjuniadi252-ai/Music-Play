@@ -852,14 +852,14 @@ onSnapshot(
 
         }
 
-        snapshot.docs.forEach((doc, index)=>{
+        snapshot.docs.forEach((songDoc, index) => {
 
-            const data = doc.data();
+            const data = songDoc.data();
 
             const item = document.createElement("div");
 
             item.className = "playlist-item";
-            item.dataset.id = doc.id;
+            item.dataset.id = songDoc.id;
 
             item.innerHTML = `
             <div class="playlist-row">
@@ -889,13 +889,14 @@ onSnapshot(
                     `Apakah anda yakin ingin menghapus "${data.title}" dari playlist?`
                 )) return;
             
-                await deleteDoc(doc.ref);
+                await deleteDoc(songDoc.ref);
             
             };
 
             playlistList.appendChild(item);
 
         });
+        
         new Sortable(playlistList,{
             animation:150,
             handle:".drag-btn",

@@ -860,10 +860,25 @@ onSnapshot(
             item.className = "playlist-item";
 
             item.innerHTML = `
-                <div class="playlist-title">${data.title}</div>
-                <div class="playlist-user">
-                    Ditambahkan oleh ${data.addedBy}
+            <div class="playlist-row">
+            
+                <div class="playlist-left">
+                    <span class="playlist-number">${index + 1}.</span>
+            
+                    <button class="drag-btn">☰</button>
                 </div>
+            
+                <div class="playlist-center">
+                    <div class="playlist-title">${data.title}</div>
+            
+                    <div class="playlist-user">
+                        Ditambahkan oleh ${data.addedBy}
+                    </div>
+                </div>
+            
+                <button class="delete-song">✕</button>
+            
+            </div>
             `;
 
             playlistList.appendChild(item);

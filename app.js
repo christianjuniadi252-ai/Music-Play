@@ -787,20 +787,24 @@ async function sendMessage() {
 
         const reply = replyData;
 
-        replyData = null;
-        replyPreview.style.display = "none";
-        resetInput();
-        input.style.height = "44px";
-        input.blur();
-
-        await addDoc(collection(db, "messages"), {
-            uid: auth.currentUser.uid,
-            name: auth.currentUser.displayName,
-            photo: auth.currentUser.photoURL,
-            message: text,
-            timestamp: serverTimestamp(),
-            replyTo: reply
-        });
+    replyData = null;
+    replyPreview.style.display = "none";
+    
+    input.value = "";
+    input.blur();
+    
+    await new Promise(requestAnimationFrame);
+    
+    resetInput();
+    
+    await addDoc(collection(db, "messages"), {
+        uid: auth.currentUser.uid,
+        name: auth.currentUser.displayName,
+        photo: auth.currentUser.photoURL,
+        message: text,
+        timestamp: serverTimestamp(),
+        replyTo: reply
+    });
 
     } catch (e) {
 

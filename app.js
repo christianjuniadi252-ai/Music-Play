@@ -714,7 +714,7 @@ async function sendMessage() {
 
             const q = query(
                 playlistRef,
-                orderBy("timestamp"),
+                orderBy("order"),
                 limit(1)
             );
 
@@ -901,25 +901,13 @@ onSnapshot(
             animation:150,
             handle:".drag-btn",
         
-            async onEnd(){
+            onStart(){
+                alert("Drag dimulai");
+            },
         
-                const items = playlistList.querySelectorAll(".playlist-item");
-        
-                for(let i=0;i<items.length;i++){
-        
-                    const id = items[i].dataset.id;
-        
-                    await updateDoc(
-                        doc(db,"playlist",id),
-                        {
-                            order:i
-                        }
-                    );
-        
-                }
-        
+            onEnd(){
+                alert("Drag selesai");
             }
-        
         });
 
     }

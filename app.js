@@ -693,7 +693,8 @@ async function sendMessage() {
                     videoId: id,
                     title: info.title,
                     addedBy: auth.currentUser.displayName,
-                    timestamp: serverTimestamp()
+                    timestamp: serverTimestamp(),
+                    order: Date.now()
                 });
 
                 await sendBotMessage(
@@ -836,8 +837,8 @@ onSnapshot(roomRef, (snap) => {
 onSnapshot(
     query(
         playlistRef,
-        orderBy("timestamp")
-    ),
+        orderBy("order")
+    )
     (snapshot)=>{
 
         playlistList.innerHTML = "";
@@ -852,12 +853,38 @@ onSnapshot(
         }
 
         snapshot.docs.forEach((doc, index)=>{
+          
+            new Sortable(playlistList,{
+                animation:150,
+                handle:".drag-btn",
+            
+                async onEnd(){
+            
+                    const items = playlistList.querySelectorAll(".playlist-item");
+            
+                    for(let i=0;i<items.length;i++){
+            
+                        const id = items[i].dataset.id;
+            
+                        await updateDoc(
+                            doc(db,"playlist",id),
+                            {
+                                order:i
+                            }
+                        );
+            
+                    }
+            
+                }
+            
+            });
 
             const data = doc.data();
 
             const item = document.createElement("div");
 
             item.className = "playlist-item";
+            item.dataset.id = doc.id;
 
             item.innerHTML = `
             <div class="playlist-row">

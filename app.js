@@ -838,7 +838,7 @@ onSnapshot(
     query(
         playlistRef,
         orderBy("order")
-    )
+    ),
     (snapshot)=>{
 
         playlistList.innerHTML = "";
@@ -853,31 +853,6 @@ onSnapshot(
         }
 
         snapshot.docs.forEach((doc, index)=>{
-          
-            new Sortable(playlistList,{
-                animation:150,
-                handle:".drag-btn",
-            
-                async onEnd(){
-            
-                    const items = playlistList.querySelectorAll(".playlist-item");
-            
-                    for(let i=0;i<items.length;i++){
-            
-                        const id = items[i].dataset.id;
-            
-                        await updateDoc(
-                            doc(db,"playlist",id),
-                            {
-                                order:i
-                            }
-                        );
-            
-                    }
-            
-                }
-            
-            });
 
             const data = doc.data();
 
@@ -920,6 +895,30 @@ onSnapshot(
 
             playlistList.appendChild(item);
 
+        });
+        new Sortable(playlistList,{
+            animation:150,
+            handle:".drag-btn",
+        
+            async onEnd(){
+        
+                const items = playlistList.querySelectorAll(".playlist-item");
+        
+                for(let i=0;i<items.length;i++){
+        
+                    const id = items[i].dataset.id;
+        
+                    await updateDoc(
+                        doc(db,"playlist",id),
+                        {
+                            order:i
+                        }
+                    );
+        
+                }
+        
+            }
+        
         });
 
     }

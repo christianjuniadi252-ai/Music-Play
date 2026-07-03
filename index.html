@@ -736,6 +736,18 @@ button:hover{
     text-align:right;
     color:#aaa;
 }
+
+.playlist-ghost{
+    opacity:.4;
+}
+
+.playlist-chosen{
+    transform:scale(1.02);
+}
+
+.playlist-drag{
+    opacity:.9;
+}
 </style>
 </head>  
 <body>
@@ -857,6 +869,7 @@ button:hover{
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
 <script type="module" src="app.js"></script>
 <script>lucide.createIcons();</script>
 </body>

@@ -791,7 +791,9 @@ async function sendMessage() {
     replyPreview.style.display = "none";
     
     input.value = "";
-    input.blur();
+    setTimeout(() => {
+        input.blur();
+    }, 300);
     
     await new Promise(requestAnimationFrame);
     
@@ -1307,7 +1309,9 @@ onSnapshot(q, snapshot => {
     
     lucide.createIcons();
 
-    chat.scrollTop = chat.scrollHeight;
+    setTimeout(() => {
+        chat.scrollTop = chat.scrollHeight;
+    }, 0);
 
 });
 

@@ -689,6 +689,53 @@ button:hover{
     text-align:center;
     color:#888;
 }
+
+.playlist-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.playlist-left{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.playlist-center{
+    flex:1;
+}
+
+.drag-btn,
+.delete-song{
+
+    width:34px;
+    height:34px;
+
+    padding:0;
+
+    border:none;
+
+    background:#2d2d2d;
+
+    color:white;
+
+    border-radius:8px;
+}
+
+.drag-btn{
+    cursor:grab;
+}
+
+.drag-btn:active{
+    cursor:grabbing;
+}
+
+.playlist-number{
+    width:22px;
+    text-align:right;
+    color:#aaa;
+}
 </style>
 </head>  
 <body>

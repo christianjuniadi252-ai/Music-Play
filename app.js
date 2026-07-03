@@ -1309,16 +1309,16 @@ onSnapshot(q, snapshot => {
 function playRoom(data){
 
     if (!data.videoId) {
-      
+    
         musicHeader.style.display = "none";
+    
+        document.querySelector(".player").style.display = "none";
     
         currentVideo = "";
     
         ytPlayer.stopVideo();
     
         ytPlayer.clearVideo();
-    
-        document.getElementById("playerFrame").style.display = "none";
     
         return;
     }
@@ -1345,7 +1345,7 @@ function playRoom(data){
         return;
     }
 
-    document.getElementById("playerFrame").style.display = "block";
+    document.querySelector(".player").style.display = "block";
     
     musicHeader.style.display = "block";
     musicTitle.textContent = data.title || "Unknown";

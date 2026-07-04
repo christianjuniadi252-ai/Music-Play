@@ -249,14 +249,10 @@ if (!playerReady) return;
 if (!roomData) return;  
 if (!roomData.videoId) return;  
   
-if (roomData.status === "paused") {  
-  
-    if (ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) {  
-        ytPlayer.pauseVideo();  
-    }  
-  
-    return;  
-}  
+if (roomData.status === "paused") {
+    ytPlayer.pauseVideo();
+    return;
+}
 
 // Tambahkan di sini  
 if (!roomData.status) return;  

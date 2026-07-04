@@ -729,6 +729,56 @@ async function sendMessage() {
             resetInput();
             return;
         }
+        
+        /* ================= SKIP ================= */
+        
+        if (text === "/skip") {
+        
+            const q = query(
+                playlistRef,
+                orderBy("order"),
+                limit(1)
+            );
+        
+            const next = await getDocs(q);
+        
+            if (next.empty) {
+        
+                await setDoc(roomRef, {
+                    videoId: "",
+                    title: "",
+                    status: "stopped",
+                    endMessageSent: true
+                });
+        
+                await sendBotMessage(
+                    `<b>${auth.currentUser.displayName}</b> melewati lagu. Playlist sudah habis. <code>/skip</code>`
+                );
+        
+            } else {
+        
+                const song = next.docs[0];
+                const data = song.data();
+        
+                await setDoc(roomRef, {
+                    videoId: data.videoId,
+                    title: data.title,
+                    startedAt: Date.now(),
+                    status: "playing",
+                    endMessageSent: false
+                });
+        
+                await deleteDoc(song.ref);
+        
+                await sendBotMessage(
+                    `<b>${auth.currentUser.displayName}</b> melewati lagu. <code>/skip</code>`
+                );
+        
+            }
+        
+            resetInput();
+            return;
+        }
 
         /* ================= CLEAR ================= */
 

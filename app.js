@@ -287,7 +287,7 @@ async function handlePlayerState(event){
 
     const q = query(
         playlistRef,
-        orderBy("timestamp"),
+        orderBy("order"),
         limit(1)
     );
     
@@ -694,7 +694,8 @@ async function sendMessage() {
                     videoId: id,
                     title: info.title,
                     addedBy: auth.currentUser.displayName,
-                    timestamp: serverTimestamp()
+                    timestamp: serverTimestamp(),
+                    order: Date.now()
                 });
 
                 await sendBotMessage(
@@ -714,7 +715,7 @@ async function sendMessage() {
 
             const q = query(
                 playlistRef,
-                orderBy("timestamp"),
+                orderBy("order"),
                 limit(1)
             );
 
@@ -837,7 +838,7 @@ onSnapshot(roomRef, (snap) => {
 onSnapshot(
     query(
         playlistRef,
-        orderBy("timestamp")
+        orderBy("order")
     ),
     (snapshot)=>{
 
@@ -896,9 +897,29 @@ onSnapshot(
         
         if (!sortable) {
         
-            sortable = new Sortable(playlistList, {
-                animation: 150,
-                handle: ".drag-handle"
+            sortable = new Sortable(playlistList,{
+                animation:150,
+                handle:".drag-handle",
+        
+                onEnd: async () => {
+        
+                    const items = playlistList.querySelectorAll(".playlist-item");
+        
+                    for (let i = 0; i < items.length; i++) {
+        
+                        const id = items[i].dataset.id;
+        
+                        await updateDoc(
+                            doc(db, "playlist", id),
+                            {
+                                order: i
+                            }
+                        );
+        
+                    }
+        
+                }
+        
             });
         
         }

@@ -717,13 +717,11 @@ async function sendMessage() {
             }
 
             const roomSnap = await getDoc(roomRef);
-            
-            const room = roomSnap.exists() ? roomSnap.data() : null;
-            
+
             if (
-                !room ||
-                !room.videoId ||
-                room.status === "stopped"
+                !roomSnap.exists() ||
+                !roomSnap.data().videoId ||
+                roomSnap.data().status !== "playing"
             ) {
 
                 await setDoc(roomRef, {

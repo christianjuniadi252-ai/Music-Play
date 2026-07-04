@@ -813,6 +813,31 @@ async function sendMessage() {
             resetInput();
             return;
         }
+        
+        /* ================= REPLAY ================= */
+        
+        if (text === "/replay") {
+        
+            const roomSnap = await getDoc(roomRef);
+        
+            if (!roomSnap.exists() || !roomSnap.data().videoId) {
+                alert("Tidak ada musik yang sedang diputar.");
+                return;
+            }
+        
+            await updateDoc(roomRef, {
+                startedAt: Date.now(),
+                status: "playing",
+                endMessageSent: false
+            });
+        
+            await sendBotMessage(
+                `<b>${auth.currentUser.displayName}</b> memutar ulang musik. <code>/replay</code>`
+            );
+        
+            resetInput();
+            return;
+        }
 
         /* ================= CLEAR ================= */
 

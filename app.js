@@ -1486,6 +1486,19 @@ function playRoom(data){
             startSeconds: elapsed
         });
         
+        // Hanya jika mulai dari awal video
+        if (elapsed <= 1) {
+        
+            setTimeout(() => {
+                ytPlayer.pauseVideo();
+        
+                setTimeout(() => {
+                    ytPlayer.playVideo();
+                }, 3000);
+        
+            }, 300); // beri waktu video mulai dimuat
+        }
+        
         setTimeout(async ()=>{
 
             const duration = Math.floor(ytPlayer.getDuration());

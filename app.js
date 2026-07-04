@@ -714,50 +714,19 @@ async function sendMessage() {
         /* ================= STOP ================= */
 
         if (text === "/stop") {
-
-            const q = query(
-                playlistRef,
-                orderBy("order"),
-                limit(1)
+        
+            await setDoc(roomRef, {
+                videoId: "",
+                title: "",
+                status: "stopped",
+                endMessageSent: true
+            });
+        
+            await sendBotMessage(
+                `<b>${auth.currentUser.displayName}</b> menghentikan musik. <code>/stop</code>`
             );
-
-            const next = await getDocs(q);
-
-            if (next.empty) {
-
-                await setDoc(roomRef, {
-                    videoId: "",
-                    title: "",
-                    status: "stopped",
-                    endMessageSent: true
-                });
-
-                await sendBotMessage(
-                    `<b>${auth.currentUser.displayName}</b> menghentikan musik. <code>/stop</code>`
-                );
-
-            } else {
-
-                const song = next.docs[0];
-                const data = song.data();
-
-                await setDoc(roomRef, {
-                    videoId: data.videoId,
-                    title: data.title,
-                    startedAt: Date.now(),
-                    status: "playing",
-                    endMessageSent: false
-                });
-
-                await deleteDoc(song.ref);
-
-                await sendBotMessage(
-                    `<b>${auth.currentUser.displayName}</b> melewati lagu.`
-                );
-            }
-
+        
             resetInput();
-
             return;
         }
 

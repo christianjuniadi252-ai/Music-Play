@@ -940,6 +940,7 @@ function setReply(msg) {
 
     replyPreview.style.display = "flex";
     replyText.innerHTML = `<b>${msg.name}</b><br>${msg.message}`;
+    updateScrollButtonPosition();
 }
 
 cancelReply.onclick = () => {
@@ -948,6 +949,8 @@ cancelReply.onclick = () => {
     editingMessage = null;
 
     replyPreview.style.display = "none";
+
+    updateScrollButtonPosition();
 
     resetInput();
 
@@ -1508,6 +1511,8 @@ input.addEventListener("input", () => {
         input.style.overflowY = "auto";
 
     }
+    
+    updateScrollButtonPosition();
 
 });
 
@@ -1638,3 +1643,17 @@ chat.addEventListener("scroll",()=>{
     }
 
 });
+
+function setReply(msg){
+
+    replyData = {
+        id: msg.id,
+        name: msg.name,
+        message: msg.message
+    };
+
+    replyPreview.style.display = "flex";
+
+    replyText.innerHTML = `<b>${msg.name}</b><br>${msg.message}`;
+
+    updateScrollButtonPosition();

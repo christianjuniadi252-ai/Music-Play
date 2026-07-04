@@ -661,8 +661,8 @@ async function sendMessage() {
                 const data = song.data();
             
                 await setDoc(roomRef, {
-                    videoId: data.videoId,
-                    title: data.title,
+                    videoId: id,
+                    title: info.title,
                     startedAt: Date.now(),
                     status: "playing",
                     endMessageSent: false,

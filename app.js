@@ -83,6 +83,8 @@ const playlistBtn = document.getElementById("playlistBtn");
 const playlistModal = document.getElementById("playlistModal");
 const playlistList = document.getElementById("playlistList");
 const musicListRef = collection(db,"musicList");
+const scrollBottomBtn =
+    document.getElementById("scrollBottomBtn");
 
 /* ================= STATE ================= */
 
@@ -1608,3 +1610,31 @@ setInterval(() => {
     }
 
 }, 500);
+
+scrollBottomBtn.onclick = () => {
+
+    chat.scrollTo({
+        top: chat.scrollHeight,
+        behavior: "smooth"
+    });
+
+};
+
+chat.addEventListener("scroll",()=>{
+
+    const jarak =
+        chat.scrollHeight -
+        chat.scrollTop -
+        chat.clientHeight;
+
+    if(jarak > 150){
+
+        scrollBottomBtn.style.display="block";
+
+    }else{
+
+        scrollBottomBtn.style.display="none";
+
+    }
+
+});

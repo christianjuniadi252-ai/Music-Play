@@ -632,6 +632,36 @@ async function sendMessage() {
 
             const raw = text.replace("/play", "").trim();
             
+            if (raw === "") {
+            
+                const roomSnap = await getDoc(roomRef);
+            
+                if (!roomSnap.exists()) {
+                    alert("Tidak ada musik.");
+                    return;
+                }
+            
+                const room = roomSnap.data();
+            
+                if (!room.videoId) {
+                    alert("Tidak ada musik yang bisa dilanjutkan.");
+                    return;
+                }
+            
+                await updateDoc(roomRef, {
+                    status: "playing",
+                    startedAt: Date.now(),
+                    endMessageSent: false
+                });
+            
+                await sendBotMessage(
+                    `<b>${auth.currentUser.displayName}</b> melanjutkan musik. <code>/play</code>`
+                );
+            
+                resetInput();
+                return;
+            }
+            
             let id = getYoutubeId(raw);
             
             let info;

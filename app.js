@@ -1559,6 +1559,8 @@ function startEdit(msg){
         <b>Mengedit pesan</b><br>
         ${msg.message}
     `;
+    
+    updateScrollButtonPosition();
 
     input.value = msg.message;
     input.focus();
@@ -1643,17 +1645,3 @@ chat.addEventListener("scroll",()=>{
     }
 
 });
-
-function setReply(msg){
-
-    replyData = {
-        id: msg.id,
-        name: msg.name,
-        message: msg.message
-    };
-
-    replyPreview.style.display = "flex";
-
-    replyText.innerHTML = `<b>${msg.name}</b><br>${msg.message}`;
-
-    updateScrollButtonPosition();

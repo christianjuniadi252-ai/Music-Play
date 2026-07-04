@@ -245,6 +245,15 @@ function syncPlayer() {
     if (!playerReady) return;
     if (!roomData) return;
     if (!roomData.videoId) return;
+    
+    if (roomData.status === "paused") {
+    
+        if (ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+            ytPlayer.pauseVideo();
+        }
+    
+        return;
+    }
 
     // Tambahkan di sini
     if (!roomData.status) return;
@@ -764,6 +773,53 @@ async function sendMessage() {
             return;
         }
         
+        /* ================= PAUSE ================= */
+        
+        if (text === "/pause") {
+        
+            if (!roomData || !roomData.videoId) {
+                alert("Tidak ada musik yang sedang diputar.");
+                return;
+            }
+        
+            await updateDoc(roomRef, {
+                status: "paused",
+                pausedAt: ytPlayer.getCurrentTime()
+            });
+        
+            await sendBotMessage(
+                `<b>${auth.currentUser.displayName}</b> menjeda musik. <code>/pause</code>`
+            );
+        
+            resetInput();
+            return;
+        }
+        
+        /* ================= RESUME ================= */
+        
+        if (text === "/resume") {
+        
+            if (!roomData || !roomData.videoId) {
+                alert("Tidak ada musik.");
+                return;
+            }
+        
+            const posisi = roomData.pausedAt || 0;
+        
+            await updateDoc(roomRef, {
+                status: "playing",
+                startedAt: Date.now() - (posisi * 1000),
+                pausedAt: 0
+            });
+        
+            await sendBotMessage(
+                `<b>${auth.currentUser.displayName}</b> melanjutkan musik. <code>/resume</code>`
+            );
+        
+            resetInput();
+            return;
+        }
+                
         /* ================= SKIP ================= */
         
         if (text === "/skip") {
@@ -1505,6 +1561,30 @@ function playRoom(data){
     if (currentVideo !== data.videoId) {
     
         currentVideo = data.videoId;
+        
+        if (data.status === "paused") {
+        
+            if (currentVideo !== data.videoId) {
+        
+                currentVideo = data.videoId;
+        
+                ytPlayer.loadVideoById({
+                    videoId: data.videoId,
+                    startSeconds: data.pausedAt || 0
+                });
+        
+                setTimeout(() => {
+                    ytPlayer.pauseVideo();
+                }, 500);
+        
+            } else {
+        
+                ytPlayer.pauseVideo();
+        
+            }
+        
+            return;
+        }
     
         ytPlayer.loadVideoById({
             videoId: data.videoId,

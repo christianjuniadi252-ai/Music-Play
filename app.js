@@ -86,6 +86,7 @@ const musicListRef = collection(db,"musicList");
 
 /* ================= STATE ================= */
 
+let sortable = null;
 let replyData = null;
 let currentVideo = "";
 let ytPlayer = null;
@@ -893,10 +894,14 @@ onSnapshot(
         
         });
         
-        new Sortable(playlistList,{
-            animation:150,
-            handle:".drag-handle"
-        });
+        if (!sortable) {
+        
+            sortable = new Sortable(playlistList, {
+                animation: 150,
+                handle: ".drag-handle"
+            });
+        
+        }
 
     }
 );

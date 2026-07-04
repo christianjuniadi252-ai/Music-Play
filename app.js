@@ -635,27 +635,54 @@ async function sendMessage() {
             if (raw === "") {
             
                 const roomSnap = await getDoc(roomRef);
+                const room = roomSnap.exists() ? roomSnap.data() : null;
             
-                if (!roomSnap.exists()) {
-                    alert("Tidak ada musik.");
+                // Resume jika masih ada lagu yang dihentikan
+                if (room && room.videoId) {
+            
+                    await updateDoc(roomRef,{
+                        status:"playing",
+                        startedAt:Date.now(),
+                        endMessageSent:false
+                    });
+            
+                    await sendBotMessage(
+                        `<b>${auth.currentUser.displayName}</b> melanjutkan musik.`
+                    );
+            
+                    resetInput();
                     return;
                 }
             
-                const room = roomSnap.data();
+                // Tidak ada lagu -> ambil dari playlist
+                const next = await getDocs(
+                    query(
+                        playlistRef,
+                        orderBy("order"),
+                        limit(1)
+                    )
+                );
             
-                if (!room.videoId) {
-                    alert("Tidak ada musik yang bisa dilanjutkan.");
+                if(next.empty){
+                    alert("Playlist kosong.");
                     return;
                 }
             
-                await updateDoc(roomRef, {
-                    status: "playing",
-                    startedAt: Date.now(),
-                    endMessageSent: false
+                const song = next.docs[0];
+                const data = song.data();
+            
+                await setDoc(roomRef,{
+                    videoId:data.videoId,
+                    title:data.title,
+                    startedAt:Date.now(),
+                    status:"playing",
+                    endMessageSent:false
                 });
             
+                await deleteDoc(song.ref);
+            
                 await sendBotMessage(
-                    `<b>${auth.currentUser.displayName}</b> melanjutkan musik. <code>/play</code>`
+                    `<b>${auth.currentUser.displayName}</b> memutar playlist.`
                 );
             
                 resetInput();

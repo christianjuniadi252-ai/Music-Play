@@ -25,8 +25,6 @@ import {
     getDoc
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-alert("APP START");
-alert(typeof Sortable);
 /* ================= FIREBASE ================= */
 
 const firebaseConfig = {
@@ -695,8 +693,7 @@ async function sendMessage() {
                     videoId: id,
                     title: info.title,
                     addedBy: auth.currentUser.displayName,
-                    timestamp: serverTimestamp(),
-                    order: Date.now()
+                    timestamp: serverTimestamp()
                 });
 
                 await sendBotMessage(
@@ -716,7 +713,7 @@ async function sendMessage() {
 
             const q = query(
                 playlistRef,
-                orderBy("order"),
+                orderBy("timestamp"),
                 limit(1)
             );
 
@@ -839,7 +836,7 @@ onSnapshot(roomRef, (snap) => {
 onSnapshot(
     query(
         playlistRef,
-        orderBy("order")
+        orderBy("timestamp")
     ),
     (snapshot)=>{
 
@@ -854,62 +851,23 @@ onSnapshot(
 
         }
 
-        snapshot.docs.forEach((songDoc, index) => {
+        snapshot.forEach(doc=>{
 
-            const data = songDoc.data();
+            const data = doc.data();
 
             const item = document.createElement("div");
 
             item.className = "playlist-item";
-            item.dataset.id = songDoc.id;
 
             item.innerHTML = `
-            <div class="playlist-row">
-            
-                <div class="playlist-left">
-                    <span class="playlist-number">${index + 1}.</span>
-            
-                    <button class="drag-btn">☰</button>
+                <div class="playlist-title">${data.title}</div>
+                <div class="playlist-user">
+                    Ditambahkan oleh ${data.addedBy}
                 </div>
-            
-                <div class="playlist-center">
-                    <div class="playlist-title">${data.title}</div>
-            
-                    <div class="playlist-user">
-                        Ditambahkan oleh ${data.addedBy}
-                    </div>
-                </div>
-            
-                <button class="delete-song">✕</button>
-            
-            </div>
             `;
-            
-            item.querySelector(".delete-song").onclick = async ()=>{
-
-                if(!confirm(
-                    `Apakah anda yakin ingin menghapus "${data.title}" dari playlist?`
-                )) return;
-            
-                await deleteDoc(songDoc.ref);
-            
-            };
 
             playlistList.appendChild(item);
 
-        });
-        
-        new Sortable(playlistList,{
-            animation:150,
-            handle:".drag-btn",
-        
-            onStart(){
-                alert("Drag dimulai");
-            },
-        
-            onEnd(){
-                alert("Drag selesai");
-            }
         });
 
     }

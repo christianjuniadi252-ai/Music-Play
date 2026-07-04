@@ -717,6 +717,23 @@ button:hover{
     text-align:center;
     color:#888;
 }
+
+#scrollBottomBtn{
+    position:fixed;
+    right:20px;
+    bottom:120px; /* di atas input chat */
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    border:none;
+    background:#2563eb;
+    color:white;
+    font-size:24px;
+    cursor:pointer;
+    display:none;
+
+    z-index:999;
+}
 </style>
 </head>  
 <body>
@@ -782,6 +799,10 @@ button:hover{
 <div class="chat-container" id="chat">
 
 </div>
+
+<button id="scrollBottomBtn">
+    <i data-lucide="arrow-down"></i>
+</button>
 
 <div class="bottom">
   

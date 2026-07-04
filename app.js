@@ -283,6 +283,16 @@ function syncPlayer() {
 }
 
 async function handlePlayerState(event){
+  
+    const snap = await getDoc(roomRef);
+    
+    if (!snap.exists()) return;
+    
+    const room = snap.data();
+    
+    if (room.playerOwner !== auth.currentUser.uid) {
+        return;
+    }
 
     if(event.data!==YT.PlayerState.ENDED)return;
 
@@ -330,19 +340,10 @@ async function handlePlayerState(event){
         title:data.title,
         startedAt:Date.now(),
         status:"playing",
-        endMessageSent:false
+        endMessageSent:false,
+        playerOwner: room.playerOwner
     });
     
-    await deleteDoc(song.ref);
-    
-    await setDoc(roomRef,{
-        videoId:data.videoId,
-        title:data.title,
-        startedAt:Date.now(),
-        status:"playing",
-        endMessageSent:false
-    });
-
     await deleteDoc(song.ref);
 
 }
@@ -659,12 +660,13 @@ async function sendMessage() {
                 const song = next.docs[0];
                 const data = song.data();
             
-                await setDoc(roomRef,{
-                    videoId:data.videoId,
-                    title:data.title,
-                    startedAt:Date.now(),
-                    status:"playing",
-                    endMessageSent:false
+                await setDoc(roomRef, {
+                    videoId: data.videoId,
+                    title: data.title,
+                    startedAt: Date.now(),
+                    status: "playing",
+                    endMessageSent: false,
+                    playerOwner: auth.currentUser.uid
                 });
             
                 await deleteDoc(song.ref);
@@ -727,7 +729,8 @@ async function sendMessage() {
                     title: info.title,
                     startedAt: Date.now(),
                     status: "playing",
-                    endMessageSent: false
+                    endMessageSent: false,
+                    playerOwner: auth.currentUser.uid
                 });
 
                 await sendBotMessage(
@@ -762,7 +765,8 @@ async function sendMessage() {
         
             await setDoc(roomRef, {
                 status: "stopped",
-                endMessageSent: true
+                endMessageSent: true,
+                playerOwner: null
             });
         
             await sendBotMessage(
@@ -909,7 +913,8 @@ async function sendMessage() {
                 videoId: "",
                 title: "",
                 status: "stopped",
-                endMessageSent: true
+                endMessageSent: true,
+                playerOwner: null
             });
 
             await sendBotMessage(

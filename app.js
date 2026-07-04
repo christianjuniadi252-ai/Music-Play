@@ -940,7 +940,6 @@ function setReply(msg) {
 
     replyPreview.style.display = "flex";
     replyText.innerHTML = `<b>${msg.name}</b><br>${msg.message}`;
-    updateScrollButtonPosition();
 }
 
 cancelReply.onclick = () => {
@@ -949,8 +948,6 @@ cancelReply.onclick = () => {
     editingMessage = null;
 
     replyPreview.style.display = "none";
-
-    updateScrollButtonPosition();
 
     resetInput();
 
@@ -1511,8 +1508,6 @@ input.addEventListener("input", () => {
         input.style.overflowY = "auto";
 
     }
-    
-    updateScrollButtonPosition();
 
 });
 
@@ -1559,8 +1554,6 @@ function startEdit(msg){
         <b>Mengedit pesan</b><br>
         ${msg.message}
     `;
-    
-    updateScrollButtonPosition();
 
     input.value = msg.message;
     input.focus();
@@ -1617,31 +1610,3 @@ setInterval(() => {
     }
 
 }, 500);
-
-scrollBottomBtn.onclick = () => {
-
-    chat.scrollTo({
-        top: chat.scrollHeight,
-        behavior: "smooth"
-    });
-
-};
-
-chat.addEventListener("scroll",()=>{
-
-    const jarak =
-        chat.scrollHeight -
-        chat.scrollTop -
-        chat.clientHeight;
-
-    if(jarak > 150){
-
-        scrollBottomBtn.style.display="block";
-
-    }else{
-
-        scrollBottomBtn.style.display="none";
-
-    }
-
-});

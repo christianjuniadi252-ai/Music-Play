@@ -851,23 +851,46 @@ onSnapshot(
 
         }
 
-        snapshot.forEach(doc=>{
-
-            const data = doc.data();
-
+        let nomor = 1;
+        
+        snapshot.forEach(docSnap => {
+        
+            const data = docSnap.data();
+        
             const item = document.createElement("div");
-
+        
             item.className = "playlist-item";
-
+        
+            item.dataset.id = docSnap.id;
+        
             item.innerHTML = `
-                <div class="playlist-title">${data.title}</div>
-                <div class="playlist-user">
-                    Ditambahkan oleh ${data.addedBy}
+                <div class="drag-handle">☰</div>
+            
+                <div class="playlist-title">
+                    ${nomor}. ${data.title}
                 </div>
+            
+                <button class="delete-playlist">
+                    ×
+                </button>
             `;
-
+            
+            item.querySelector(".delete-playlist").onclick = async () => {
+            
+                const yakin = confirm(
+                    `Hapus "${data.title}" dari playlist?`
+                );
+            
+                if (!yakin) return;
+            
+                await deleteDoc(docSnap.ref);
+            
+            };
+            
             playlistList.appendChild(item);
-
+            
+            nomor++;
+        
         });
 
     }

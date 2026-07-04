@@ -249,10 +249,14 @@ if (!playerReady) return;
 if (!roomData) return;  
 if (!roomData.videoId) return;  
   
-if (roomData.status === "paused") {
-    ytPlayer.pauseVideo();
-    return;
-}
+if (roomData.status === "paused") {  
+  
+    if (ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) {  
+        ytPlayer.pauseVideo();  
+    }  
+  
+    return;  
+}  
 
 // Tambahkan di sini  
 if (!roomData.status) return;  
@@ -283,16 +287,6 @@ if (ytPlayer.getPlayerState() !== YT.PlayerState.PLAYING) {
 }
 
 async function handlePlayerState(event){
-
-const snap = await getDoc(roomRef);  
-  
-if (!snap.exists()) return;  
-  
-const room = snap.data();  
-  
-if (room.playerOwner !== auth.currentUser.uid) {  
-    return;  
-}  
 
 if(event.data!==YT.PlayerState.ENDED)return;  
 
@@ -340,10 +334,19 @@ await setDoc(roomRef,{
     title:data.title,  
     startedAt:Date.now(),  
     status:"playing",  
-    endMessageSent:false,  
-    playerOwner: room.playerOwner  
+    endMessageSent:false  
 });  
   
+await deleteDoc(song.ref);  
+  
+await setDoc(roomRef,{  
+    videoId:data.videoId,  
+    title:data.title,  
+    startedAt:Date.now(),  
+    status:"playing",  
+    endMessageSent:false  
+});  
+
 await deleteDoc(song.ref);
 
 }
@@ -660,13 +663,12 @@ try {
             const song = next.docs[0];  
             const data = song.data();  
           
-            await setDoc(roomRef, {  
-                videoId: data.videoId,  
-                title: data.title,  
-                startedAt: Date.now(),  
-                status: "playing",  
-                endMessageSent: false,  
-                playerOwner: auth.currentUser.uid  
+            await setDoc(roomRef,{  
+                videoId:data.videoId,  
+                title:data.title,  
+                startedAt:Date.now(),  
+                status:"playing",  
+                endMessageSent:false  
             });  
           
             await deleteDoc(song.ref);  
@@ -717,13 +719,11 @@ try {
         }  
 
         const roomSnap = await getDoc(roomRef);  
-          
-        const room = roomSnap.exists() ? roomSnap.data() : null;  
-          
+
         if (  
-            !room ||  
-            !room.videoId ||  
-            room.status === "stopped"  
+            !roomSnap.exists() ||  
+            !roomSnap.data().videoId ||  
+            roomSnap.data().status !== "playing"  
         ) {  
 
             await setDoc(roomRef, {  
@@ -731,8 +731,7 @@ try {
                 title: info.title,  
                 startedAt: Date.now(),  
                 status: "playing",  
-                endMessageSent: false,  
-                playerOwner: auth.currentUser.uid  
+                endMessageSent: false  
             });  
 
             await sendBotMessage(  
@@ -767,8 +766,7 @@ try {
       
         await setDoc(roomRef, {  
             status: "stopped",  
-            endMessageSent: true,  
-            playerOwner: null  
+            endMessageSent: true  
         });  
       
         await sendBotMessage(  
@@ -915,8 +913,7 @@ try {
             videoId: "",  
             title: "",  
             status: "stopped",  
-            endMessageSent: true,  
-            playerOwner: null  
+            endMessageSent: true  
         });  
 
         await sendBotMessage(  

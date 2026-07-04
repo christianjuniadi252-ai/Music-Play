@@ -892,6 +892,11 @@ onSnapshot(
             nomor++;
         
         });
+        
+        new Sortable(playlistList,{
+            animation:150,
+            handle:".drag-handle"
+        });
 
     }
 );

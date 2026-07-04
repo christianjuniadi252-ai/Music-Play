@@ -1480,8 +1480,35 @@ button:hover{
 }
 
 .playlist-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
     padding:12px 14px;
+
     border-bottom:1px solid #2c2c2c;
+}
+
+.drag-handle{
+    font-size:20px;
+    color:#999;
+    cursor:grab;
+    user-select:none;
+}
+
+.playlist-title{
+    flex:1;
+    color:white;
+    font-weight:bold;
+}
+
+.delete-playlist{
+    background:none;
+    border:none;
+    color:#ff5555;
+    font-size:22px;
+    cursor:pointer;
+    padding:0 6px;
 }
 
 .playlist-item:last-child{
@@ -1625,6 +1652,7 @@ button:hover{
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
 <script type="module" src="app.js"></script>
 <script>lucide.createIcons();</script>
 </body>

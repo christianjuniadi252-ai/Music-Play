@@ -634,27 +634,6 @@ async function sendMessage() {
             
             if (raw === "") {
             
-                const roomSnap = await getDoc(roomRef);
-                const room = roomSnap.exists() ? roomSnap.data() : null;
-            
-                // Resume jika masih ada lagu yang dihentikan
-                if (room && room.videoId) {
-            
-                    await updateDoc(roomRef,{
-                        status:"playing",
-                        startedAt:Date.now(),
-                        endMessageSent:false
-                    });
-            
-                    await sendBotMessage(
-                        `<b>${auth.currentUser.displayName}</b> melanjutkan musik.`
-                    );
-            
-                    resetInput();
-                    return;
-                }
-            
-                // Tidak ada lagu -> ambil dari playlist
                 const next = await getDocs(
                     query(
                         playlistRef,
@@ -663,7 +642,7 @@ async function sendMessage() {
                     )
                 );
             
-                if(next.empty){
+                if (next.empty) {
                     alert("Playlist kosong.");
                     return;
                 }
@@ -682,7 +661,7 @@ async function sendMessage() {
                 await deleteDoc(song.ref);
             
                 await sendBotMessage(
-                    `<b>${auth.currentUser.displayName}</b> memutar playlist.`
+                    `<b>${auth.currentUser.displayName}</b> memulai playlist.`
                 );
             
                 resetInput();
@@ -773,8 +752,6 @@ async function sendMessage() {
         if (text === "/stop") {
         
             await setDoc(roomRef, {
-                videoId: "",
-                title: "",
                 status: "stopped",
                 endMessageSent: true
             });

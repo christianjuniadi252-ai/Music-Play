@@ -1198,6 +1198,16 @@ await addDoc(collection(db, "messages"), {
 
 sendBtn.onclick = sendMessage;
 
+onSnapshot(drawingGameRef, (snap) => {
+
+    if (!snap.exists()) return;
+
+    drawingGame = snap.data();
+
+    console.log("Drawing Game:", drawingGame.state);
+
+});
+
 onSnapshot(roomRef, (snap) => {
 
 if (!snap.exists()) return;  

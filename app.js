@@ -1189,10 +1189,9 @@ try {
         const data = snap.data();
         if (data.status !== "voting") return;
     
-          await updateDoc(guessDrawRef, {
-              votesYes: arrayUnion(auth.currentUser.uid),
-              votesNo: arrayRemove(auth.currentUser.uid)
-          });
+        await updateDoc(guessDrawRef, {
+            votesYes: arrayUnion(auth.currentUser.uid),
+            votesNo: arrayRemove(auth.currentUser.uid)
         });
     
         return;

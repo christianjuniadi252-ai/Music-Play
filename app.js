@@ -90,6 +90,7 @@ const commandMenu =
 document.getElementById("commandMenu");
 /* ================= STATE ================= */
 
+let musicLists = [];
 let sortable = null;
 let replyData = null;
 let currentVideo = "";

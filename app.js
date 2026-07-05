@@ -1258,7 +1258,21 @@ onSnapshot(drawingGameRef, (snap) => {
 
     drawingGame = snap.data();
 
-    console.log("Drawing Game:", drawingGame.state);
+    switch (drawingGame.state) {
+
+        case "idle":
+            console.log("GAME IDLE");
+            break;
+
+        case "voting":
+            console.log("GAME VOTING");
+            break;
+
+        case "drawing":
+            console.log("GAME DRAWING");
+            break;
+
+    }
 
 });
 

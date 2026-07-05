@@ -90,7 +90,6 @@ const commandMenu =
 document.getElementById("commandMenu");
 /* ================= STATE ================= */
 
-let musicLists = [];
 let sortable = null;
 let replyData = null;
 let currentVideo = "";
@@ -442,48 +441,6 @@ await addDoc(collection(db, "messages"), {
     privateUid,  
     timestamp: serverTimestamp()  
 });
-
-}
-
-function showMusicList(keyword = "") {
-
-    commandMenu.innerHTML = "";
-
-    const hasil = musicLists.filter(item =>
-        item.nameLower.includes(keyword.toLowerCase())
-    );
-
-    if (hasil.length === 0) {
-        commandMenu.style.display = "none";
-        return;
-    }
-
-    hasil.forEach(item => {
-
-        const div = document.createElement("div");
-
-        div.className = "command-item";
-
-        div.innerHTML = `
-            <div class="command-name">🎵 ${item.name}</div>
-            <div class="command-desc">${item.title}</div>
-        `;
-
-        div.onclick = () => {
-
-            input.value = "/play " + item.name;
-
-            commandMenu.style.display = "none";
-
-            input.focus();
-
-        };
-
-        commandMenu.appendChild(div);
-
-    });
-
-    commandMenu.style.display = "block";
 
 }
 
@@ -1099,17 +1056,11 @@ if (playerReady) {
 });
 
 onSnapshot(
-    query(musicListRef, orderBy("nameLower")),
-    snapshot => {
-
-        musicLists = [];
-
-        snapshot.forEach(docSnap => {
-            musicLists.push(docSnap.data());
-        });
-
-    }
-);
+query(
+playlistRef,
+orderBy("order")
+),
+(snapshot)=>{
 
 playlistList.innerHTML = "";  
 
@@ -1807,20 +1758,6 @@ if (document.visibilityState === "visible") {
 });
 
 input.addEventListener("input", () => {
-
-const text = input.value;
-
-if (text.startsWith("/play ")) {
-
-    const keyword = text.substring(6);
-
-    showMusicList(keyword);
-
-} else {
-
-    commandMenu.style.display = "none";
-
-}
 
 input.style.height = "44px";  
 

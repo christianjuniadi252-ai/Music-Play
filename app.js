@@ -720,8 +720,7 @@ try {
         return;  
     }  
       
-    if (text.startsWith("/list rename")) {  
-        alert("Test")  
+    if (text.startsWith("/list rename")) {
       
         const args = text.split(" ");  
       

@@ -93,14 +93,11 @@ const onlineModal = document.getElementById("onlineModal");
 const onlineList = document.getElementById("onlineList");
 
 const presenceRef = collection(db, "presence");
-const drawingGameRef = doc(db, "drawingGame", "main");
-const drawingVotesRef = collection(db, "drawingVotes");
 /* ================= STATE ================= */
 
 let sortable = null;
 let replyData = null;
 let currentVideo = "";
-let drawingGame = null;
 let ytPlayer = null;
 let roomData = null;
 let playerReady = false;
@@ -329,23 +326,6 @@ onAuthStateChanged(auth, async (user) => {
 
     avatar.src = user.photoURL;
     username.textContent = user.displayName;
-    
-    const gameSnap = await getDoc(drawingGameRef);
-    
-    if (!gameSnap.exists()) {
-    
-        await setDoc(drawingGameRef,{
-            state:"idle",
-            hostUid:"",
-            drawerUid:"",
-            drawerName:"",
-            answer:"",
-            voteEnd:0,
-            gameEnd:0,
-            createdAt:Date.now()
-        });
-    
-    }
 
     const myPresenceRef = doc(db, "presence", user.uid);
 
@@ -850,45 +830,7 @@ try {
       
         return;  
       
-    } 
-    
-    /* ================= DRAWING VOTE ================= */
-    
-    if (text === "/yes" || text === "/no") {
-    
-        const gameSnap = await getDoc(drawingGameRef);
-    
-        if (!gameSnap.exists()) {
-            alert("Tidak ada voting.");
-            return;
-        }
-    
-        const game = gameSnap.data();
-    
-        if (game.state !== "voting") {
-            alert("Voting sudah selesai.");
-            return;
-        }
-    
-        await setDoc(
-            doc(
-                db,
-                "drawingVotes",
-                auth.currentUser.uid
-            ),
-            {
-                uid: auth.currentUser.uid,
-                name: auth.currentUser.displayName,
-                vote: text === "/yes"
-                    ? "yes"
-                    : "no"
-            }
-        );
-    
-        resetInput();
-    
-        return;
-    }
+    }  
 
     /* ================= SAY ================= */  
 
@@ -907,60 +849,6 @@ try {
 
         return;  
     }  
-    
-    /* ================= DRAWING GUESS ================= */
-    
-    if (text === "/drawingguess") {
-    
-        // Game sudah berjalan
-        if (
-            drawingGame &&
-            drawingGame.state !== "idle"
-        ) {
-    
-            alert("Permainan Tebak Gambar sedang berlangsung.");
-    
-            return;
-    
-        }
-    
-        // Musik sedang diputar
-        if (
-            roomData &&
-            roomData.status === "playing"
-        ) {
-    
-            alert("Tidak dapat memulai permainan saat musik sedang diputar.");
-    
-            return;
-    
-        }
-    
-        await setDoc(
-            drawingGameRef,
-            {
-                state: "voting",
-                hostUid: auth.currentUser.uid,
-                hostName: auth.currentUser.displayName,
-                drawerUid: "",
-                drawerName: "",
-                answer: "",
-                voteEnd: Date.now() + 20000,
-                gameEnd: 0,
-                createdAt: Date.now()
-            },
-            { merge: true }
-        );
-    
-        await sendBotMessage(
-            `🎨 <b>${auth.currentUser.displayName}</b> ingin bermain Tebak Gambar.\n\nVoting akan segera dimulai...`
-        );
-    
-        resetInput();
-    
-        return;
-    
-    }
 
     /* ================= PLAY ================= */  
 
@@ -1290,30 +1178,6 @@ await addDoc(collection(db, "messages"), {
 }
 
 sendBtn.onclick = sendMessage;
-
-onSnapshot(drawingGameRef, (snap) => {
-
-    if (!snap.exists()) return;
-
-    drawingGame = snap.data();
-
-    switch (drawingGame.state) {
-
-        case "idle":
-            console.log("GAME IDLE");
-            break;
-
-        case "voting":
-            console.log("GAME VOTING");
-            break;
-
-        case "drawing":
-            console.log("GAME DRAWING");
-            break;
-
-    }
-
-});
 
 onSnapshot(roomRef, (snap) => {
 

@@ -868,6 +868,60 @@ try {
 
         return;  
     }  
+    
+    /* ================= DRAWING GUESS ================= */
+    
+    if (text === "/drawingguess") {
+    
+        // Game sudah berjalan
+        if (
+            drawingGame &&
+            drawingGame.state !== "idle"
+        ) {
+    
+            alert("Permainan Tebak Gambar sedang berlangsung.");
+    
+            return;
+    
+        }
+    
+        // Musik sedang diputar
+        if (
+            roomData &&
+            roomData.status === "playing"
+        ) {
+    
+            alert("Tidak dapat memulai permainan saat musik sedang diputar.");
+    
+            return;
+    
+        }
+    
+        await setDoc(
+            drawingGameRef,
+            {
+                state: "voting",
+                hostUid: auth.currentUser.uid,
+                hostName: auth.currentUser.displayName,
+                drawerUid: "",
+                drawerName: "",
+                answer: "",
+                voteEnd: Date.now() + 20000,
+                gameEnd: 0,
+                createdAt: Date.now()
+            },
+            { merge: true }
+        );
+    
+        await sendBotMessage(
+            `🎨 <b>${auth.currentUser.displayName}</b> ingin bermain Tebak Gambar.\n\nVoting akan segera dimulai...`
+        );
+    
+        resetInput();
+    
+        return;
+    
+    }
 
     /* ================= PLAY ================= */  
 

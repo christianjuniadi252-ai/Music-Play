@@ -1155,7 +1155,7 @@ if(e.target === menuOverlay){
 const q = query(
     collection(db, "messages"),
     orderBy("timestamp", "desc"),
-    limit(100)
+    limit(30)
 );
 
 let previousUid = "";
@@ -1270,6 +1270,8 @@ bubble.addEventListener("touchcancel", () => {
 }
 
 onSnapshot(q, snapshot => {
+  
+const start = performance.now();
 
 chat.innerHTML = "";
 
@@ -1536,6 +1538,9 @@ docs.forEach(docSnap => {
 lucide.createIcons();  
 
 chat.scrollTop = chat.scrollHeight;
+
+const end = performance.now();
+console.log("Render:", (end - start).toFixed(0), "ms");
 
 });
 

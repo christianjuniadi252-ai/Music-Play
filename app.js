@@ -42,6 +42,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const roomRef = doc(db,"room","main");
 const playlistRef = collection(db,"playlist");
+const drawingGameRef = doc(db,"drawingGame","current");
 const provider = new GoogleAuthProvider();
 
 /* ================= ELEMENT ================= */
@@ -98,6 +99,7 @@ const presenceRef = collection(db, "presence");
 let sortable = null;
 let replyData = null;
 let currentVideo = "";
+let drawingGame = null;
 let ytPlayer = null;
 let roomData = null;
 let playerReady = false;
@@ -326,6 +328,23 @@ onAuthStateChanged(auth, async (user) => {
 
     avatar.src = user.photoURL;
     username.textContent = user.displayName;
+    
+    const gameSnap = await getDoc(drawingGameRef);
+    
+    if (!gameSnap.exists()) {
+    
+        await setDoc(drawingGameRef,{
+            state:"idle",
+            hostUid:"",
+            drawerUid:"",
+            drawerName:"",
+            answer:"",
+            voteEnd:0,
+            gameEnd:0,
+            createdAt:Date.now()
+        });
+    
+    }
 
     const myPresenceRef = doc(db, "presence", user.uid);
 

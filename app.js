@@ -2031,7 +2031,7 @@ input.addEventListener("blur", () => {
 input.addEventListener("input", showCommandMenu);
 
 onlineBtn.onclick = () => {
-
+    alert("Test")
     onlineModal.style.display =
         onlineModal.style.display==="block"
         ? "none"

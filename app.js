@@ -1155,7 +1155,7 @@ if(e.target === menuOverlay){
 const q = query(
     collection(db, "messages"),
     orderBy("timestamp", "desc"),
-    limit(30)
+    limit(10)
 );
 
 let previousUid = "";

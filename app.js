@@ -1152,7 +1152,11 @@ if(e.target === menuOverlay){
 
 /* ================= CHAT REALTIME ================= */
 
-const q = query(collection(db, "messages"), orderBy("timestamp"));
+const q = query(
+    collection(db, "messages"),
+    orderBy("timestamp", "desc"),
+    limit(100)
+);
 
 let previousUid = "";
 let previousDate = "";
@@ -1267,12 +1271,14 @@ bubble.addEventListener("touchcancel", () => {
 
 onSnapshot(q, snapshot => {
 
-chat.innerHTML = "";  
+chat.innerHTML = "";
 
-previousUid = "";  
-previousDate = "";  
+previousUid = "";
+previousDate = "";
 
-snapshot.forEach(docSnap => {  
+const docs = snapshot.docs.reverse();
+
+docs.forEach(docSnap => {
 
     const msg = {  
         id: docSnap.id,  

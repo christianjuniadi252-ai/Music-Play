@@ -786,6 +786,38 @@ button:hover{
     font-size:13px;
     margin-top:3px;
 }
+
+.online-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding:12px 14px;
+
+    border-bottom:1px solid #333;
+}
+
+.online-item:last-child{
+    border-bottom:none;
+}
+
+.online-avatar{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.online-name{
+    color:white;
+    font-weight:bold;
+}
+
+.online-status{
+    margin-left:auto;
+    color:#22c55e;
+    font-size:13px;
+}
 </style>
 </head>  
 <body>
@@ -803,6 +835,10 @@ button:hover{
     </div>
 
     <div class="header-buttons">
+        <button id="onlineBtn">
+            Online : 0
+        </button>
+        
         <button id="refreshBtn">
             <i data-lucide="rotate-cw"></i>
         </button>
@@ -815,6 +851,16 @@ button:hover{
             <i data-lucide="settings"></i>
         </button>
     </div>
+
+</div>
+
+<div id="onlineModal" class="playlist-modal" style="display:none">
+
+    <div class="playlist-header">
+        Online
+    </div>
+
+    <div id="onlineList"></div>
 
 </div>
 
@@ -872,7 +918,7 @@ button:hover{
     <textarea
       id="commandInput"
       rows="1"
-      placeholder="Pesan atau /play URL 797"></textarea>
+      placeholder="Pesan atau /play URL 798"></textarea>
 
     <button id="sendBtn">
         <i data-lucide="send-horizontal"></i>

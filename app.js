@@ -90,6 +90,7 @@ const commandMenu =
 document.getElementById("commandMenu");
 /* ================= STATE ================= */
 
+let musicLists = [];
 let sortable = null;
 let replyData = null;
 let currentVideo = "";
@@ -1056,11 +1057,17 @@ if (playerReady) {
 });
 
 onSnapshot(
-query(
-playlistRef,
-orderBy("order")
-),
-(snapshot)=>{
+    query(musicListRef, orderBy("nameLower")),
+    snapshot => {
+
+        musicLists = [];
+
+        snapshot.forEach(docSnap => {
+            musicLists.push(docSnap.data());
+        });
+
+    }
+);
 
 playlistList.innerHTML = "";  
 

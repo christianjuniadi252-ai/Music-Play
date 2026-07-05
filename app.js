@@ -288,6 +288,8 @@ if (ytPlayer.getPlayerState() !== YT.PlayerState.PLAYING) {
 }
 
 async function handlePlayerState(event){
+
+if(event.data!==YT.PlayerState.ENDED)return;  
   
 const allowed = await runTransaction(db, async (transaction) => {
     const snap = await transaction.get(roomRef);
@@ -307,7 +309,6 @@ const allowed = await runTransaction(db, async (transaction) => {
 
 if (!allowed) return;
 
-if(event.data!==YT.PlayerState.ENDED)return;  
 
 const snap=await getDoc(roomRef);  
 

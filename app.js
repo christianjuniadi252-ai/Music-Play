@@ -94,6 +94,8 @@ const onlineModal = document.getElementById("onlineModal");
 const onlineList = document.getElementById("onlineList");
 
 const presenceRef = collection(db, "presence");
+const drawingGameRef = doc(db, "drawingGame", "main");
+const drawingVotesRef = collection(db, "drawingVotes");
 /* ================= STATE ================= */
 
 let sortable = null;
@@ -849,7 +851,45 @@ try {
       
         return;  
       
-    }  
+    } 
+    
+    /* ================= DRAWING VOTE ================= */
+    
+    if (text === "/yes" || text === "/no") {
+    
+        const gameSnap = await getDoc(drawingGameRef);
+    
+        if (!gameSnap.exists()) {
+            alert("Tidak ada voting.");
+            return;
+        }
+    
+        const game = gameSnap.data();
+    
+        if (game.status !== "voting") {
+            alert("Voting sudah selesai.");
+            return;
+        }
+    
+        await setDoc(
+            doc(
+                db,
+                "drawingVotes",
+                auth.currentUser.uid
+            ),
+            {
+                uid: auth.currentUser.uid,
+                name: auth.currentUser.displayName,
+                vote: text === "/yes"
+                    ? "yes"
+                    : "no"
+            }
+        );
+    
+        resetInput();
+    
+        return;
+    }
 
     /* ================= SAY ================= */  
 

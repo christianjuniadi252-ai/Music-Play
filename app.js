@@ -1849,3 +1849,13 @@ if(jarak > 150){
 }
 
 });
+
+input.addEventListener("focus", () => {
+    document.querySelector(".player").style.display = "none";
+});
+
+input.addEventListener("blur", () => {
+    if (currentVideo) {
+        document.querySelector(".player").style.display = "block";
+    }
+});

@@ -22,7 +22,8 @@ doc,
 setDoc,
 updateDoc,
 deleteDoc,
-getDoc
+getDoc,
+runTransaction
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 /* ================= FIREBASE ================= */
@@ -287,6 +288,24 @@ if (ytPlayer.getPlayerState() !== YT.PlayerState.PLAYING) {
 }
 
 async function handlePlayerState(event){
+  
+const allowed = await runTransaction(db, async (transaction) => {
+    const snap = await transaction.get(roomRef);
+
+    if (!snap.exists()) return false;
+
+    const room = snap.data();
+
+    if (room.endMessageSent) return false;
+
+    transaction.update(roomRef, {
+        endMessageSent: true
+    });
+
+    return true;
+});
+
+if (!allowed) return;
 
 if(event.data!==YT.PlayerState.ENDED)return;  
 

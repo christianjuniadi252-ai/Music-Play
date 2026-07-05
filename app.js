@@ -156,6 +156,114 @@ const commands = [
 
 ];
 
+async function showCommandMenu(){
+
+    const value = input.value.trimStart();
+
+    commandMenu.innerHTML = "";
+
+    if(!value.startsWith("/")){
+        commandMenu.style.display="none";
+        return;
+    }
+
+    // COMMAND
+    if(!value.includes(" ")){
+
+        const hasil = commands.filter(c =>
+            c.cmd.startsWith(value)
+        );
+
+        hasil.forEach(c=>{
+
+            const div=document.createElement("div");
+
+            div.className="command-item";
+
+            div.innerHTML=`
+                <div class="command-name">${c.cmd}</div>
+                <div class="command-desc">${c.desc}</div>
+            `;
+
+            div.onclick=()=>{
+
+                input.value=c.cmd+" ";
+
+                commandMenu.style.display="none";
+
+                input.focus();
+
+            };
+
+            commandMenu.appendChild(div);
+
+        });
+
+        commandMenu.style.display =
+            hasil.length ? "block" : "none";
+
+        return;
+    }
+
+    // PLAY LIST
+    const args=value.split(" ");
+
+    if(args[0]==="/play"){
+
+        const keyword=args.slice(1).join(" ").toLowerCase();
+
+        const snap=await getDocs(
+            query(
+                musicListRef,
+                orderBy("nameLower")
+            )
+        );
+
+        snap.forEach(docSnap=>{
+
+            const data=docSnap.data();
+
+            if(
+                keyword &&
+                !data.nameLower.includes(keyword)
+            ){
+                return;
+            }
+
+            const div=document.createElement("div");
+
+            div.className="command-item";
+
+            div.innerHTML=`
+                <div class="command-name">${data.name}</div>
+                <div class="command-desc">${data.title}</div>
+            `;
+
+            div.onclick=()=>{
+
+                input.value="/play "+data.name;
+
+                commandMenu.style.display="none";
+
+                input.focus();
+
+            };
+
+            commandMenu.appendChild(div);
+
+        });
+
+        commandMenu.style.display =
+            commandMenu.children.length
+            ? "block"
+            : "none";
+
+        return;
+    }
+
+    commandMenu.style.display="none";
+}
+
 function createPlayer() {
 if (!window.YT || !YT.Player) {
 setTimeout(createPlayer, 100);
@@ -1915,51 +2023,4 @@ input.addEventListener("blur", () => {
     }
 });
 
-input.addEventListener("input",()=>{
-
-const value=input.value;
-
-if(!value.startsWith("/")){
-    commandMenu.style.display="none";
-    return;
-}
-
-const hasil=commands.filter(c=>
-    c.cmd.startsWith(value)
-);
-
-if(hasil.length===0){
-    commandMenu.style.display="none";
-    return;
-}
-
-commandMenu.innerHTML="";
-
-hasil.forEach(c=>{
-
-const div=document.createElement("div");
-
-div.className="command-item";
-
-div.innerHTML=`
-<div class="command-name">${c.cmd}</div>
-<div class="command-desc">${c.desc}</div>
-`;
-
-div.onclick=()=>{
-
-input.value=c.cmd+" ";
-
-commandMenu.style.display="none";
-
-input.focus();
-
-};
-
-commandMenu.appendChild(div);
-
-});
-
-commandMenu.style.display="block";
-
-});
+input.addEventListener("input", showCommandMenu);

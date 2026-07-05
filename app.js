@@ -148,7 +148,7 @@ const commands = [
 
 {
     cmd:"/list delete",
-    desc:"Hapus list"
+    desc:"Hapus list",
     usage:"/list delete <nama list>"
 },
 

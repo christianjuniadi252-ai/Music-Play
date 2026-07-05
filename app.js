@@ -1858,20 +1858,6 @@ if (playlistModal.style.display === "block") {
 
 });
 
-onlineBtn.addEventListener("click", () => {
-
-    if (onlineModal.style.display === "block") {
-
-        onlineModal.style.display = "none";
-
-    } else {
-
-        onlineModal.style.display = "block";
-
-    }
-
-});
-
 document.addEventListener("visibilitychange", () => {
 
 if (document.visibilityState === "visible") {  

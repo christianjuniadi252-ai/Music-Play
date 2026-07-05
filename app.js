@@ -2088,6 +2088,6 @@ onSnapshot(presenceRef, (snapshot) => {
 
     });
 
-    onlineBtn.innerHTML = `Online : ${total}`;
+    onlineBtn.innerHTML = `<i data-lucide="user"></i> : ${total}`;
 
 });

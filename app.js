@@ -1168,13 +1168,14 @@ try {
             votingEndsAt: Date.now() + 10000
         });
     
-        await sendBotMessage(
-            `🎮 <b>${user.displayName}</b> memulai tebak gambar\n\n` +
-            `⏳ Voting dimulai (10 detik)\n\n` +
-            `Tekan:\n` +
-            `👍 Setuju\n` +
-            `👎 Tidak setuju`
+        const msg = await sendBotMessage(
+            `🎮 <b>${user.displayName}</b> memulai tebak gambar\n\n⏳ Voting 10 detik`
         );
+        
+        // simpan voting UI target
+        await updateDoc(doc(db, "gameGuessDraw", "main"), {
+            voteMessageId: msg.id
+        });
     
         startGuessDrawVotingTimer();
     
@@ -2108,6 +2109,41 @@ function startGuessDrawVotingTimer() {
     }, 10000);
 }
 
+function renderVoteUI(gameData) {
+
+    const yes = gameData?.votesYes?.length || 0;
+    const no = gameData?.votesNo?.length || 0;
+
+    const btn = document.querySelector("#vote-btns");
+
+    if (!btn) return;
+
+    btn.innerHTML = `
+        <div class="vote-box">
+            <button id="voteYes">👍 Setuju (${yes})</button>
+            <button id="voteNo">👎 Tidak setuju (${no})</button>
+        </div>
+    `;
+
+    document.getElementById("voteYes").onclick = async () => {
+
+        await updateDoc(guessDrawRef, {
+            votesYes: arrayUnion(auth.currentUser.uid),
+            votesNo: arrayRemove(auth.currentUser.uid)
+        });
+
+    };
+
+    document.getElementById("voteNo").onclick = async () => {
+
+        await updateDoc(guessDrawRef, {
+            votesNo: arrayUnion(auth.currentUser.uid),
+            votesYes: arrayRemove(auth.currentUser.uid)
+        });
+
+    };
+}
+
 setInterval(() => {
 
 if (!ytPlayer || !playerReady) return;  
@@ -2202,5 +2238,48 @@ onSnapshot(presenceRef, (snapshot) => {
     });
 
     onlineBtn.innerHTML = `<i data-lucide="user"></i> ${total}`;
+
+});
+
+onSnapshot(guessDrawRef, (snap) => {
+
+    if (!snap.exists()) return;
+
+    const data = snap.data();
+
+    const yes = data.votesYes?.length || 0;
+    const no = data.votesNo?.length || 0;
+
+    const btn = document.querySelector("#vote-btns");
+
+    if (!btn) return;
+
+    btn.innerHTML = `
+        <div class="vote-box">
+            <button id="voteYes">👍 Setuju (${yes})</button>
+            <button id="voteNo">👎 Tidak setuju (${no})</button>
+        </div>
+    `;
+
+    const yesBtn = document.getElementById("voteYes");
+    const noBtn = document.getElementById("voteNo");
+
+    if (yesBtn) {
+        yesBtn.onclick = async () => {
+            await updateDoc(guessDrawRef, {
+                votesYes: arrayUnion(auth.currentUser.uid),
+                votesNo: arrayRemove(auth.currentUser.uid)
+            });
+        };
+    }
+
+    if (noBtn) {
+        noBtn.onclick = async () => {
+            await updateDoc(guessDrawRef, {
+                votesNo: arrayUnion(auth.currentUser.uid),
+                votesYes: arrayRemove(auth.currentUser.uid)
+            });
+        };
+    }
 
 });

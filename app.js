@@ -42,7 +42,6 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const roomRef = doc(db,"room","main");
 const playlistRef = collection(db,"playlist");
-const drawingGameRef = doc(db,"drawingGame","current");
 const provider = new GoogleAuthProvider();
 
 /* ================= ELEMENT ================= */

@@ -1915,3 +1915,52 @@ input.addEventListener("blur", () => {
         document.querySelector(".player").style.display = "block";
     }
 });
+
+input.addEventListener("input",()=>{
+
+const value=input.value;
+
+if(!value.startsWith("/")){
+    commandMenu.style.display="none";
+    return;
+}
+
+const hasil=commands.filter(c=>
+    c.cmd.startsWith(value)
+);
+
+if(hasil.length===0){
+    commandMenu.style.display="none";
+    return;
+}
+
+commandMenu.innerHTML="";
+
+hasil.forEach(c=>{
+
+const div=document.createElement("div");
+
+div.className="command-item";
+
+div.innerHTML=`
+<div class="command-name">${c.cmd}</div>
+<div class="command-desc">${c.desc}</div>
+`;
+
+div.onclick=()=>{
+
+input.value=c.cmd+" ";
+
+commandMenu.style.display="none";
+
+input.focus();
+
+};
+
+commandMenu.appendChild(div);
+
+});
+
+commandMenu.style.display="block";
+
+});

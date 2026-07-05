@@ -316,15 +316,39 @@ alert(e.message);
 }
 };
 
-onAuthStateChanged(auth, user => {
-if (!user) return;
+let presenceInterval = null;
 
-loginBtn.style.display = "none";  
-userInfo.style.display = "flex";  
+onAuthStateChanged(auth, async (user) => {
+    if (!user) return;
 
-avatar.src = user.photoURL;  
-username.textContent = user.displayName;
+    loginBtn.style.display = "none";
+    userInfo.style.display = "flex";
 
+    avatar.src = user.photoURL;
+    username.textContent = user.displayName;
+
+    const myPresenceRef = doc(db, "presence", user.uid);
+
+    await setDoc(myPresenceRef, {
+        name: user.displayName,
+        photo: user.photoURL,
+        lastSeen: Date.now()
+    });
+
+    if (!presenceInterval) {
+        presenceInterval = setInterval(async () => {
+
+            if (!auth.currentUser) return;
+
+            await updateDoc(
+                doc(db, "presence", auth.currentUser.uid),
+                {
+                    lastSeen: Date.now()
+                }
+            );
+
+        }, 20000);
+    }
 });
 
 /* ================= YOUTUBE ID ================= */
@@ -2037,3 +2061,34 @@ onlineBtn.onclick = () => {
         : "block";
 
 };
+
+onSnapshot(presenceRef, (snapshot) => {
+
+    onlineList.innerHTML = "";
+
+    let total = 0;
+
+    snapshot.forEach(docSnap => {
+
+        const data = docSnap.data();
+
+        if (Date.now() - data.lastSeen > 30000) return;
+
+        total++;
+
+        const item = document.createElement("div");
+
+        item.className = "online-user";
+
+        item.innerHTML = `
+            <img src="${data.photo}">
+            <span>${data.name}</span>
+        `;
+
+        onlineList.appendChild(item);
+
+    });
+
+    onlineBtn.innerHTML = `Online : ${total}`;
+
+});

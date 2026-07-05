@@ -23,7 +23,9 @@ setDoc,
 updateDoc,
 deleteDoc,
 getDoc,
-runTransaction
+runTransaction,
+arrayUnion,
+arrayRemove
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 /* ================= FIREBASE ================= */
@@ -93,6 +95,7 @@ const onlineModal = document.getElementById("onlineModal");
 const onlineList = document.getElementById("onlineList");
 
 const presenceRef = collection(db, "presence");
+const guessDrawRef = doc(db, "gameGuessDraw", "main");
 /* ================= STATE ================= */
 
 let sortable = null;
@@ -1139,6 +1142,75 @@ try {
 
         return;  
     }  
+    
+        /* ================= GUESS DRAW ================= */  
+    
+    if (text === "/game guessdraw") {
+    
+        const user = auth.currentUser;
+    
+        const snap = await getDoc(doc(db, "gameGuessDraw", "main"));
+        const data = snap.exists() ? snap.data() : null;
+    
+        // kalau masih voting aktif
+        if (data && data.status === "voting") {
+            alert("Voting masih berjalan!");
+            return;
+        }
+    
+        await setDoc(doc(db, "gameGuessDraw", "main"), {
+            status: "voting",
+            starterUid: user.uid,
+            starterName: user.displayName,
+            votesYes: [],
+            votesNo: [],
+            createdAt: Date.now()
+        });
+    
+        await sendBotMessage(
+            `🎮 <b>${user.displayName}</b> memulai tebak gambar\n\n` +
+            `⏳ Voting dimulai (10 detik)\n\n` +
+            `Tekan:\n` +
+            `👍 Setuju\n` +
+            `👎 Tidak setuju`
+        );
+    
+        startGuessDrawVotingTimer();
+    
+        return;
+    }
+    
+    if (text === "/vote yes") {
+    
+        const snap = await getDoc(guessDrawRef);
+        if (!snap.exists()) return;
+    
+        const data = snap.data();
+        if (data.status !== "voting") return;
+    
+        await updateDoc(guessDrawRef, {
+            votesYes: arrayUnion(auth.currentUser.uid),
+            votesNo: arrayRemove(auth.currentUser.uid)
+        });
+    
+        return;
+    }
+    
+    if (text === "/vote no") {
+    
+        const snap = await getDoc(guessDrawRef);
+        if (!snap.exists()) return;
+    
+        const data = snap.data();
+        if (data.status !== "voting") return;
+    
+        await updateDoc(guessDrawRef, {
+            votesNo: arrayUnion(auth.currentUser.uid),
+            votesYes: arrayRemove(auth.currentUser.uid)
+        });
+    
+        return;
+    }
 
     /* ================= CHAT ================= */  
 
@@ -1993,6 +2065,50 @@ const s=sec%60;
 return String(m).padStart(2,"0")+":"+  
        String(s).padStart(2,"0");
 
+}
+
+function startGuessDrawVotingTimer() {
+
+    setTimeout(async () => {
+
+        const ref = doc(db, "gameGuessDraw", "main");
+        const snap = await getDoc(ref);
+
+        if (!snap.exists()) return;
+
+        const data = snap.data();
+
+        const yes = data.votesYes.length;
+        const no = data.votesNo.length;
+
+        if (yes > no) {
+
+            await updateDoc(ref, {
+                status: "playing",
+                voting: false
+            });
+
+            await sendBotMessage(
+                `🎮 Voting selesai!\n\n` +
+                `👍 ${yes} | 👎 ${no}\n\n` +
+                `✅ Game DIMULAI!`
+            );
+
+        } else {
+
+            await updateDoc(ref, {
+                status: "idle",
+                voting: false
+            });
+
+            await sendBotMessage(
+                `🎮 Voting selesai!\n\n` +
+                `👍 ${yes} | 👎 ${no}\n\n` +
+                `❌ Game TIDAK dimulai`
+            );
+        }
+
+    }, 10000);
 }
 
 setInterval(() => {

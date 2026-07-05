@@ -865,7 +865,7 @@ try {
     
         const game = gameSnap.data();
     
-        if (game.status !== "voting") {
+        if (game.state !== "voting") {
             alert("Voting sudah selesai.");
             return;
         }

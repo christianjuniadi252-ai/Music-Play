@@ -88,6 +88,11 @@ const scrollBottomBtn =
 document.getElementById("scrollBottomBtn");
 const commandMenu =
 document.getElementById("commandMenu");
+const onlineBtn = document.getElementById("onlineBtn");
+const onlineModal = document.getElementById("onlineModal");
+const onlineList = document.getElementById("onlineList");
+
+const presenceRef = collection(db, "presence");
 /* ================= STATE ================= */
 
 let sortable = null;
@@ -1853,6 +1858,20 @@ if (playlistModal.style.display === "block") {
 
 });
 
+onlineBtn.addEventListener("click", () => {
+
+    if (onlineModal.style.display === "block") {
+
+        onlineModal.style.display = "none";
+
+    } else {
+
+        onlineModal.style.display = "block";
+
+    }
+
+});
+
 document.addEventListener("visibilitychange", () => {
 
 if (document.visibilityState === "visible") {  
@@ -2024,3 +2043,12 @@ input.addEventListener("blur", () => {
 });
 
 input.addEventListener("input", showCommandMenu);
+
+onlineBtn.onclick = () => {
+
+    onlineModal.style.display =
+        onlineModal.style.display==="block"
+        ? "none"
+        : "block";
+
+};

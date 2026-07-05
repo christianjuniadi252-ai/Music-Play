@@ -86,7 +86,8 @@ const playlistList = document.getElementById("playlistList");
 const musicListRef = collection(db,"musicList");
 const scrollBottomBtn =
 document.getElementById("scrollBottomBtn");
-
+const commandMenu =
+document.getElementById("commandMenu");
 /* ================= STATE ================= */
 
 let sortable = null;
@@ -100,6 +101,60 @@ let selectedMessage = null;
 let hold = null;
 let editingMessage = null;
 let sending = false;
+
+const commands = [
+
+{
+    cmd:"/play",
+    desc:"Memutar musik"
+},
+
+{
+    cmd:"/pause",
+    desc:"Menjeda musik"
+},
+
+{
+    cmd:"/resume",
+    desc:"Melanjutkan musik"
+},
+
+{
+    cmd:"/skip",
+    desc:"Lewati lagu"
+},
+
+{
+    cmd:"/stop",
+    desc:"Hentikan musik"
+},
+
+{
+    cmd:"/clear",
+    desc:"Hapus playlist"
+},
+
+{
+    cmd:"/list",
+    desc:"Daftar musik"
+},
+
+{
+    cmd:"/list add",
+    desc:"Tambah list"
+},
+
+{
+    cmd:"/list delete",
+    desc:"Hapus list"
+},
+
+{
+    cmd:"/list rename",
+    desc:"Ganti nama list"
+}
+
+];
 
 function createPlayer() {
 if (!window.YT || !YT.Player) {
@@ -1858,4 +1913,53 @@ input.addEventListener("blur", () => {
     if (currentVideo) {
         document.querySelector(".player").style.display = "block";
     }
+});
+
+input.addEventListener("input",()=>{
+
+const value=input.value;
+
+if(!value.startsWith("/")){
+    commandMenu.style.display="none";
+    return;
+}
+
+const hasil=commands.filter(c=>
+    c.cmd.startsWith(value)
+);
+
+if(hasil.length===0){
+    commandMenu.style.display="none";
+    return;
+}
+
+commandMenu.innerHTML="";
+
+hasil.forEach(c=>{
+
+const div=document.createElement("div");
+
+div.className="command-item";
+
+div.innerHTML=`
+<div class="command-name">${c.cmd}</div>
+<div class="command-desc">${c.desc}</div>
+`;
+
+div.onclick=()=>{
+
+input.value=c.cmd+" ";
+
+commandMenu.style.display="none";
+
+input.focus();
+
+};
+
+commandMenu.appendChild(div);
+
+});
+
+commandMenu.style.display="block";
+
 });

@@ -719,12 +719,16 @@ try {
         }  
 
         const roomSnap = await getDoc(roomRef);  
+        
+        const room = roomSnap.exists()
+            ? roomSnap.data()
+            : null;
 
-        if (  
-            !roomSnap.exists() ||  
-            !roomSnap.data().videoId ||  
-            roomSnap.data().status !== "playing"  
-        ) {  
+        if (
+            !room ||
+            !room.videoId ||
+            room.status === "stopped"
+        ) {
 
             await setDoc(roomRef, {  
                 videoId: id,  

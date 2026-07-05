@@ -1164,7 +1164,8 @@ try {
             starterName: user.displayName,
             votesYes: [],
             votesNo: [],
-            createdAt: Date.now()
+            createdAt: Date.now(),
+            votingEndsAt: Date.now() + 10000
         });
     
         await sendBotMessage(
@@ -1188,9 +1189,10 @@ try {
         const data = snap.data();
         if (data.status !== "voting") return;
     
-        await updateDoc(guessDrawRef, {
-            votesYes: arrayUnion(auth.currentUser.uid),
-            votesNo: arrayRemove(auth.currentUser.uid)
+          await updateDoc(guessDrawRef, {
+              votesYes: arrayUnion(auth.currentUser.uid),
+              votesNo: arrayRemove(auth.currentUser.uid)
+          });
         });
     
         return;
@@ -2078,33 +2080,29 @@ function startGuessDrawVotingTimer() {
 
         const data = snap.data();
 
-        const yes = data.votesYes.length;
-        const no = data.votesNo.length;
+        if (data.status !== "voting") return;
+
+        const yes = (data.votesYes || []).length;
+        const no = (data.votesNo || []).length;
 
         if (yes > no) {
 
             await updateDoc(ref, {
-                status: "playing",
-                voting: false
+                status: "playing"
             });
 
             await sendBotMessage(
-                `🎮 Voting selesai!\n\n` +
-                `👍 ${yes} | 👎 ${no}\n\n` +
-                `✅ Game DIMULAI!`
+                `🎮 Voting selesai!\n\n👍 ${yes} | 👎 ${no}\n\n✅ Game DIMULAI!`
             );
 
         } else {
 
             await updateDoc(ref, {
-                status: "idle",
-                voting: false
+                status: "idle"
             });
 
             await sendBotMessage(
-                `🎮 Voting selesai!\n\n` +
-                `👍 ${yes} | 👎 ${no}\n\n` +
-                `❌ Game TIDAK dimulai`
+                `🎮 Voting selesai!\n\n👍 ${yes} | 👎 ${no}\n\n❌ Game TIDAK dimulai`
             );
         }
 

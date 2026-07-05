@@ -106,7 +106,8 @@ const commands = [
 
 {
     cmd:"/play",
-    desc:"Memutar musik"
+    desc:"Memutar musik",
+    usage:"/play <nama list / URL YouTube>"
 },
 
 {
@@ -141,17 +142,20 @@ const commands = [
 
 {
     cmd:"/list add",
-    desc:"Tambah list"
+    desc:"Tambah list",
+    usage: "/list add <nama> <URL>"
 },
 
 {
     cmd:"/list delete",
     desc:"Hapus list"
+    usage:"/list delete <nama list>"
 },
 
 {
     cmd:"/list rename",
-    desc:"Ganti nama list"
+    desc:"Ganti nama list",
+    usage: "/list rename <nama lama> <nama baru>"
 }
 
 ];
@@ -1941,9 +1945,10 @@ const div=document.createElement("div");
 
 div.className="command-item";
 
-div.innerHTML=`
+div.innerHTML = `
 <div class="command-name">${c.cmd}</div>
 <div class="command-desc">${c.desc}</div>
+${c.usage ? `<div class="command-usage">${c.usage}</div>` : ""}
 `;
 
 div.onclick=()=>{

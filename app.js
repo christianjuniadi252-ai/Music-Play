@@ -445,6 +445,48 @@ await addDoc(collection(db, "messages"), {
 
 }
 
+function showMusicList(keyword = "") {
+
+    commandMenu.innerHTML = "";
+
+    const hasil = musicLists.filter(item =>
+        item.nameLower.includes(keyword.toLowerCase())
+    );
+
+    if (hasil.length === 0) {
+        commandMenu.style.display = "none";
+        return;
+    }
+
+    hasil.forEach(item => {
+
+        const div = document.createElement("div");
+
+        div.className = "command-item";
+
+        div.innerHTML = `
+            <div class="command-name">🎵 ${item.name}</div>
+            <div class="command-desc">${item.title}</div>
+        `;
+
+        div.onclick = () => {
+
+            input.value = "/play " + item.name;
+
+            commandMenu.style.display = "none";
+
+            input.focus();
+
+        };
+
+        commandMenu.appendChild(div);
+
+    });
+
+    commandMenu.style.display = "block";
+
+}
+
 function resetInput(){
 
 input.value = "";  
@@ -1765,6 +1807,20 @@ if (document.visibilityState === "visible") {
 });
 
 input.addEventListener("input", () => {
+
+const text = input.value;
+
+if (text.startsWith("/play ")) {
+
+    const keyword = text.substring(6);
+
+    showMusicList(keyword);
+
+} else {
+
+    commandMenu.style.display = "none";
+
+}
 
 input.style.height = "44px";  
 

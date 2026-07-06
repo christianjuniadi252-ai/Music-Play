@@ -33,6 +33,7 @@ import {
     playerTolak,
     hasilVoting,
     votingSelesai,
+    randomHuruf,
     getGame
 } from "./sambungkata.js";
 
@@ -2331,24 +2332,40 @@ async function cekVoting(){
         
     if(setuju > menolak){
     
+        const huruf = randomHuruf();
+        
         await updateDoc(
             sambungkataRef,
             {
-                status:"playing"
+                status: "playing",
+        
+                huruf,
+        
+                giliran: 0,
+        
+                waktuMulai: Date.now(),
+        
+                batasWaktu: Date.now() + 20000
             }
         );
-    
+            
         await sendBotMessage(
-    
-            `🟢 Voting selesai.
-    
-    👍 ${setuju}
-    👎 ${menolak}
-    
-    Permainan dimulai!`
-    
+        
+        `🟢 Voting selesai.
+        
+        👍 ${setuju}
+        👎 ${menolak}
+        
+        Permainan dimulai!
+        
+        Huruf pertama:
+        
+        <b>${huruf.toUpperCase()}</b>
+        
+        Giliran pemain pertama.`
+        
         );
-    
+            
     }else{
     
         await updateDoc(

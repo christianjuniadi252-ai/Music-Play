@@ -887,7 +887,11 @@ try {
         
             status: "voting",
         
-            dibuat: Date.now()
+            dibuat: Date.now(),
+            
+            batasVoting: Date.now() + 20000,
+            
+            selesaiVoting: false
         
         });
     

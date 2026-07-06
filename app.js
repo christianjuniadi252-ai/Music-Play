@@ -2365,6 +2365,35 @@ async function cekVoting(){
         Giliran pemain pertama.`
         
         );
+      
+        const pemain = sambungkataData.pemain;
+        
+        let urutan = "<b>📋 Urutan Pemain</b><br><br>";
+        
+        pemain.forEach((p, index) => {
+        
+            urutan +=
+                `${index + 1}. ${p.nama} ❤️❤️❤️<br>`;
+        
+        });
+        
+        urutan += `
+        <br>
+        Giliran pertama:
+        <b>${pemain[0].nama}</b>
+        
+        <br><br>
+        
+        Huruf:
+        <b>${huruf.toUpperCase()}</b>
+        
+        <br>
+        
+        Waktu:
+        <b>20 detik</b>
+        `;
+        
+        await sendBotMessage(urutan);
             
     }else{
     
@@ -2386,35 +2415,6 @@ async function cekVoting(){
     Permainan dibatalkan.`
     
         );
-        
-    const pemain = sambungkataData.pemain;
-    
-    let urutan = "<b>📋 Urutan Pemain</b><br><br>";
-    
-    pemain.forEach((p, index) => {
-    
-        urutan +=
-            `${index + 1}. ${p.nama} ❤️❤️❤️<br>`;
-    
-    });
-    
-    urutan += `
-    <br>
-    Giliran pertama:
-    <b>${pemain[0].nama}</b>
-    
-    <br><br>
-    
-    Huruf:
-    <b>${huruf.toUpperCase()}</b>
-    
-    <br>
-    
-    Waktu:
-    <b>20 detik</b>
-    `;
-    
-    await sendBotMessage(urutan);
     
     }
 

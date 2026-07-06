@@ -130,7 +130,7 @@ const commands = [
 
 {
     cmd:"/play",
-    desc:"Memutar musik 814"
+    desc:"Memutar musik 815"
 },
 
 {
@@ -1457,40 +1457,7 @@ try {
         resetInput();  
 
         return;  
-    }  
-    
-    if (game.aktif && game.status === "playing") {
-    
-        if (!text.startsWith("/")) {
-    
-            if (!validasiKata(text)) {
-          
-               alert("Kata tidak valid.");
-          
-               resetInput();
-          
-                return;
-
-            }
-            
-            const berikutnya = nextTurn();
-            
-            await sendBotMessage(
-            
-                `✅ Kata diterima.<br><br>
-                Huruf berikutnya:
-                <b>${game.huruf.toUpperCase()}</b><br><br>
-            
-                Giliran:
-                <b>${berikutnya.nama}</b>`
-            
-            );
-            
-            return;
-    
-        }
-    
-    }
+    } 
 
     /* ================= CHAT ================= */  
 

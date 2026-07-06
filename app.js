@@ -37,7 +37,8 @@ import {
     getGame,
     pemainSekarang,
     nextTurn,
-    validasiKata
+    validasiKata,
+    cekKata
 } from "./sambungkata.js";
 
 /* ================= FIREBASE ================= */
@@ -628,15 +629,24 @@ if (!auth.currentUser) {
     return;  
 }  
 
-const game = getGame();
+if (
+    sambungkataData &&
+    sambungkataData.status === "playing"
+) {
 
-if (game.aktif && game.status === "playing") {
+    const pemain =
+        sambungkataData.pemain[
+            sambungkataData.giliran
+        ];
 
-    const pemain = pemainSekarang();
+    if (
+        auth.currentUser.uid !== pemain.uid
+    ) {
 
-    if (auth.currentUser.uid !== pemain.uid) {
-
-        alert("Sekarang giliran " + pemain.nama);
+        alert(
+            "Sekarang giliran " +
+            pemain.nama
+        );
 
         resetInput();
 
@@ -1015,6 +1025,65 @@ try {
     
         return;
     }
+    
+    /* ================= SAMBUNG KATA MAIN ================= */
+    
+    if (
+        sambungkataData &&
+        sambungkataData.aktif &&
+        sambungkataData.status === "playing"
+    ) {
+    
+        const pemain =
+            sambungkataData.pemain[
+                sambungkataData.giliran
+            ];
+    
+        if (auth.currentUser.uid !== pemain.uid) {
+    
+            alert(
+                "Sekarang giliran " +
+                pemain.nama
+            );
+    
+            return;
+        }
+    
+        if (!cekKata(text)) {
+    
+            alert("Kata tidak ada di kamus.");
+    
+            return;
+        }
+    
+        if (
+            sambungkataData.kataDipakai.includes(
+                text.toLowerCase()
+            )
+        ) {
+    
+            alert("Kata sudah dipakai.");
+    
+            return;
+        }
+    
+        if (
+            !text
+                .toLowerCase()
+                .startsWith(
+                    sambungkataData.huruf
+                )
+        ) {
+    
+            alert(
+                "Kata harus diawali huruf " +
+                sambungkataData.huruf.toUpperCase()
+            );
+    
+            return;
+        }
+    
+    }
 
     /* ================= SAY ================= */  
 
@@ -1329,13 +1398,13 @@ try {
         if (!text.startsWith("/")) {
     
             if (!validasiKata(text)) {
-    
-                alert("Kata tidak valid.");
-    
-                resetInput();
-    
+          
+               alert("Kata tidak valid.");
+          
+               resetInput();
+          
                 return;
-    
+
             }
             
             const berikutnya = nextTurn();

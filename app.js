@@ -638,22 +638,12 @@ if (
         sambungkataData.pemain[
             sambungkataData.giliran
         ];
-
-    if (
-        auth.currentUser.uid !== pemain.uid
-    ) {
-
-        alert(
-            "Sekarang giliran " +
-            pemain.nama
-        );
-
-        resetInput();
-
-        return;
-
+    
+    if (auth.currentUser.uid !== pemain.uid) {
+    
+        // Bukan giliran saya,
+        // biarkan chat berjalan normal.
     }
-
 }
 
 sending = true;  

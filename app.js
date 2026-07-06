@@ -29,6 +29,10 @@ runTransaction
 import {
     initSambungKata,
     mulaiGame,
+    playerSetuju,
+    playerTolak,
+    hasilVoting,
+    votingSelesai,
     getGame
 } from "./sambungkata.js";
 
@@ -117,7 +121,7 @@ const commands = [
 
 {
     cmd:"/play",
-    desc:"Memutar musik p"
+    desc:"Memutar musik"
 },
 
 {

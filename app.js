@@ -113,6 +113,7 @@ let currentVideo = "";
 let ytPlayer = null;
 let roomData = null;
 let sambungkataData = null;
+let votingChecker = null;
 let playerReady = false;
 let syncTimer = null;
 let selectedMessage = null;
@@ -1360,6 +1361,15 @@ onSnapshot(
 
         sambungkataData = snap.data();
 
+        if (!votingChecker) {
+
+            votingChecker = setInterval(
+                cekVoting,
+                1000
+            );
+
+        }
+
     }
 );
 
@@ -2263,3 +2273,19 @@ onSnapshot(presenceRef, (snapshot) => {
     onlineBtn.innerHTML = `<i data-lucide="user"></i> ${total}`;
 
 });
+
+async function cekVoting(){
+
+    if(!sambungkataData) return;
+
+    if(sambungkataData.status !== "voting") return;
+
+    if(sambungkataData.selesaiVoting) return;
+
+    if(Date.now() < sambungkataData.batasVoting){
+        return;
+    }
+
+    alert("Voting Selesai!")
+
+}

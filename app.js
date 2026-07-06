@@ -1509,12 +1509,15 @@ onSnapshot(
         sambungkataData = snap.data();
 
         if (!votingChecker) {
-
-            votingChecker = setInterval(
-                cekVoting,
-                1000
-            );
-
+        
+            votingChecker = setInterval(() => {
+        
+                cekVoting();
+        
+                cekWaktuSambungKata();
+        
+            },1000);
+        
         }
 
     }
@@ -2562,6 +2565,20 @@ async function cekVoting(){
     
         );
     
+    }
+
+}
+
+async function cekWaktuSambungKata(){
+
+    if(!sambungkataData) return;
+
+    if(!sambungkataData.aktif) return;
+
+    if(sambungkataData.status !== "playing") return;
+
+    if(Date.now() < sambungkataData.batasWaktu){
+        return;
     }
 
 }

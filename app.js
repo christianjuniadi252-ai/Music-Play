@@ -869,6 +869,57 @@ try {
     
         return;
     }
+    
+    if (text === "/y") {
+    
+        const game = getGame();
+    
+        if (!game.aktif) {
+            alert("Tidak ada voting Sambung Kata.");
+            return;
+        }
+    
+        if (playerSetuju(
+            auth.currentUser.uid,
+            auth.currentUser.displayName
+        )) {
+    
+            const hasil = hasilVoting();
+    
+            await sendBotMessage(
+                `<b>${auth.currentUser.displayName}</b> memilih <b>SETUJU</b>.<br><br>
+                👍 ${hasil.setuju} | 👎 ${hasil.menolak}`
+            );
+    
+        }
+    
+        resetInput();
+        return;
+    }
+    
+    if (text === "/n") {
+    
+        const game = getGame();
+    
+        if (!game.aktif) {
+            alert("Tidak ada voting Sambung Kata.");
+            return;
+        }
+    
+        if (playerTolak(auth.currentUser.uid)) {
+    
+            const hasil = hasilVoting();
+    
+            await sendBotMessage(
+                `<b>${auth.currentUser.displayName}</b> memilih <b>MENOLAK</b>.<br><br>
+                👍 ${hasil.setuju} | 👎 ${hasil.menolak}`
+            );
+    
+        }
+    
+        resetInput();
+        return;
+    }
 
     /* ================= SAY ================= */  
 

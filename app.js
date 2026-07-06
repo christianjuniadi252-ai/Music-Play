@@ -369,7 +369,7 @@ onAuthStateChanged(auth, async (user) => {
                 }
             );
 
-        }, 20000);
+        }, 5000);
     }
 });
 

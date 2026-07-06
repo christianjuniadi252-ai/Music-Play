@@ -23,9 +23,7 @@ setDoc,
 updateDoc,
 deleteDoc,
 getDoc,
-runTransaction,
-arrayUnion,
-arrayRemove
+runTransaction
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 /* ================= FIREBASE ================= */
@@ -95,7 +93,6 @@ const onlineModal = document.getElementById("onlineModal");
 const onlineList = document.getElementById("onlineList");
 
 const presenceRef = collection(db, "presence");
-const guessDrawRef = doc(db, "gameGuessDraw", "main");
 /* ================= STATE ================= */
 
 let sortable = null;
@@ -572,17 +569,15 @@ title = null,
 privateUid = null
 ){
 
-const ref = await addDoc(collection(db, "messages"), {
-    uid: "music-bot",
-    name: "Music-Bot",
-    photo: "music-bot.png",
-    message,
-    title,
-    privateUid,
-    timestamp: serverTimestamp()
+await addDoc(collection(db, "messages"), {  
+    uid: "music-bot",  
+    name: "Music-Bot",  
+    photo: "music-bot.png",  
+    message,  
+    title,  
+    privateUid,  
+    timestamp: serverTimestamp()  
 });
-
-return ref;
 
 }
 
@@ -1144,77 +1139,6 @@ try {
 
         return;  
     }  
-    
-        /* ================= GUESS DRAW ================= */  
-    
-    if (text === "/game guessdraw") {
-    
-        const user = auth.currentUser;
-    
-        const snap = await getDoc(doc(db, "gameGuessDraw", "main"));
-        const data = snap.exists() ? snap.data() : null;
-    
-        // kalau masih voting aktif
-        if (data && data.status === "voting") {
-            alert("Voting masih berjalan!");
-            return;
-        }
-    
-        await setDoc(doc(db, "gameGuessDraw", "main"), {
-            status: "voting",
-            starterUid: user.uid,
-            starterName: user.displayName,
-            votesYes: [],
-            votesNo: [],
-            createdAt: Date.now(),
-            votingEndsAt: Date.now() + 10000
-        });
-    
-        const msg = await sendBotMessage(
-            `🎮 <b>${user.displayName}</b> memulai tebak gambar\n\n⏳ Voting 10 detik`
-        );
-        
-        // simpan voting UI target
-        await updateDoc(doc(db, "gameGuessDraw", "main"), {
-            voteMessageId: msg.id
-        });
-    
-        startGuessDrawVotingTimer();
-    
-        return;
-    }
-    
-    if (text === "/vote yes") {
-    
-        const snap = await getDoc(guessDrawRef);
-        if (!snap.exists()) return;
-    
-        const data = snap.data();
-        if (data.status !== "voting") return;
-    
-        await updateDoc(guessDrawRef, {
-            votesYes: arrayUnion(auth.currentUser.uid),
-            votesNo: arrayRemove(auth.currentUser.uid)
-        });
-    
-        return;
-    }
-    
-    if (text === "/vote no") {
-    
-        const snap = await getDoc(guessDrawRef);
-        if (!snap.exists()) return;
-    
-        const data = snap.data();
-        if (data.status !== "voting") return;
-    
-        await updateDoc(guessDrawRef, {
-            votesNo: arrayUnion(auth.currentUser.uid),
-            votesYes: arrayRemove(auth.currentUser.uid)
-        });
-    
-        return;
-    }
 
     /* ================= CHAT ================= */  
 
@@ -2071,81 +1995,6 @@ return String(m).padStart(2,"0")+":"+
 
 }
 
-function startGuessDrawVotingTimer() {
-
-    setTimeout(async () => {
-
-        const ref = doc(db, "gameGuessDraw", "main");
-        const snap = await getDoc(ref);
-
-        if (!snap.exists()) return;
-
-        const data = snap.data();
-
-        if (data.status !== "voting") return;
-
-        const yes = (data.votesYes || []).length;
-        const no = (data.votesNo || []).length;
-
-        if (yes > no) {
-
-            await updateDoc(ref, {
-                status: "playing"
-            });
-
-            await sendBotMessage(
-                `🎮 Voting selesai!\n\n👍 ${yes} | 👎 ${no}\n\n✅ Game DIMULAI!`
-            );
-
-        } else {
-
-            await updateDoc(ref, {
-                status: "idle"
-            });
-
-            await sendBotMessage(
-                `🎮 Voting selesai!\n\n👍 ${yes} | 👎 ${no}\n\n❌ Game TIDAK dimulai`
-            );
-        }
-
-    }, 10000);
-}
-
-function renderVoteUI(gameData) {
-
-    const yes = gameData?.votesYes?.length || 0;
-    const no = gameData?.votesNo?.length || 0;
-
-    const btn = document.querySelector("#vote-btns");
-
-    if (!btn) return;
-
-    btn.innerHTML = `
-        <div class="vote-box">
-            <button id="voteYes">👍 Setuju (${yes})</button>
-            <button id="voteNo">👎 Tidak setuju (${no})</button>
-        </div>
-    `;
-
-    document.getElementById("voteYes").onclick = async () => {
-
-        await updateDoc(guessDrawRef, {
-            votesYes: arrayUnion(auth.currentUser.uid),
-            votesNo: arrayRemove(auth.currentUser.uid)
-        });
-
-    };
-
-    document.getElementById("voteNo").onclick = async () => {
-
-        await updateDoc(guessDrawRef, {
-            votesNo: arrayUnion(auth.currentUser.uid),
-            votesYes: arrayRemove(auth.currentUser.uid)
-        });
-
-    };
-}
-
 setInterval(() => {
 
 if (!ytPlayer || !playerReady) return;  
@@ -2240,44 +2089,5 @@ onSnapshot(presenceRef, (snapshot) => {
     });
 
     onlineBtn.innerHTML = `<i data-lucide="user"></i> ${total}`;
-
-});
-
-onSnapshot(guessDrawRef, (snap) => {
-
-    if (!snap.exists()) return;
-
-    const data = snap.data();
-
-    const btn = document.getElementById("vote-btns");
-
-    if (data.status !== "voting") {
-        btn.innerHTML = "";
-        return;
-    }
-
-    const yes = data.votesYes?.length || 0;
-    const no = data.votesNo?.length || 0;
-
-    btn.innerHTML = `
-        <div class="vote-box">
-            <button id="voteYes">👍 Setuju (${yes})</button>
-            <button id="voteNo">👎 Tidak Setuju (${no})</button>
-        </div>
-    `;
-
-    document.getElementById("voteYes").onclick = async () => {
-        await updateDoc(guessDrawRef,{
-            votesYes: arrayUnion(auth.currentUser.uid),
-            votesNo: arrayRemove(auth.currentUser.uid)
-        });
-    };
-
-    document.getElementById("voteNo").onclick = async () => {
-        await updateDoc(guessDrawRef,{
-            votesNo: arrayUnion(auth.currentUser.uid),
-            votesYes: arrayRemove(auth.currentUser.uid)
-        });
-    };
 
 });

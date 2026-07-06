@@ -8,6 +8,10 @@ let game = {
 
     pemain: [],
 
+    setuju: [],
+
+    menolak: [],
+    
     giliran: 0,
 
     huruf: "",
@@ -66,6 +70,12 @@ export function mulaiGame(host){
 
     game.host = host;
 
+    game.pemain = [];
+
+    game.setuju = [];
+
+    game.menolak = [];
+
     game.huruf = randomHuruf();
 
     game.giliran = 0;
@@ -75,6 +85,12 @@ export function mulaiGame(host){
     game.ronde = 1;
 
     game.kataDipakai.clear();
+    
+    game.pemain.push({
+        uid: host.uid,
+        nama: host.nama,
+        hati: 3
+    });
 
 }
 
@@ -105,5 +121,23 @@ export function validasiKata(kata){
 export function getGame(){
 
     return game;
+
+}
+
+export function playerSetuju(uid, nama){
+
+    if(game.setuju.includes(uid)){
+        return false;
+    }
+
+    game.setuju.push(uid);
+
+    game.pemain.push({
+        uid,
+        nama,
+        hati:3
+    });
+
+    return true;
 
 }

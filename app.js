@@ -2269,6 +2269,8 @@ onSnapshot(presenceRef, (snapshot) => {
         onlineList.appendChild(item);
 
     });
+    
+    lucide.createIcons();  
 
     onlineBtn.innerHTML = `<i data-lucide="user"></i> ${total}`;
 

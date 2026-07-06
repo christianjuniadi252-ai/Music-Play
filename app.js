@@ -2248,13 +2248,16 @@ onSnapshot(guessDrawRef, (snap) => {
     if (!snap.exists()) return;
 
     const data = snap.data();
+    
+    const btn = document.getElementById("vote-btns");
+    
+    if (data.status !== "voting") {
+        btn.innerHTML = "";
+        return;
+    }
 
     const yes = data.votesYes?.length || 0;
     const no = data.votesNo?.length || 0;
-
-    const btn = document.querySelector("#vote-btns");
-
-    if (!btn) return;
 
     btn.innerHTML = `
         <div class="vote-box">

@@ -905,52 +905,87 @@ try {
     
     if (text === "/y") {
     
-        const game = getGame();
-    
-        if (!game.aktif) {
+        if (
+            !sambungkataData ||
+            !sambungkataData.aktif ||
+            sambungkataData.status !== "voting"
+        ){
             alert("Tidak ada voting Sambung Kata.");
             return;
         }
     
-        if (playerSetuju(
-            auth.currentUser.uid,
-            auth.currentUser.displayName
-        )) {
-    
-            const hasil = hasilVoting();
-    
-            await sendBotMessage(
-                `<b>${auth.currentUser.displayName}</b> memilih <b>SETUJU</b>.<br><br>
-                👍 ${hasil.setuju} | 👎 ${hasil.menolak}`
-            );
-    
+        if (
+            sambungkataData.setuju.includes(auth.currentUser.uid) ||
+            sambungkataData.menolak.includes(auth.currentUser.uid)
+        ){
+            alert("Anda sudah memilih.");
+            return;
         }
     
+        const setuju = [
+            ...sambungkataData.setuju,
+            auth.currentUser.uid
+        ];
+    
+        const pemain = [
+            ...sambungkataData.pemain,
+            {
+                uid: auth.currentUser.uid,
+                nama: auth.currentUser.displayName,
+                hati: 3
+            }
+        ];
+    
+        await updateDoc(sambungkataRef,{
+            setuju,
+            pemain
+        });
+    
+        await sendBotMessage(
+            `<b>${auth.currentUser.displayName}</b> memilih <b>SETUJU</b>.<br><br>
+            👍 ${setuju.length} | 👎 ${sambungkataData.menolak.length}`
+        );
+    
         resetInput();
+    
         return;
     }
-    
+        
     if (text === "/n") {
     
-        const game = getGame();
-    
-        if (!game.aktif) {
+        if (
+            !sambungkataData ||
+            !sambungkataData.aktif ||
+            sambungkataData.status !== "voting"
+        ){
             alert("Tidak ada voting Sambung Kata.");
             return;
         }
     
-        if (playerTolak(auth.currentUser.uid)) {
-    
-            const hasil = hasilVoting();
-    
-            await sendBotMessage(
-                `<b>${auth.currentUser.displayName}</b> memilih <b>MENOLAK</b>.<br><br>
-                👍 ${hasil.setuju} | 👎 ${hasil.menolak}`
-            );
-    
+        if (
+            sambungkataData.setuju.includes(auth.currentUser.uid) ||
+            sambungkataData.menolak.includes(auth.currentUser.uid)
+        ){
+            alert("Anda sudah memilih.");
+            return;
         }
     
+        const menolak = [
+            ...sambungkataData.menolak,
+            auth.currentUser.uid
+        ];
+    
+        await updateDoc(sambungkataRef,{
+            menolak
+        });
+    
+        await sendBotMessage(
+            `<b>${auth.currentUser.displayName}</b> memilih <b>MENOLAK</b>.<br><br>
+            👍 ${sambungkataData.setuju.length} | 👎 ${menolak.length}`
+        );
+    
         resetInput();
+    
         return;
     }
 

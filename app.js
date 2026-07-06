@@ -2320,5 +2320,54 @@ async function cekVoting(){
     if(!berhasil){
         return;
     }
+    
+    const setuju =
+        sambungkataData.setuju.length;
+
+    const menolak =
+        sambungkataData.menolak.length;
+        
+    if(setuju > menolak){
+    
+        await updateDoc(
+            sambungkataRef,
+            {
+                status:"playing"
+            }
+        );
+    
+        await sendBotMessage(
+    
+            `🟢 Voting selesai.
+    
+    👍 ${setuju}
+    👎 ${menolak}
+    
+    Permainan dimulai!`
+    
+        );
+    
+    }else{
+    
+        await updateDoc(
+            sambungkataRef,
+            {
+                status:"cancelled",
+                aktif:false
+            }
+        );
+    
+        await sendBotMessage(
+    
+            `🔴 Voting gagal.
+    
+    👍 ${setuju}
+    👎 ${menolak}
+    
+    Permainan dibatalkan.`
+    
+        );
+    
+    }
 
 }

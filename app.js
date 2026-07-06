@@ -849,7 +849,10 @@ try {
     
     if (text === "/sambungkata") {
     
-        mulaiGame(auth.currentUser.displayName);
+        mulaiGame({
+            uid: auth.currentUser.uid,
+            nama: auth.currentUser.displayName
+        });
     
         await sendBotMessage(
             `<b>${auth.currentUser.displayName}</b> ingin bermain <b>Sambung Kata</b>.<br><br>

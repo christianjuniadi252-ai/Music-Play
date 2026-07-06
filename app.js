@@ -2248,9 +2248,9 @@ onSnapshot(guessDrawRef, (snap) => {
     if (!snap.exists()) return;
 
     const data = snap.data();
-    
+
     const btn = document.getElementById("vote-btns");
-    
+
     if (data.status !== "voting") {
         btn.innerHTML = "";
         return;
@@ -2262,29 +2262,22 @@ onSnapshot(guessDrawRef, (snap) => {
     btn.innerHTML = `
         <div class="vote-box">
             <button id="voteYes">👍 Setuju (${yes})</button>
-            <button id="voteNo">👎 Tidak setuju (${no})</button>
+            <button id="voteNo">👎 Tidak Setuju (${no})</button>
         </div>
     `;
 
-    const yesBtn = document.getElementById("voteYes");
-    const noBtn = document.getElementById("voteNo");
+    document.getElementById("voteYes").onclick = async () => {
+        await updateDoc(guessDrawRef,{
+            votesYes: arrayUnion(auth.currentUser.uid),
+            votesNo: arrayRemove(auth.currentUser.uid)
+        });
+    };
 
-    if (yesBtn) {
-        yesBtn.onclick = async () => {
-            await updateDoc(guessDrawRef, {
-                votesYes: arrayUnion(auth.currentUser.uid),
-                votesNo: arrayRemove(auth.currentUser.uid)
-            });
-        };
-    }
-
-    if (noBtn) {
-        noBtn.onclick = async () => {
-            await updateDoc(guessDrawRef, {
-                votesNo: arrayUnion(auth.currentUser.uid),
-                votesYes: arrayRemove(auth.currentUser.uid)
-            });
-        };
-    }
+    document.getElementById("voteNo").onclick = async () => {
+        await updateDoc(guessDrawRef,{
+            votesNo: arrayUnion(auth.currentUser.uid),
+            votesYes: arrayRemove(auth.currentUser.uid)
+        });
+    };
 
 });

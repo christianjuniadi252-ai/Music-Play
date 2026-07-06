@@ -572,15 +572,17 @@ title = null,
 privateUid = null
 ){
 
-await addDoc(collection(db, "messages"), {  
-    uid: "music-bot",  
-    name: "Music-Bot",  
-    photo: "music-bot.png",  
-    message,  
-    title,  
-    privateUid,  
-    timestamp: serverTimestamp()  
+const docRef = await addDoc(collection(db, "messages"), {
+    uid: "music-bot",
+    name: "Music-Bot",
+    photo: "music-bot.png",
+    message,
+    title,
+    privateUid,
+    timestamp: serverTimestamp()
 });
+
+return docRef;
 
 }
 

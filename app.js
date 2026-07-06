@@ -572,7 +572,7 @@ title = null,
 privateUid = null
 ){
 
-const docRef = await addDoc(collection(db, "messages"), {
+const ref = await addDoc(collection(db, "messages"), {
     uid: "music-bot",
     name: "Music-Bot",
     photo: "music-bot.png",
@@ -582,7 +582,7 @@ const docRef = await addDoc(collection(db, "messages"), {
     timestamp: serverTimestamp()
 });
 
-return docRef;
+return ref;
 
 }
 

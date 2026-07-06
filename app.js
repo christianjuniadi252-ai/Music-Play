@@ -28,7 +28,8 @@ runTransaction
 
 import {
     initSambungKata,
-    cekKata
+    mulaiGame,
+    getGame
 } from "./sambungkata.js";
 
 /* ================= FIREBASE ================= */
@@ -162,6 +163,11 @@ const commands = [
 {
     cmd:"/list rename",
     desc:"Ganti nama list"
+},
+
+{
+    cmd:"/sambungkata",
+    desc:"Memulai permainan sambung kata"
 }
 
 ];
@@ -837,7 +843,25 @@ try {
       
         return;  
       
-    }  
+    }
+    
+    /* ================= SAMBUNG KATA ================= */
+    
+    if (text === "/sambungkata") {
+    
+        mulaiGame(auth.currentUser.displayName);
+    
+        await sendBotMessage(
+            `<b>${auth.currentUser.displayName}</b> ingin bermain <b>Sambung Kata</b>.<br><br>
+            Ketik <code>/y</code> untuk setuju.<br>
+            Ketik <code>/n</code> untuk menolak.<br><br>
+            Waktu menunggu <b>20 detik</b>.`
+        );
+    
+        resetInput();
+    
+        return;
+    }
 
     /* ================= SAY ================= */  
 

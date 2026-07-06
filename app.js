@@ -2286,6 +2286,39 @@ async function cekVoting(){
         return;
     }
 
-    alert("Voting Selesai!")
+    const berhasil = await runTransaction(
+        db,
+        async(transaction)=>{
+    
+            const snap =
+                await transaction.get(
+                    sambungkataRef
+                );
+    
+            if(!snap.exists()){
+                return false;
+            }
+    
+            const data = snap.data();
+    
+            if(data.selesaiVoting){
+                return false;
+            }
+    
+            transaction.update(
+                sambungkataRef,
+                {
+                    selesaiVoting:true
+                }
+            );
+    
+            return true;
+    
+        }
+    );
+    
+    if(!berhasil){
+        return;
+    }
 
 }

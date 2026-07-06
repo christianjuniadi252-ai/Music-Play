@@ -26,6 +26,11 @@ getDoc,
 runTransaction
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
+import {
+    initSambungKata,
+    cekKata
+} from "./sambungkata.js";
+
 /* ================= FIREBASE ================= */
 
 const firebaseConfig = {
@@ -305,6 +310,8 @@ ytPlayer = new YT.Player("playerFrame", {
 }
 
 createPlayer();
+
+await initSambungKata();
 
 /* ================= LOGIN ================= */
 

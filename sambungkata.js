@@ -124,6 +124,26 @@ export function getGame(){
 
 }
 
+export function pemainSekarang(){
+
+    return game.pemain[
+        game.giliran
+    ];
+
+}
+
+export function nextTurn(){
+
+    game.giliran++;
+
+    if(game.giliran >= game.pemain.length){
+        game.giliran = 0;
+    }
+
+    return pemainSekarang();
+
+}
+
 export function playerSetuju(uid, nama){
 
     if(game.setuju.includes(uid)){

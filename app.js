@@ -34,7 +34,10 @@ import {
     hasilVoting,
     votingSelesai,
     randomHuruf,
-    getGame
+    getGame,
+    pemainSekarang,
+    nextTurn,
+    validasiKata
 } from "./sambungkata.js";
 
 /* ================= FIREBASE ================= */
@@ -624,6 +627,24 @@ if (!auth.currentUser) {
     alert("Login dulu");  
     return;  
 }  
+
+const game = getGame();
+
+if (game.aktif && game.status === "playing") {
+
+    const pemain = pemainSekarang();
+
+    if (auth.currentUser.uid !== pemain.uid) {
+
+        alert("Sekarang giliran " + pemain.nama);
+
+        resetInput();
+
+        return;
+
+    }
+
+}
 
 sending = true;  
 sendBtn.disabled = true;  
@@ -1302,6 +1323,39 @@ try {
 
         return;  
     }  
+    
+    if (game.aktif && game.status === "playing") {
+    
+        if (!text.startsWith("/")) {
+    
+            if (!validasiKata(text)) {
+    
+                alert("Kata tidak valid.");
+    
+                resetInput();
+    
+                return;
+    
+            }
+            
+            const berikutnya = nextTurn();
+            
+            await sendBotMessage(
+            
+                `✅ Kata diterima.<br><br>
+                Huruf berikutnya:
+                <b>${game.huruf.toUpperCase()}</b><br><br>
+            
+                Giliran:
+                <b>${berikutnya.nama}</b>`
+            
+            );
+            
+            return;
+    
+        }
+    
+    }
 
     /* ================= CHAT ================= */  
 

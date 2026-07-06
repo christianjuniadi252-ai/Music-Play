@@ -940,6 +940,23 @@ try {
         return;
     }
     
+    if (text === "/!sambungkata") {
+
+        await setDoc(sambungkataRef,{
+            aktif:false,
+            status:"stop"
+        },{merge:true});
+    
+        await sendBotMessage(
+            "🛑 Game Sambung Kata dihentikan."
+        );
+    
+        resetInput();
+    
+        return;
+    
+    }
+    
     if (text === "/y") {
     
         if (
@@ -1082,7 +1099,56 @@ try {
     
             return;
         }
-    
+        
+        const kataDipakai = [
+            ...sambungkataData.kataDipakai,
+            text.toLowerCase()
+        ];
+        
+        const hurufBaru =
+            text
+                .toLowerCase()
+                .at(-1);
+        
+        let giliran =
+            sambungkataData.giliran + 1;
+        
+        if(giliran >= sambungkataData.pemain.length){
+        
+            giliran = 0;
+        
+        }
+        
+        await updateDoc(
+            sambungkataRef,
+            {
+                kataDipakai,
+                huruf:hurufBaru,
+                giliran,
+                waktuMulai:Date.now(),
+                batasWaktu:Date.now()+20000
+            }
+        );
+        
+        await sendBotMessage(
+        
+        `✅ ${auth.currentUser.displayName}
+        berhasil menjawab.
+        
+        Huruf berikutnya
+        
+        <b>${hurufBaru.toUpperCase()}</b>
+        
+        Giliran
+        
+        <b>${sambungkataData.pemain[giliran].nama}</b>`
+        
+        );
+        
+        resetInput();
+        
+        return;
+            
     }
 
     /* ================= SAY ================= */  

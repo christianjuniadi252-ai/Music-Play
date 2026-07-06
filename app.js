@@ -52,6 +52,8 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const roomRef = doc(db,"room","main");
 const playlistRef = collection(db,"playlist");
+const sambungkataRef =
+    doc(db, "games", "sambungkata");
 const provider = new GoogleAuthProvider();
 
 /* ================= ELEMENT ================= */
@@ -110,6 +112,7 @@ let replyData = null;
 let currentVideo = "";
 let ytPlayer = null;
 let roomData = null;
+let sambungkataData = null;
 let playerReady = false;
 let syncTimer = null;
 let selectedMessage = null;
@@ -853,9 +856,39 @@ try {
     
     if (text === "/sambungkata") {
     
-        mulaiGame({
-            uid: auth.currentUser.uid,
-            nama: auth.currentUser.displayName
+        await setDoc(sambungkataRef, {
+        
+            aktif: true,
+        
+            host: {
+                uid: auth.currentUser.uid,
+                nama: auth.currentUser.displayName
+            },
+        
+            pemain: [{
+                uid: auth.currentUser.uid,
+                nama: auth.currentUser.displayName,
+                hati: 3
+            }],
+        
+            setuju: [auth.currentUser.uid],
+        
+            menolak: [],
+        
+            giliran: 0,
+        
+            huruf: "",
+        
+            ronde: 1,
+        
+            waktu: 20,
+        
+            kataDipakai: [],
+        
+            status: "voting",
+        
+            dibuat: Date.now()
+        
         });
     
         await sendBotMessage(
@@ -1279,6 +1312,17 @@ if (playerReady) {
 }
 
 });
+
+onSnapshot(
+    sambungkataRef,
+    (snap) => {
+
+        if (!snap.exists()) return;
+
+        sambungkataData = snap.data();
+
+    }
+);
 
 onSnapshot(
 query(

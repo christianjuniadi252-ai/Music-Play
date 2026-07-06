@@ -631,8 +631,30 @@ if (!auth.currentUser) {
 
 if (
     sambungkataData &&
+    sambungkataData.aktif &&
     sambungkataData.status === "playing"
 ) {
+
+    const pemain =
+        sambungkataData.pemain[
+            sambungkataData.giliran
+        ];
+
+    if (auth.currentUser.uid === pemain.uid) {
+
+        if (!text.startsWith("/")) {
+
+            // pengecekan kata
+            // update Firestore
+            // pindah giliran
+            // sendBotMessage
+            // return;
+
+        }
+
+    }
+
+}
 
     const pemain =
         sambungkataData.pemain[

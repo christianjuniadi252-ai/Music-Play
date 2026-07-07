@@ -1031,12 +1031,6 @@ try {
     
         if (auth.currentUser.uid !== pemain.uid) {
     
-            alert(
-                "Sekarang giliran " +
-                pemain.nama
-            );
-    
-            return;
         }
     
         if (!cekKata(text)) {

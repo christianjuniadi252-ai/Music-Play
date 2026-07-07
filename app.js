@@ -656,18 +656,6 @@ if (
 
 }
 
-    const pemain =
-        sambungkataData.pemain[
-            sambungkataData.giliran
-        ];
-    
-    if (auth.currentUser.uid !== pemain.uid) {
-    
-        // Bukan giliran saya,
-        // biarkan chat berjalan normal.
-    }
-}
-
 sending = true;  
 sendBtn.disabled = true;  
 

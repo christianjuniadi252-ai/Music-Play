@@ -629,39 +629,6 @@ if (!auth.currentUser) {
     return;  
 }  
 
-if (
-    sambungkataData &&
-    sambungkataData.aktif &&
-    sambungkataData.status === "playing"
-) {
-
-    const pemain =
-        sambungkataData.pemain[
-            sambungkataData.giliran
-        ];
-
-    // Kalau bukan giliran saya,
-    // lanjutkan proses chat biasa.
-    if (auth.currentUser.uid !== pemain.uid) {
-
-        // jangan return
-        // jangan alert
-    }
-
-    // Hanya pemain yang sedang giliran
-    // yang diproses sebagai jawaban permainan.
-    else {
-
-        // validasi kata
-
-        // update Firestore
-
-        // return
-
-    }
-
-}
-
 sending = true;  
 sendBtn.disabled = true;  
 
@@ -1061,16 +1028,6 @@ try {
             sambungkataData.pemain[
                 sambungkataData.giliran
             ];
-    
-        if (auth.currentUser.uid !== pemain.uid) {
-    
-            alert(
-                "Sekarang giliran " +
-                pemain.nama
-            );
-    
-            return;
-        }
     
         if (!cekKata(text)) {
     

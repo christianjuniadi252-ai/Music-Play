@@ -654,6 +654,8 @@ if (
 
     }
 
+}
+
     const pemain =
         sambungkataData.pemain[
             sambungkataData.giliran
@@ -2600,45 +2602,5 @@ async function cekWaktuSambungKata(){
     if(Date.now() < sambungkataData.batasWaktu){
         return;
     }
-    
-    const pemain = [...sambungkataData.pemain];
-    
-    const index = sambungkataData.giliran;
-    
-    pemain[index].hati--;
-    
-    let giliran = index + 1;
-    
-    if(giliran >= pemain.length){
-        giliran = 0;
-    }
-    
-    await updateDoc(
-        sambungkataRef,
-        {
-            pemain,
-            giliran,
-            batasWaktu: Date.now() + 20000,
-            waktuMulai: Date.now()
-        }
-    );
-    
-    await sendBotMessage(
-    
-    `⏰ Waktu habis!
-    
-    ${pemain[index].nama}
-    kehilangan 1 ❤️
-    
-    Sisa ❤️:
-    ${"❤️".repeat(
-        Math.max(0,pemain[index].hati)
-    )}
-    
-    Giliran berikutnya:
-    
-    <b>${pemain[giliran].nama}</b>`
-    
-    );
 
 }

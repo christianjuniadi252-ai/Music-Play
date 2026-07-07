@@ -130,7 +130,7 @@ const commands = [
 
 {
     cmd:"/play",
-    desc:"Memutar musik 817"
+    desc:"Memutar musik 818"
 },
 
 {
@@ -2597,10 +2597,48 @@ async function cekWaktuSambungKata(){
     
     pemain[index].hati--;
     
-    let giliran = index + 1;
+    if (pemain[index].hati <= 0) {
     
-    if(giliran >= pemain.length){
+        await sendBotMessage(
+            `💀 <b>${pemain[index].nama}</b> tereliminasi.`
+        );
+    
+        pemain.splice(index, 1);
+    
+    }
+    
+    if (pemain.length === 1) {
+    
+        await updateDoc(sambungkataRef,{
+    
+            aktif:false,
+    
+            status:"finish",
+    
+            pemain
+    
+        });
+    
+        await sendBotMessage(
+    
+            `🏆 Permainan selesai!
+    
+    Pemenangnya adalah
+    
+    <b>${pemain[0].nama}</b> 🎉`
+    
+        );
+    
+        return;
+    
+    }
+    
+    let giliran = sambungkataData.giliran;
+    
+    if (giliran >= pemain.length) {
+    
         giliran = 0;
+    
     }
     
     await updateDoc(

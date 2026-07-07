@@ -629,45 +629,6 @@ if (!auth.currentUser) {
     return;  
 }  
 
-if (
-    sambungkataData &&
-    sambungkataData.aktif &&
-    sambungkataData.status === "playing"
-) {
-
-    const pemain =
-        sambungkataData.pemain[
-            sambungkataData.giliran
-        ];
-
-    if (auth.currentUser.uid === pemain.uid) {
-
-        if (!text.startsWith("/")) {
-
-            // pengecekan kata
-            // update Firestore
-            // pindah giliran
-            // sendBotMessage
-            // return;
-
-        }
-
-    }
-
-}
-
-    const pemain =
-        sambungkataData.pemain[
-            sambungkataData.giliran
-        ];
-    
-    if (auth.currentUser.uid !== pemain.uid) {
-    
-        // Bukan giliran saya,
-        // biarkan chat berjalan normal.
-    }
-}
-
 sending = true;  
 sendBtn.disabled = true;  
 
@@ -1068,14 +1029,21 @@ try {
                 sambungkataData.giliran
             ];
     
-        if (auth.currentUser.uid !== pemain.uid) {
-    
-            alert(
-                "Sekarang giliran " +
-                pemain.nama
-            );
-    
-            return;
+        if (
+            auth.currentUser.uid === pemain.uid &&
+            text.startsWith("/")
+        ){
+            // tetap boleh memakai command
+        }
+        else if (auth.currentUser.uid === pemain.uid){
+        
+            // validasi jawaban sambung kata
+        
+        }
+        else{
+        
+            // bukan giliran → chat biasa tetap boleh
+        
         }
     
         if (!cekKata(text)) {

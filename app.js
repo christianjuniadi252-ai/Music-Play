@@ -1029,6 +1029,16 @@ try {
                 sambungkataData.giliran
             ];
     
+        if (auth.currentUser.uid !== pemain.uid) {
+    
+            alert(
+                "Sekarang giliran " +
+                pemain.nama
+            );
+    
+            return;
+        }
+    
         if (!cekKata(text)) {
     
             alert("Kata tidak ada di kamus.");

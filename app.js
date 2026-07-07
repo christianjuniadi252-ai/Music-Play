@@ -654,8 +654,6 @@ if (
 
     }
 
-}
-
     const pemain =
         sambungkataData.pemain[
             sambungkataData.giliran

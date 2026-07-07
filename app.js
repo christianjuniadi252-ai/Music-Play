@@ -640,17 +640,23 @@ if (
             sambungkataData.giliran
         ];
 
-    if (auth.currentUser.uid === pemain.uid) {
+    // Kalau bukan giliran saya,
+    // lanjutkan proses chat biasa.
+    if (auth.currentUser.uid !== pemain.uid) {
 
-        if (!text.startsWith("/")) {
+        // jangan return
+        // jangan alert
+    }
 
-            // pengecekan kata
-            // update Firestore
-            // pindah giliran
-            // sendBotMessage
-            // return;
+    // Hanya pemain yang sedang giliran
+    // yang diproses sebagai jawaban permainan.
+    else {
 
-        }
+        // validasi kata
+
+        // update Firestore
+
+        // return
 
     }
 

@@ -607,6 +607,28 @@ await addDoc(collection(db, "messages"), {
 
 }
 
+async function updateGameStatus(pesan){
+
+    if(
+        !sambungkataData ||
+        !sambungkataData.statusMessageId
+    ){
+        return;
+    }
+
+    await updateDoc(
+        doc(
+            db,
+            "messages",
+            sambungkataData.statusMessageId
+        ),
+        {
+            message: pesan
+        }
+    );
+
+}
+
 function resetInput(){
 
 input.value = "";  
@@ -2519,7 +2541,23 @@ async function cekVoting(){
         <b>20 detik</b>
         `;
         
-        await sendBotMessage(urutan);
+        const statusRef = await addDoc(
+            collection(db, "messages"),
+            {
+                uid: "music-bot",
+                name: "Music-Bot",
+                photo: "music-bot.png",
+                message: urutan,
+                timestamp: serverTimestamp()
+            }
+        );
+        
+        await updateDoc(
+            sambungkataRef,
+            {
+                statusMessageId: statusRef.id
+            }
+        );
             
     }else{
     

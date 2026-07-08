@@ -9,8 +9,6 @@ let game = {
     pemain: [],
 
     setuju: [],
-
-    menolak: [],
     
     giliran: 0,
 
@@ -73,8 +71,6 @@ export function mulaiGame(host){
     game.pemain = [];
 
     game.setuju = [];
-
-    game.menolak = [];
 
     game.huruf = randomHuruf();
 
@@ -155,47 +151,9 @@ export function playerSetuju(uid, nama){
     game.pemain.push({
         uid,
         nama,
-        hati:3
+        hati: 3
     });
 
     return true;
-
-}
-
-export function playerTolak(uid){
-
-    if(game.menolak.includes(uid)){
-        return false;
-    }
-
-    if(game.setuju.includes(uid)){
-        return false;
-    }
-
-    game.menolak.push(uid);
-
-    return true;
-
-}
-
-export function hasilVoting(){
-
-    return {
-
-        setuju: game.setuju.length,
-
-        menolak: game.menolak.length
-
-    };
-
-}
-
-export function votingSelesai(){
-
-    const setuju = game.setuju.length;
-
-    const menolak = game.menolak.length;
-
-    return setuju > menolak;
 
 }

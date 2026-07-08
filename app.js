@@ -30,9 +30,6 @@ import {
     initSambungKata,
     mulaiGame,
     playerSetuju,
-    playerTolak,
-    hasilVoting,
-    votingSelesai,
     randomHuruf,
     getGame,
     pemainSekarang,
@@ -1563,18 +1560,6 @@ onSnapshot(
         if (!snap.exists()) return;
 
         sambungkataData = snap.data();
-
-        if (!votingChecker) {
-        
-            votingChecker = setInterval(() => {
-        
-                cekVoting();
-        
-                cekWaktuSambungKata();
-        
-            },1000);
-        
-        }
 
     }
 );

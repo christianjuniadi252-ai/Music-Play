@@ -105,6 +105,17 @@ document.getElementById("commandMenu");
 const onlineBtn = document.getElementById("onlineBtn");
 const onlineModal = document.getElementById("onlineModal");
 const onlineList = document.getElementById("onlineList");
+const gamePanel =
+document.getElementById("gamePanel");
+
+const gamePlayers =
+document.getElementById("gamePlayers");
+
+const gameHuruf =
+document.getElementById("gameHuruf");
+
+const gameTimer =
+document.getElementById("gameTimer");
 
 const presenceRef = collection(db, "presence");
 /* ================= STATE ================= */
@@ -1560,7 +1571,9 @@ onSnapshot(
         if (!snap.exists()) return;
 
         sambungkataData = snap.data();
-
+        
+        renderGamePanel();
+        
     }
 );
 

@@ -883,6 +883,19 @@ try {
     /* ================= SAMBUNG KATA ================= */
     
     if (text === "/sambungkata") {
+      
+        if (
+            sambungkataData &&
+            sambungkataData.aktif
+        ) {
+        
+            alert(
+                "Sudah ada lobby Sambung Kata yang sedang berlangsung."
+            );
+        
+            return;
+        
+        }
     
         await setDoc(sambungkataRef, {
         
@@ -913,21 +926,22 @@ try {
         
             kataDipakai: [],
         
-            status: "voting",
+            status: "waiting",
         
-            dibuat: Date.now(),
-            
-            batasVoting: Date.now() + 20000,
-            
-            selesaiVoting: false
+            dibuat: Date.now()
         
         });
     
         await sendBotMessage(
-            `<b>${auth.currentUser.displayName}</b> ingin bermain <b>Sambung Kata</b>.<br><br>
-            Ketik <code>/y</code> untuk setuju.<br>
-            Ketik <code>/n</code> untuk menolak.<br><br>
-            Waktu menunggu <b>20 detik</b>.`
+        
+        `🎮 <b>${auth.currentUser.displayName}</b> membuat lobby <b>Sambung Kata</b>.
+        
+        Ketik <code>/y</code> untuk bergabung.
+        
+        Host dapat memulai permainan dengan:
+        
+        <code>/sambungkata mulai</code>`
+        
         );
     
         resetInput();
@@ -935,7 +949,7 @@ try {
         return;
     }
     
-    if (text === "/!sambungkata") {
+    if (text === "/sambungkata !") {
 
         await setDoc(sambungkataRef,{
             aktif:false,
@@ -957,7 +971,7 @@ try {
         if (
             !sambungkataData ||
             !sambungkataData.aktif ||
-            sambungkataData.status !== "voting"
+            sambungkataData.status !== "waiting"
         ){
             alert("Tidak ada voting Sambung Kata.");
             return;

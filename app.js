@@ -1059,7 +1059,7 @@ try {
         if (
             sambungkataData.setuju.includes(auth.currentUser.uid)
         ){
-            alert("Anda sudah memilih.");
+            alert("Anda sudah bergabung.");
             return;
         }
     

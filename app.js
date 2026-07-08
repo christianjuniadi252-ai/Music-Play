@@ -987,8 +987,6 @@ try {
         
             setuju: [auth.currentUser.uid],
         
-            menolak: [],
-        
             giliran: 0,
         
             huruf: "",
@@ -1043,16 +1041,23 @@ try {
     
         if (
             !sambungkataData ||
-            !sambungkataData.aktif ||
+            !sambungkataData.aktif
+        ){
+            alert("Belum ada lobby Sambung Kata.");
+            return;
+        }
+        
+        if (
             sambungkataData.status !== "waiting"
         ){
-            alert("Tidak ada voting Sambung Kata.");
+            alert(
+                "Permainan sudah dimulai. Tunggu ronde berikutnya."
+            );
             return;
         }
     
         if (
-            sambungkataData.setuju.includes(auth.currentUser.uid) ||
-            sambungkataData.menolak.includes(auth.currentUser.uid)
+            sambungkataData.setuju.includes(auth.currentUser.uid)
         ){
             alert("Anda sudah memilih.");
             return;
@@ -1078,46 +1083,12 @@ try {
         });
     
         await sendBotMessage(
-            `<b>${auth.currentUser.displayName}</b> memilih <b>SETUJU</b>.<br><br>
-            👍 ${setuju.length} | 👎 ${sambungkataData.menolak.length}`
-        );
-    
-        resetInput();
-    
-        return;
-    }
         
-    if (text === "/n") {
-    
-        if (
-            !sambungkataData ||
-            !sambungkataData.aktif ||
-            sambungkataData.status !== "voting"
-        ){
-            alert("Tidak ada voting Sambung Kata.");
-            return;
-        }
-    
-        if (
-            sambungkataData.setuju.includes(auth.currentUser.uid) ||
-            sambungkataData.menolak.includes(auth.currentUser.uid)
-        ){
-            alert("Anda sudah memilih.");
-            return;
-        }
-    
-        const menolak = [
-            ...sambungkataData.menolak,
-            auth.currentUser.uid
-        ];
-    
-        await updateDoc(sambungkataRef,{
-            menolak
-        });
-    
-        await sendBotMessage(
-            `<b>${auth.currentUser.displayName}</b> memilih <b>MENOLAK</b>.<br><br>
-            👍 ${sambungkataData.setuju.length} | 👎 ${menolak.length}`
+            `✅ <b>${auth.currentUser.displayName}</b> bergabung ke permainan.
+        
+            Total pemain:
+            <b>${pemain.length}</b>`
+        
         );
     
         resetInput();

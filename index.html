@@ -859,6 +859,45 @@ button:hover{
 #refreshBtn, #settingBtn {
   display: none !important;
 }
+
+.game-panel{
+    background:#1d1d1d;
+    border-bottom:1px solid #333;
+    padding:10px;
+}
+
+.game-info{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+}
+
+.game-player{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:8px;
+    border-radius:8px;
+    margin-bottom:6px;
+    background:#252525;
+}
+
+.game-player.active{
+    background:#0f766e;
+}
+
+.game-player img{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    margin-right:10px;
+}
+
+.game-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
 </style>
 </head>  
 <body>
@@ -893,6 +932,26 @@ button:hover{
             <i data-lucide="settings"></i>
         </button>
     </div>
+
+</div>
+
+<div id="gamePanel" class="game-panel" style="display:none;">
+
+    <div class="game-info">
+
+        <div>
+            Huruf:
+            <b id="gameHuruf">-</b>
+        </div>
+
+        <div>
+            Waktu:
+            <b id="gameTimer">20</b>
+        </div>
+
+    </div>
+
+    <div id="gamePlayers"></div>
 
 </div>
 

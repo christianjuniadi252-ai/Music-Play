@@ -882,6 +882,79 @@ try {
     
     /* ================= SAMBUNG KATA ================= */
     
+    if (text === "/sambungkata mulai") {
+    
+        if (!sambungkataData || !sambungkataData.aktif) {
+            alert("Belum ada lobby Sambung Kata.");
+            return;
+        }
+    
+        if (sambungkataData.status !== "waiting") {
+            alert("Permainan sudah dimulai.");
+            return;
+        }
+    
+        if (
+            sambungkataData.host.uid !==
+            auth.currentUser.uid
+        ) {
+            alert("Hanya host yang dapat memulai permainan.");
+            return;
+        }
+        
+        if (sambungkataData.pemain.length < 2) {
+        
+            alert(
+                "Minimal 2 pemain untuk memulai permainan."
+            );
+        
+            return;
+        
+        }
+        
+        const huruf = randomHuruf();
+        
+        await updateDoc(
+            sambungkataRef,
+            {
+        
+                status: "playing",
+        
+                huruf: huruf,
+        
+                giliran: 0,
+        
+                waktuMulai: Date.now(),
+        
+                batasWaktu: Date.now() + 20000
+        
+            }
+        );
+        
+        await sendBotMessage(
+        
+        `🎮 Permainan dimulai!
+        
+        Huruf pertama:
+        
+        <b>${huruf.toUpperCase()}</b>
+        
+        Giliran pertama:
+        
+        <b>${sambungkataData.pemain[0].nama}</b>
+        
+        Waktu:
+        
+        <b>20 detik</b>`
+        
+        );
+        
+        resetInput();
+        
+        return;
+    
+    }
+    
     if (text === "/sambungkata") {
       
         if (

@@ -645,6 +645,25 @@ input.style.overflowY = "hidden";
 
 }
 
+function renderGamePanel(){
+
+    if(
+        !sambungkataData ||
+        !sambungkataData.aktif
+    ){
+        gamePanel.style.display = "none";
+        return;
+    }
+
+    gamePanel.style.display = "block";
+
+    gameHuruf.textContent =
+        sambungkataData.huruf || "-";
+        
+    gamePlayers.innerHTML = "";
+
+}
+
 async function sendMessage() {
 
 if (sending) return;  

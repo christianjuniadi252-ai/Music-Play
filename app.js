@@ -707,10 +707,6 @@ function renderGamePanel(){
     });
     
     onlineUsers.forEach(user=>{
-      
-        const div = document.createElement("div");
-        
-        div.className = "game-player";
     
         const ikut = pemain.some(
             p=>p.uid===user.uid
@@ -719,6 +715,34 @@ function renderGamePanel(){
         if(ikut){
             return;
         }
+    
+        const div=document.createElement("div");
+    
+        div.className="game-player";
+    
+        div.innerHTML=`
+    
+        <div class="game-left">
+    
+            <img src="${user.photo}">
+    
+            <div>
+    
+                ${user.name}
+    
+            </div>
+    
+        </div>
+    
+        <div>
+    
+            Spectator
+    
+        </div>
+    
+        `;
+    
+        gamePlayers.appendChild(div);
     
     });
 

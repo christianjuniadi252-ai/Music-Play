@@ -126,6 +126,7 @@ let currentVideo = "";
 let ytPlayer = null;
 let roomData = null;
 let sambungkataData = null;
+let onlineUsers = [];
 let playerReady = false;
 let syncTimer = null;
 let selectedMessage = null;
@@ -2471,10 +2472,20 @@ onSnapshot(presenceRef, (snapshot) => {
     onlineList.innerHTML = "";
 
     let total = 0;
+    
+    onlineUsers = [];
 
     snapshot.forEach(docSnap => {
 
         const data = docSnap.data();
+        
+        onlineUsers.push({
+        
+            uid: docSnap.id,
+        
+            ...data
+        
+        });
 
         if (Date.now() - data.lastSeen > 30000) return;
 
@@ -2494,6 +2505,8 @@ onSnapshot(presenceRef, (snapshot) => {
     });
     
     lucide.createIcons();  
+    
+    renderGamePanel();
 
     onlineBtn.innerHTML = `<i data-lucide="user"></i> ${total}`;
 

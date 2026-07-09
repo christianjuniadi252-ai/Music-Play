@@ -673,7 +673,10 @@ function renderGamePanel(){
         
         const div = document.createElement("div");
 
-        div.className = "game-player";
+        div.className =
+            index === sambungkataData.giliran
+            ? "game-player active"
+            : "game-player";
         
         div.innerHTML = `
         
@@ -700,6 +703,22 @@ function renderGamePanel(){
         `;
         
         gamePlayers.appendChild(div);
+    
+    });
+    
+    onlineUsers.forEach(user=>{
+      
+        const div = document.createElement("div");
+        
+        div.className = "game-player";
+    
+        const ikut = pemain.some(
+            p=>p.uid===user.uid
+        );
+    
+        if(ikut){
+            return;
+        }
     
     });
 

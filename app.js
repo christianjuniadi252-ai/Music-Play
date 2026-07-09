@@ -727,7 +727,7 @@ function renderGamePanel(){
     
         <div class="game-left">
     
-            <img src="${user.photo}">
+            <img src="${user?.photo || "default.png"}">
     
             <div>
     
@@ -749,19 +749,15 @@ function renderGamePanel(){
     
     });
     
-    if(
-        sambungkataData.typingUid
-    ){
+    if(sambungkataData.typingUid){
     
-        const pemain =
+        const pemainTyping =
             pemain.find(
-                p =>
-                p.uid ===
-                sambungkataData.typingUid
+                p => p.uid === sambungkataData.typingUid
             );
     
-        gameTyping.innerHTML = pemain
-            ? `<b>${pemain.nama}</b><br>${sambungkataData.typing}`
+        gameTyping.innerHTML = pemainTyping
+            ? `<b>${pemainTyping.nama}</b><br>${sambungkataData.typing}`
             : "";
     
     }else{

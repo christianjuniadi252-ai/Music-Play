@@ -662,6 +662,46 @@ function renderGamePanel(){
         sambungkataData.huruf || "-";
         
     gamePlayers.innerHTML = "";
+    
+    const pemain = sambungkataData.pemain || [];
+    
+    pemain.forEach((p, index) => {
+    
+        const user = onlineUsers.find(
+            u => u.uid === p.uid
+        );
+        
+        const div = document.createElement("div");
+
+        div.className = "game-player";
+        
+        div.innerHTML = `
+        
+        <div class="game-left">
+        
+        <img src="${
+            user?.photo || p.photo || "default.png"
+        }">
+        
+        <div>
+        
+        ${index + 1}. ${p.nama}
+        
+        </div>
+        
+        </div>
+        
+        <div>
+        
+        ${"❤️".repeat(p.hati)}
+        
+        </div>
+        
+        `;
+        
+        gamePlayers.appendChild(div);
+    
+    });
 
 }
 

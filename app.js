@@ -111,6 +111,9 @@ document.getElementById("gamePanel");
 const gamePlayers =
 document.getElementById("gamePlayers");
 
+const gameTyping =
+document.getElementById("gameTyping");
+
 const gameHuruf =
 document.getElementById("gameHuruf");
 
@@ -745,6 +748,27 @@ function renderGamePanel(){
         gamePlayers.appendChild(div);
     
     });
+    
+    if(
+        sambungkataData.typingUid
+    ){
+    
+        const pemain =
+            pemain.find(
+                p =>
+                p.uid ===
+                sambungkataData.typingUid
+            );
+    
+        gameTyping.innerHTML = pemain
+            ? `<b>${pemain.nama}</b><br>${sambungkataData.typing}`
+            : "";
+    
+    }else{
+    
+        gameTyping.innerHTML = "";
+    
+    }
 
 }
 
@@ -1036,7 +1060,11 @@ try {
         
                 waktuMulai: Date.now(),
         
-                batasWaktu: Date.now() + 20000
+                batasWaktu: Date.now() + 20000,
+                
+                typing: "",
+
+                typingUid: ""
         
             }
         );
@@ -2395,6 +2423,34 @@ if (input.scrollHeight <= 120) {
 
     input.style.height = "120px";  
     input.style.overflowY = "auto";  
+
+}
+
+if(
+    sambungkataData &&
+    sambungkataData.status === "playing"
+){
+
+    const pemain =
+        sambungkataData.pemain[
+            sambungkataData.giliran
+        ];
+
+    if(
+        pemain &&
+        pemain.uid === auth.currentUser.uid
+    ){
+
+        updateDoc(
+            sambungkataRef,
+            {
+                typing: input.value,
+
+                typingUid: auth.currentUser.uid
+            }
+        );
+
+    }
 
 }
 

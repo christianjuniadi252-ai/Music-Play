@@ -666,14 +666,7 @@ function renderGamePanel(){
         !sambungkataData ||
         !sambungkataData.aktif
     ){
-    
-        if(gameTimer){
-            clearInterval(gameTimer);
-            gameTimer = null;
-        }
-    
         gamePanel.style.display = "none";
-    
         return;
     }
 
@@ -1683,17 +1676,6 @@ onSnapshot(
         sambungkataData = snap.data();
         
         renderGamePanel();
-        
-        updateGameTimer();
-        
-        if(gameTimer){
-            clearInterval(gameTimer);
-        }
-        
-        gameTimer = setInterval(
-            updateGameTimer,
-            250
-        );
         
     }
 );

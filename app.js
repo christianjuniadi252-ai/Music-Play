@@ -668,57 +668,54 @@ function renderGamePanel(){
         gamePanel.style.display = "none";
         return;
     }
-    
+
     const pemain =
         sambungkataData.pemain || [];
-    
+
     const giliran =
         pemain[sambungkataData.giliran];
-    
+
     const berikutnya =
         pemain[
             (sambungkataData.giliran + 1)
             % pemain.length
         ];
-    
+
     gameCurrent.textContent =
         giliran
         ? giliran.nama
         : "-";
-    
+
     gameHeart.textContent =
         giliran
         ? "❤️".repeat(giliran.hati)
         : "";
-    
+
     gameNext.textContent =
         berikutnya
         ? "➡ " + berikutnya.nama
         : "-";
-    
+
     gameHuruf.textContent =
         sambungkataData.huruf || "-";
 
     gamePanel.style.display = "block";
 
-    gameHuruf.textContent =
-        sambungkataData.huruf || "-";
-    
     if(sambungkataData.typingUid){
-    
+
         const pemainTyping =
             pemain.find(
                 p => p.uid === sambungkataData.typingUid
             );
-    
+
         gameTyping.innerHTML = pemainTyping
             ? `<b>${pemainTyping.nama}</b><br>${sambungkataData.typing}`
             : "";
-    
+
     }else{
-    
+
         gameTyping.innerHTML = "";
-    
+
     }
 
 }

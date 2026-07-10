@@ -146,6 +146,7 @@ let selectedMessage = null;
 let hold = null;
 let editingMessage = null;
 let sending = false;
+let gameTimer = null;
 
 const commands = [
 
@@ -665,7 +666,14 @@ function renderGamePanel(){
         !sambungkataData ||
         !sambungkataData.aktif
     ){
+    
+        if(gameTimer){
+            clearInterval(gameTimer);
+            gameTimer = null;
+        }
+    
         gamePanel.style.display = "none";
+    
         return;
     }
     
@@ -695,14 +703,11 @@ function renderGamePanel(){
         berikutnya
         ? "➡ " + berikutnya.nama
         : "-";
-    
+
     gameHuruf.textContent =
         sambungkataData.huruf || "-";
 
     gamePanel.style.display = "block";
-
-    gameHuruf.textContent =
-        sambungkataData.huruf || "-";
     
     if(sambungkataData.typingUid){
     
@@ -720,6 +725,29 @@ function renderGamePanel(){
         gameTyping.innerHTML = "";
     
     }
+
+}
+
+function updateGameTimer(){
+
+    if(
+        !sambungkataData ||
+        !sambungkataData.aktif ||
+        !sambungkataData.batasWaktu
+    ){
+        gameTime.textContent = "-";
+        return;
+    }
+
+    const sisa = Math.max(
+        0,
+        Math.ceil(
+            (sambungkataData.batasWaktu - Date.now())
+            / 1000
+        )
+    );
+
+    gameTime.textContent = sisa;
 
 }
 
@@ -1655,6 +1683,17 @@ onSnapshot(
         sambungkataData = snap.data();
         
         renderGamePanel();
+        
+        updateGameTimer();
+        
+        if(gameTimer){
+            clearInterval(gameTimer);
+        }
+        
+        gameTimer = setInterval(
+            updateGameTimer,
+            250
+        );
         
     }
 );

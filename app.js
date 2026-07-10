@@ -2656,15 +2656,19 @@ async function cekWaktuSambungKata(){
     
     const index = sambungkataData.giliran;
     
+    const pemainKena = {
+        ...pemain[index]
+    };
+    
     pemain[index].hati--;
     
     if (pemain[index].hati <= 0) {
     
-        await sendBotMessage(
-            `💀 <b>${pemain[index].nama}</b> tereliminasi.`
-        );
-    
         pemain.splice(index, 1);
+    
+        await sendBotMessage(
+            `💀 <b>${pemainKena.nama}</b> tereliminasi.`
+        );
     
     }
     

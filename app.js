@@ -146,8 +146,7 @@ let selectedMessage = null;
 let hold = null;
 let editingMessage = null;
 let sending = false;
-
-let gameTimer = null;
+let gameTimerInterval = null;
 
 const commands = [
 
@@ -668,7 +667,7 @@ function renderGamePanel(){
         !sambungkataData.aktif
     ){
     
-        if(gameTimer){
+        if(gameTimerInterval){
             clearInterval(gameTimer);
             gameTimer = null;
         }
@@ -736,8 +735,7 @@ function updateGameTimer(){
         !sambungkataData.aktif ||
         !sambungkataData.batasWaktu
     ){
-        gameTime.textContent = "-";
-        return;
+        gameTimer.textContent = "-";
     }
 
     const sisa = Math.max(
@@ -748,7 +746,7 @@ function updateGameTimer(){
         )
     );
 
-    gameTime.textContent = sisa;
+    gameTimer.textContent = sisa;
 
 }
 
@@ -1687,11 +1685,11 @@ onSnapshot(
         
         updateGameTimer();
         
-        if(gameTimer){
+        if(gameTimerInterval){
             clearInterval(gameTimer);
         }
         
-        gameTimer = setInterval(
+        gameTimerInterval = setInterval(
             updateGameTimer,
             250
         );

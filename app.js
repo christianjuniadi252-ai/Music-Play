@@ -105,11 +105,21 @@ document.getElementById("commandMenu");
 const onlineBtn = document.getElementById("onlineBtn");
 const onlineModal = document.getElementById("onlineModal");
 const onlineList = document.getElementById("onlineList");
+
 const gamePanel =
 document.getElementById("gamePanel");
 
 const gamePlayers =
 document.getElementById("gamePlayers");
+
+const gameCurrent =
+document.getElementById("gameCurrent");
+
+const gameHeart =
+document.getElementById("gameHeart");
+
+const gameNext =
+document.getElementById("gameNext");
 
 const gameTyping =
 document.getElementById("gameTyping");
@@ -658,96 +668,41 @@ function renderGamePanel(){
         gamePanel.style.display = "none";
         return;
     }
+    
+    const pemain =
+        sambungkataData.pemain || [];
+    
+    const giliran =
+        pemain[sambungkataData.giliran];
+    
+    const berikutnya =
+        pemain[
+            (sambungkataData.giliran + 1)
+            % pemain.length
+        ];
+    
+    gameCurrent.textContent =
+        giliran
+        ? giliran.nama
+        : "-";
+    
+    gameHeart.textContent =
+        giliran
+        ? "❤️".repeat(giliran.hati)
+        : "";
+    
+    gameNext.textContent =
+        berikutnya
+        ? "➡ " + berikutnya.nama
+        : "-";
+    
+    gameHuruf.textContent =
+        sambungkataData.huruf || "-";
 
     gamePanel.style.display = "block";
 
     gameHuruf.textContent =
         sambungkataData.huruf || "-";
-        
-    gamePlayers.innerHTML = "";
-    
-    const pemain = sambungkataData.pemain || [];
-    
-    pemain.forEach((p, index) => {
-    
-        const user = onlineUsers.find(
-            u => u.uid === p.uid
-        );
-        
-        const div = document.createElement("div");
-
-        div.className =
-            index === sambungkataData.giliran
-            ? "game-player active"
-            : "game-player";
-        
-        div.innerHTML = `
-        
-        <div class="game-left">
-        
-        <img src="${
-            user?.photo || p.photo || "default.png"
-        }">
-        
-        <div>
-        
-        ${index + 1}. ${p.nama}
-        
-        </div>
-        
-        </div>
-        
-        <div>
-        
-        ${"❤️".repeat(p.hati)}
-        
-        </div>
-        
-        `;
-        
-        gamePlayers.appendChild(div);
-    
-    });
-    
-    onlineUsers.forEach(user=>{
-    
-        const ikut = pemain.some(
-            p=>p.uid===user.uid
-        );
-    
-        if(ikut){
-            return;
-        }
-    
-        const div=document.createElement("div");
-    
-        div.className="game-player";
-    
-        div.innerHTML=`
-    
-        <div class="game-left">
-    
-            <img src="${user?.photo || "default.png"}">
-    
-            <div>
-    
-                ${user.name}
-    
-            </div>
-    
-        </div>
-    
-        <div>
-    
-            Spectator
-    
-        </div>
-    
-        `;
-    
-        gamePlayers.appendChild(div);
-    
-    });
     
     if(sambungkataData.typingUid){
     

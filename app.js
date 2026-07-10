@@ -146,6 +146,7 @@ let selectedMessage = null;
 let hold = null;
 let editingMessage = null;
 let sending = false;
+let gameTimer = null;
 
 const commands = [
 

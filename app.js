@@ -1116,8 +1116,6 @@ try {
             status: "waiting",
         
             dibuat: Date.now()
-            
-            lastTimeout:0
         
         });
     
@@ -2737,13 +2735,3 @@ async function cekWaktuSambungKata(){
     );
 
 }
-
-setInterval(async () => {
-
-    try{
-
-        await cekWaktuSambungKata();
-
-    }catch(e){}
-
-}, 1000);

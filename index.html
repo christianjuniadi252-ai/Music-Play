@@ -935,23 +935,33 @@ button:hover{
 
 </div>
 
-<div id="gamePanel" class="game-panel" style="display:none;">
+<div id="gamePanel">
 
-    <div class="game-info">
+    <div class="game-top">
+
+        <div id="gameCurrent"></div>
+
+        <div id="gameHeart"></div>
+
+        <div id="gameNext"></div>
+
+    </div>
+
+    <div class="game-middle">
 
         <div>
-            Huruf:
-            <b id="gameHuruf">-</b>
+            Huruf :
+            <span id="gameHuruf">-</span>
         </div>
 
         <div>
-            Waktu:
-            <b id="gameTimer">20</b>
+            ⏱
+            <span id="gameTime">20</span>
         </div>
 
     </div>
 
-    <div id="gamePlayers"></div>
+    <div id="gameTyping"></div>
 
 </div>
 

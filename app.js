@@ -152,7 +152,7 @@ const commands = [
 
 {
     cmd:"/play",
-    desc:"Memutar musik 821"
+    desc:"Memutar musik 822"
 },
 
 {
@@ -2723,7 +2723,7 @@ async function cekWaktuSambungKata(){
             pemain,
             giliran,
             batasWaktu: Date.now() + 20000,
-            waktuMulai: Date.now()
+            waktuMulai: Date.now(),
             lastTimeout:sambungkataData.batasWaktu,
         }
     );

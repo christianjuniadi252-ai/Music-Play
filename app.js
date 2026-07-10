@@ -152,7 +152,7 @@ const commands = [
 
 {
     cmd:"/play",
-    desc:"Memutar musik 820"
+    desc:"Memutar musik 821"
 },
 
 {

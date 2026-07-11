@@ -668,8 +668,8 @@ function renderGamePanel(){
     ){
     
         if(gameTimerInterval){
-            clearInterval(gameTimer);
-            gameTimer = null;
+            clearInterval(gameTimerInterval);
+            gameTimerInterval = null;
         }
     
         gamePanel.style.display = "none";
@@ -1812,7 +1812,7 @@ onSnapshot(
         updateGameTimer();
         
         if(gameTimerInterval){
-            clearInterval(gameTimer);
+            clearInterval(gameTimerInterval);
         }
         
         gameTimerInterval = setInterval(

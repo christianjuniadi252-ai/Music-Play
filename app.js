@@ -728,6 +728,41 @@ function renderGamePanel(){
 
 }
 
+function renderOnlineList(){
+
+    onlineList.innerHTML="";
+
+    onlineBtn.innerHTML=
+        `<i data-lucide="user"></i> ${onlineUsers.length}`;
+
+    if(
+        !sambungkataData ||
+        !sambungkataData.aktif
+    ){
+
+        onlineUsers.forEach(user=>{
+
+            const item=document.createElement("div");
+
+            item.className="online-user";
+
+            item.innerHTML=`
+                <img src="${user.photo}">
+                <span>${user.name}</span>
+            `;
+
+            onlineList.appendChild(item);
+
+        });
+
+        lucide.createIcons();
+
+        return;
+    }
+
+    /* lanjut langkah berikutnya */
+}
+
 function updateGameTimer(){
 
     if(
@@ -2614,46 +2649,22 @@ onlineBtn.onclick = () => {
 
 onSnapshot(presenceRef, (snapshot) => {
 
-    onlineList.innerHTML = "";
-
-    let total = 0;
-    
     onlineUsers = [];
 
     snapshot.forEach(docSnap => {
 
         const data = docSnap.data();
-        
-        onlineUsers.push({
-        
-            uid: docSnap.id,
-        
-            ...data
-        
-        });
 
         if (Date.now() - data.lastSeen > 30000) return;
 
-        total++;
-
-        const item = document.createElement("div");
-
-        item.className = "online-user";
-
-        item.innerHTML = `
-            <img src="${data.photo}">
-            <span>${data.name}</span>
-        `;
-
-        onlineList.appendChild(item);
+        onlineUsers.push({
+            uid: docSnap.id,
+            ...data
+        });
 
     });
-    
-    lucide.createIcons();  
-    
-    renderGamePanel();
 
-    onlineBtn.innerHTML = `<i data-lucide="user"></i> ${total}`;
+    renderOnlineList();
 
 });
 

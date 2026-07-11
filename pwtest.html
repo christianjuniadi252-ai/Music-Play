@@ -14,6 +14,7 @@
 <button id="stopBtn">Stop</button>
 
 <script>
+  const input = document.getElementById('generatorInput');
   const button = document.getElementById('sendBtn');
 
   button.addEventListener('click', function() {
@@ -21,56 +22,54 @@
       alert('Berhasil');
     }
   });
-  
-document.querySelector("#passwordInput").value = "Gokil";
 </script>
-<script>
-  const chars = 'abcdefghijklmnopqrstuvwxyz';
-  let current = '';
-  let intervalId = null;
-  let counter = 0; // buat hitung udah berapa kode
+<!--<script>
+const chars = 'abcdefghijklmnopqrstuvwxyz';
+let current = '';
+let intervalId = null;
+let counter = 0; // buat hitung udah berapa kode
 
-  function nextCode(code) {
-    let arr = code.split('');
-    if (arr.length === 0) return chars[0];
+function nextCode(code) {
+  let arr = code.split('');
+  if (arr.length === 0) return chars[0];
 
-    let i = arr.length - 1;
-    while (i >= 0) {
-      let index = chars.indexOf(arr[i]);
-      if (index < chars.length - 1) {
-        arr[i] = chars[index + 1];
-        return arr.join('');
-      } else {
-        arr[i] = chars[0];
-        i--;
-      }
+  let i = arr.length - 1;
+  while (i >= 0) {
+    let index = chars.indexOf(arr[i]);
+    if (index < chars.length - 1) {
+      arr[i] = chars[index + 1];
+      return arr.join('');
+    } else {
+      arr[i] = chars[0];
+      i--;
     }
-    return chars[0] + arr.join('');
   }
+  return chars[0] + arr.join('');
+}
 
-  const input = document.getElementById('generatorInput');
-  const startBtn = document.getElementById('startBtn');
-  const stopBtn = document.getElementById('stopBtn');
-  const sendBtn = document.getElementById('sendBtn');
+const input = document.getElementById('generatorInput');
+const startBtn = document.getElementById('startBtn');
+const stopBtn = document.getElementById('stopBtn');
+const sendBtn = document.getElementById('sendBtn');
 
-  startBtn.addEventListener('click', function() {
-    if (intervalId) return;
+startBtn.addEventListener('click', function() {
+  if (intervalId) return;
 
-    intervalId = setInterval(() => {
-      current = nextCode(current); // 1. generate 1 kode
-      input.value = current; // 2. masukin ke input
-      sendBtn.click(); // 3. langsung submit
-      counter++;
-      console.log(counter + ': ' + current); // buat cek
+  intervalId = setInterval(() => {
+    current = nextCode(current); // 1. generate 1 kode
+    input.value = current; // 2. masukin ke input
+    sendBtn.click(); // 3. langsung submit
+    counter++;
+    console.log(counter + ': ' + current); // buat cek
 
-    }, 1); // 10ms = 100 kode per detik
-  });
+  }, 1); // 10ms = 100 kode per detik
+});
 
-  stopBtn.addEventListener('click', function() {
-    clearInterval(intervalId);
-    intervalId = null;
-    alert('Berhenti di kode: ' + current + '\nTotal: ' + counter);
-  });
-</script>
+stopBtn.addEventListener('click', function() {
+  clearInterval(intervalId);
+  intervalId = null;
+  alert('Berhenti di kode: ' + current + '\nTotal: ' + counter);
+});
+</script>-->
 </body>
 </html>

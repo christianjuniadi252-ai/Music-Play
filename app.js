@@ -109,17 +109,8 @@ const onlineList = document.getElementById("onlineList");
 const gamePanel =
 document.getElementById("gamePanel");
 
-const gamePlayers =
-document.getElementById("gamePlayers");
-
-const gameCurrent =
-document.getElementById("gameCurrent");
-
 const gameHeart =
 document.getElementById("gameHeart");
-
-const gameNext =
-document.getElementById("gameNext");
 
 const gameTyping =
 document.getElementById("gameTyping");

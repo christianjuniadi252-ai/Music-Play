@@ -2689,7 +2689,38 @@ async function cekWaktuSambungKata(){
             return;
         }
     
-        // proses timeout dilakukan di sini
+        const pemain = [...game.pemain];
+        
+        const index = game.giliran;
+        
+        pemain[index].hati--;
+        
+        if(pemain[index].hati <= 0){
+        
+            pemain.splice(index,1);
+        
+        }
+        
+        if(pemain.length <= 1){
+        
+            transaction.update(
+                sambungkataRef,
+                {
+        
+                    aktif:false,
+        
+                    status:"finish",
+        
+                    pemain,
+        
+                    lastTimeout:game.batasWaktu
+        
+                }
+            );
+        
+            return;
+        
+        }
     
     });
     

@@ -152,7 +152,7 @@ const commands = [
 
 {
     cmd:"/play",
-    desc:"Memutar musik 821"
+    desc:"Memutar musik 822"
 },
 
 {
@@ -1040,6 +1040,8 @@ try {
         
                 batasWaktu: Date.now() + 20000,
                 
+                lastTimeout:0,
+                
                 typing: "",
 
                 typingUid: ""
@@ -1115,7 +1117,9 @@ try {
         
             status: "waiting",
         
-            dibuat: Date.now()
+            dibuat: Date.now(),
+            
+            lastTimeout:0
         
         });
     
@@ -2652,6 +2656,13 @@ async function cekWaktuSambungKata(){
         return;
     }
     
+    if(
+        sambungkataData.lastTimeout >=
+        sambungkataData.batasWaktu
+    ){
+        return;
+    }
+    
     const pemain = [...sambungkataData.pemain];
     
     const index = sambungkataData.giliran;
@@ -2712,7 +2723,8 @@ async function cekWaktuSambungKata(){
             pemain,
             giliran,
             batasWaktu: Date.now() + 20000,
-            waktuMulai: Date.now()
+            waktuMulai: Date.now(),
+            lastTimeout:sambungkataData.batasWaktu
         }
     );
     
@@ -2735,3 +2747,13 @@ async function cekWaktuSambungKata(){
     );
 
 }
+
+setInterval(async () => {
+
+    try{
+
+        await cekWaktuSambungKata();
+
+    }catch(e){}
+
+},1000);

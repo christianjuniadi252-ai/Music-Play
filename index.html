@@ -860,56 +860,54 @@ button:hover{
   display: none !important;
 }
 
-.game-panel{
-    background:#1d1d1d;
+#gamePanel{
+
+    display:none;
+
+    background:#181818;
+
     border-bottom:1px solid #333;
-    padding:10px;
+
+    padding:8px 12px;
+
 }
 
-.game-info{
+#gameTop{
+
     display:flex;
+
     justify-content:space-between;
-    margin-bottom:10px;
-}
 
-.game-player{
-    display:flex;
     align-items:center;
-    justify-content:space-between;
-    padding:8px;
-    border-radius:8px;
-    margin-bottom:6px;
-    background:#252525;
-}
 
-.game-player.active{
-    background:#0f766e;
-}
+    font-size:15px;
 
-.game-player img{
-    width:38px;
-    height:38px;
-    border-radius:50%;
-    margin-right:10px;
-}
-
-.game-left{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.online-title{
-    font-size:13px;
     font-weight:bold;
-    color:#4caf50;
-    margin:12px 8px 6px;
+
 }
 
-#onlineList hr{
-    border:none;
-    border-top:1px solid #333;
-    margin:10px 0;
+#gameHuruf{
+
+    font-size:34px;
+
+    font-weight:bold;
+
+    line-height:34px;
+
+    margin-top:2px;
+
+}
+
+#gameTyping{
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    color:#bbb;
+
+    min-height:24px;
+
 }
 </style>
 </head>  
@@ -950,29 +948,17 @@ button:hover{
 
 <div id="gamePanel">
 
-    <div class="game-top">
+    <div id="gameTop">
 
-        <div id="gameCurrent"></div>
+        <span id="gameTimer">20s</span>
 
-        <div id="gameHeart"></div>
+        <span id="gamePlayer">-</span>
 
-        <div id="gameNext"></div>
-
-    </div>
-
-    <div class="game-middle">
-
-        <div>
-            Huruf :
-            <span id="gameHuruf">-</span>
-        </div>
-
-        <div>
-            ⏱
-            <span id="gameTime">20</span>
-        </div>
+        <span id="gameHeart">♥️♥️♥️</span>
 
     </div>
+
+    <div id="gameHuruf">-</div>
 
     <div id="gameTyping"></div>
 
@@ -1043,7 +1029,7 @@ button:hover{
     <textarea
       id="commandInput"
       rows="1"
-      placeholder="Pesan atau /play URL 826"></textarea>
+      placeholder="Pesan atau /play URL 827"></textarea>
 
     <button id="sendBtn">
         <i data-lucide="send-horizontal"></i>

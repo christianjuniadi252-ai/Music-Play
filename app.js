@@ -709,7 +709,7 @@ function renderGamePanel(){
             );
 
         gameTyping.innerHTML = pemainTyping
-            ? `<b>${pemainTyping.nama}</b><br>${sambungkataData.typing}`
+            ? `${sambungkataData.typing}`
             : "";
 
     }else{

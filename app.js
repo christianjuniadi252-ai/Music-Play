@@ -1230,6 +1230,19 @@ try {
             ];
     
         if (auth.currentUser.uid !== pemain.uid) {
+        
+            await addDoc(collection(db, "messages"), {
+                uid: auth.currentUser.uid,
+                name: auth.currentUser.displayName,
+                photo: auth.currentUser.photoURL,
+                message: text,
+                timestamp: serverTimestamp(),
+                replyTo: replyData
+            });
+        
+            resetInput();
+            return;
+        }
     
         }
     

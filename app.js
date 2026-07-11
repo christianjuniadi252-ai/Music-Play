@@ -2721,6 +2721,33 @@ async function cekWaktuSambungKata(){
             return;
         
         }
+        
+        let giliran = index;
+        
+        if(giliran >= pemain.length){
+            giliran = 0;
+        }
+        
+        transaction.update(
+            sambungkataRef,
+            {
+        
+                pemain,
+        
+                giliran,
+        
+                waktuMulai: Date.now(),
+        
+                batasWaktu: Date.now() + 20000,
+        
+                lastTimeout: game.batasWaktu,
+        
+                typing: "",
+        
+                typingUid: ""
+        
+            }
+        );
     
     });
     

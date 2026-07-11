@@ -2663,6 +2663,36 @@ async function cekWaktuSambungKata(){
         return;
     }
     
+    await runTransaction(db, async (transaction) => {
+    
+        const snap = await transaction.get(sambungkataRef);
+    
+        if(!snap.exists()){
+            return;
+        }
+    
+        const game = snap.data();
+    
+        if(!game.aktif){
+            return;
+        }
+    
+        if(game.status !== "playing"){
+            return;
+        }
+    
+        if(Date.now() < game.batasWaktu){
+            return;
+        }
+    
+        if(game.lastTimeout >= game.batasWaktu){
+            return;
+        }
+    
+        // proses timeout dilakukan di sini
+    
+    });
+    
     const pemain = [...sambungkataData.pemain];
     
     const index = sambungkataData.giliran;

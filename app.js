@@ -1808,7 +1808,7 @@ onSnapshot(
         sambungkataData = snap.data();
         
         renderGamePanel();
-        
+        renderOnlineList();
         updateGameTimer();
         
         if(gameTimerInterval){

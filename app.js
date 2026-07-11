@@ -109,6 +109,9 @@ const onlineList = document.getElementById("onlineList");
 const gamePanel =
 document.getElementById("gamePanel");
 
+const gamePlayer =
+document.getElementById("gamePlayer");
+
 const gameHeart =
 document.getElementById("gameHeart");
 
@@ -674,29 +677,27 @@ function renderGamePanel(){
     const giliran =
         pemain[sambungkataData.giliran];
 
-    const berikutnya =
-        pemain[
-            (sambungkataData.giliran + 1)
-            % pemain.length
-        ];
-
-    gameCurrent.textContent =
+    gamePlayer.textContent =
         giliran
         ? giliran.nama
         : "-";
 
-    gameHeart.textContent =
-        giliran
-        ? "❤️".repeat(giliran.hati)
-        : "";
-
-    gameNext.textContent =
-        berikutnya
-        ? "➡ " + berikutnya.nama
-        : "-";
+    if(giliran){
+    
+        gameHeart.textContent =
+            "♥️".repeat(giliran.hati) +
+            "🤍".repeat(3-giliran.hati);
+    
+    }else{
+    
+        gameHeart.textContent = "";
+    
+    }
 
     gameHuruf.textContent =
-        sambungkataData.huruf || "-";
+        sambungkataData.huruf
+            ? sambungkataData.huruf.toUpperCase()
+            : "-";
 
     gamePanel.style.display = "block";
 
@@ -713,9 +714,12 @@ function renderGamePanel(){
 
     }else{
 
-        gameTyping.innerHTML = "";
+        gameTyping.textContent =
+            sambungkataData.typing || "";
 
     }
+    
+    updateGameTimer();
 
 }
 

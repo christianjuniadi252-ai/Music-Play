@@ -868,7 +868,7 @@ button:hover{
 
     border-bottom:1px solid #333;
 
-    padding:8px 12px;
+    padding:6px 12px;
 
 }
 
@@ -880,33 +880,69 @@ button:hover{
 
     align-items:center;
 
-    font-size:15px;
+    font-size:14px;
 
     font-weight:bold;
+
+}
+
+#gamePlayer{
+
+    flex:1;
+
+    text-align:center;
+
+    overflow:hidden;
+
+    white-space:nowrap;
+
+    text-overflow:ellipsis;
+
+    margin:0 10px;
 
 }
 
 #gameHuruf{
 
-    font-size:34px;
+    font-size:30px;
 
     font-weight:bold;
 
-    line-height:34px;
+    line-height:30px;
 
-    margin-top:2px;
+    text-align:center;
 
 }
 
 #gameTyping{
 
-    font-size:20px;
+    text-align:center;
+
+    font-size:18px;
 
     font-weight:bold;
 
-    color:#bbb;
+    color:#aaa;
 
-    min-height:24px;
+    min-height:22px;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+}
+
+#gameTyping{
+
+    transition:.15s;
+
+}
+
+#gameHuruf{
+
+    transition:.15s;
 
 }
 </style>
@@ -1029,7 +1065,7 @@ button:hover{
     <textarea
       id="commandInput"
       rows="1"
-      placeholder="Pesan atau /play URL 828"></textarea>
+      placeholder="Pesan atau /play URL 829"></textarea>
 
     <button id="sendBtn">
         <i data-lucide="send-horizontal"></i>

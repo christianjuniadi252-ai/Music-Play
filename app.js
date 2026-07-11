@@ -760,7 +760,83 @@ function renderOnlineList(){
         return;
     }
 
-    /* lanjut langkah berikutnya */
+    const pemain = sambungkataData.pemain || [];
+    
+    const spectator = onlineUsers.filter(user =>
+        !pemain.some(p => p.uid === user.uid)
+    );
+    
+    const titlePlayer = document.createElement("div");
+    titlePlayer.className = "online-title";
+    titlePlayer.innerHTML =
+        `🎮 PLAYER (${pemain.length})`;
+    
+    onlineList.appendChild(titlePlayer);
+    
+    pemain.forEach((player,index)=>{
+    
+        const div=document.createElement("div");
+    
+        div.className="online-user";
+    
+        const giliran =
+            index===sambungkataData.giliran;
+    
+        div.innerHTML=`
+            <img src="${
+                onlineUsers.find(
+                    u=>u.uid===player.uid
+                )?.photo || avatar.src
+            }">
+    
+            <span>
+                ${
+                    giliran
+                    ? "▶ "
+                    : ""
+                }
+                ${player.nama}
+            </span>
+    
+            <span style="margin-left:auto">
+                ${"❤️".repeat(player.hati)}
+            </span>
+        `;
+    
+        onlineList.appendChild(div);
+    
+    });
+    
+    const garis=document.createElement("hr");
+    
+    onlineList.appendChild(garis);
+    
+    const titleSpec=document.createElement("div");
+    
+    titleSpec.className="online-title";
+    
+    titleSpec.innerHTML=
+        `👀 SPECTATOR (${spectator.length})`;
+    
+    onlineList.appendChild(titleSpec);
+    
+    spectator.forEach(user=>{
+    
+        const div=document.createElement("div");
+    
+        div.className="online-user";
+    
+        div.innerHTML=`
+            <img src="${user.photo}">
+            <span>${user.name}</span>
+        `;
+    
+        onlineList.appendChild(div);
+    
+    });
+    
+    lucide.createIcons();
+
 }
 
 function updateGameTimer(){

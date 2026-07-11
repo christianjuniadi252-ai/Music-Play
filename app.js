@@ -1355,8 +1355,6 @@ try {
             return;
         }
     
-        }
-    
         if (!cekKata(text)) {
     
             alert("Kata tidak ada di kamus.");

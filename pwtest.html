@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ujicoba Brute</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<input type="text" id="passwordInput" placeholder="Password">
+<button id="sendBtn">Submit</button>
+
+<input type="text" id="generatorInput" placeholder="Hasil generate">
+<button id="startBtn">Mulai</button>
+<button id="stopBtn">Stop</button>
+
+<script>
+  const button = document.getElementById('sendBtn');
+  const input = document.getElementById('generatorInput');
+
+  button.addEventListener('click', function() {
+    if (input.value === 'apa') {
+      alert('Berhasil');
+    }
+  });
+</script>
+<!--<script>
+const chars = 'abcdefghijklmnopqrstuvwxyz';
+  let current = '';
+  let intervalId = null;
+  let counter = 0;
+
+  function nextCode(code) {
+    let arr = code.split('');
+    if (arr.length === 0) return chars[0];
+
+    let i = arr.length - 1;
+    while (i >= 0) {
+      let index = chars.indexOf(arr[i]);
+      if (index < chars.length - 1) {
+        arr[i] = chars[index + 1];
+        return arr.join('');
+      } else {
+        arr[i] = chars[0];
+        i--;
+      }
+    }
+    return chars[0] + arr.join('');
+  }
+
+  const input = document.getElementById('generatorInput');
+  const stopBtn = document.getElementById('stopBtn');
+  const sendBtn = document.getElementById('sendBtn');
+
+  // JALAN OTOMATIS PAS HALAMAN LOAD
+  window.onload = function() {
+    intervalId = setInterval(() => {
+      current = nextCode(current); // 1. generate 1 kode
+      input.value = current; // 2. masukin ke input
+      sendBtn.click(); // 3. langsung submit
+      counter++;
+      console.log(counter + ': ' + current);
+    }, 1); // 1ms = secepat mungkin
+  };
+
+/*  stopBtn.addEventListener('click', function() {
+    clearInterval(intervalId);
+    intervalId = null;
+    alert('Berhenti di kode: ' + current + '\nTotal: ' + counter);
+  });*/
+</script>-->
+</body>
+</html>

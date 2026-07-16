@@ -708,8 +708,17 @@ function renderGamePanel(){
                 p => p.uid === sambungkataData.typingUid
             );
 
-        gameTyping.textContent =
-            sambungkataData.typing || "...";
+                if(sambungkataData.typing){
+                
+                    gameTyping.textContent =
+                        sambungkataData.typing + "│";
+                
+                }else{
+                
+                    gameTyping.textContent =
+                        "│";
+                
+                }
 
     }else{
 

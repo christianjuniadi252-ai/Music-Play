@@ -936,13 +936,61 @@ button:hover{
 
 #gameTyping{
 
-    transition:.15s;
+    flex:1;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    color:#bbb;
+
+    overflow:hidden;
+
+    white-space:nowrap;
+
+    text-overflow:ellipsis;
 
 }
 
 #gameHuruf{
 
-    transition:.15s;
+    width:34px;
+
+    font-size:30px;
+
+    font-weight:bold;
+
+    text-align:center;
+
+    flex-shrink:0;
+
+}
+
+#gameBottom{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    margin-top:2px;
+
+}
+
+@keyframes typingCursor{
+
+    50%{
+
+        opacity:0;
+
+    }
+
+}
+
+#gameTyping{
+
+    animation:typingCursor .8s infinite;
 
 }
 </style>
@@ -994,9 +1042,13 @@ button:hover{
 
     </div>
 
-    <div id="gameHuruf">-</div>
-
-    <div id="gameTyping"></div>
+    <div id="gameBottom">
+    
+        <div id="gameHuruf">-</div>
+    
+        <div id="gameTyping"></div>
+    
+    </div>
 
 </div>
 

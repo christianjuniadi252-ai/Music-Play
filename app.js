@@ -863,6 +863,29 @@ const text = input.value.trim();
 
 if (!text) return;  
 
+const sedangMain =
+
+    sambungkataData &&
+
+    sambungkataData.aktif &&
+
+    sambungkataData.status==="playing";
+
+let giliranSaya=false;
+
+if(sedangMain){
+
+    const pemain=
+
+        sambungkataData.pemain[
+            sambungkataData.giliran
+        ];
+
+    giliranSaya=
+        pemain?.uid===auth.currentUser.uid;
+
+}
+
 if (!auth.currentUser) {  
     alert("Login dulu");  
     return;  
@@ -1323,11 +1346,10 @@ try {
     
     /* ================= SAMBUNG KATA MAIN ================= */
     
-    if (
-        sambungkataData &&
-        sambungkataData.aktif &&
-        sambungkataData.status === "playing"
-    ) {
+    if(
+        sedangMain &&
+        giliranSaya
+    ){
     
         const pemain =
             sambungkataData.pemain[
@@ -1409,7 +1431,9 @@ try {
                 huruf:hurufBaru,
                 giliran,
                 waktuMulai:Date.now(),
-                batasWaktu:Date.now()+20000
+                batasWaktu:Date.now()+20000,
+                typing:"",
+                typingUid:"",
             }
         );
         
@@ -2550,14 +2574,33 @@ if(
         pemain.uid === auth.currentUser.uid
     ){
 
-        updateDoc(
-            sambungkataRef,
-            {
-                typing: input.value,
-
-                typingUid: auth.currentUser.uid
-            }
-        );
+        if(input.value.trim()){
+        
+            updateDoc(
+                sambungkataRef,
+                {
+        
+                    typing:input.value,
+        
+                    typingUid:auth.currentUser.uid
+        
+                }
+            );
+        
+        }else{
+        
+            updateDoc(
+                sambungkataRef,
+                {
+        
+                    typing:"",
+        
+                    typingUid:""
+        
+                }
+            );
+        
+        }
 
     }
 

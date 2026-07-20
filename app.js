@@ -2665,94 +2665,49 @@ if (document.visibilityState === "visible") {
 
 });
 
-let typingTimeout = null;
-
 input.addEventListener("input", () => {
 
-    input.style.height = "44px";
+input.style.height = "44px";  
 
-    if (input.scrollHeight <= 120) {
+if (input.scrollHeight <= 120) {  
 
-        input.style.height =
-            input.scrollHeight + "px";
+    input.style.height = input.scrollHeight + "px";  
+    input.style.overflowY = "hidden";  
 
-        input.style.overflowY =
-            "hidden";
+} else {  
 
-    } else {
+    input.style.height = "120px";  
+    input.style.overflowY = "auto";  
 
-        input.style.height = "120px";
+}
 
-        input.style.overflowY =
-            "auto";
+if(
+    sambungkataData &&
+    sambungkataData.status === "playing"
+){
 
-    }
-
-
-    /*
-    ==============================
-    TAMPILKAN COMMAND MENU
-    ==============================
-    */
-
-    showCommandMenu();
-
-
-    /*
-    ==============================
-    UPDATE TYPING GAME
-    ==============================
-    */
+    const pemain =
+        sambungkataData.pemain[
+            sambungkataData.giliran
+        ];
 
     if(
-        sambungkataData &&
-        sambungkataData.status === "playing"
+        pemain &&
+        pemain.uid === auth.currentUser.uid
     ){
 
-        const pemain =
-            sambungkataData.pemain[
-                sambungkataData.giliran
-            ];
+        updateDoc(
+            sambungkataRef,
+            {
+                typing: input.value,
 
-
-        if(
-            pemain &&
-            auth.currentUser &&
-            pemain.uid === auth.currentUser.uid
-        ){
-
-            clearTimeout(typingTimeout);
-
-
-            typingTimeout =
-                setTimeout(async () => {
-
-                    try{
-
-                        await updateDoc(
-                            sambungkataRef,
-                            {
-
-                                typing:
-                                    input.value,
-
-                                typingUid:
-                                    auth.currentUser.uid
-
-                            }
-                        );
-
-                    }catch(e){
-
-                        console.error(e);
-
-                    }
-
-                }, 100);
-
-        }
+                typingUid: auth.currentUser.uid
+            }
+        );
 
     }
+
+}
 
 });
 

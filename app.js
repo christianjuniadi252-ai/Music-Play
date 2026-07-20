@@ -759,25 +759,38 @@ function renderGamePanel(){
 
 function renderOnlineList(){
 
-    onlineList.innerHTML="";
+    onlineList.innerHTML = "";
 
-    onlineBtn.innerHTML=
+    onlineBtn.innerHTML =
         `<i data-lucide="user"></i> ${onlineUsers.length}`;
+
+
+    /*
+    ==================================
+    LOBBY / BELUM BERMAIN
+    ==================================
+    */
 
     if(
         !sambungkataData ||
-        !sambungkataData.aktif
+        !sambungkataData.aktif ||
+        sambungkataData.status !== "playing"
     ){
 
-        onlineUsers.forEach(user=>{
+        onlineUsers.forEach(user => {
 
-            const item=document.createElement("div");
+            const item =
+                document.createElement("div");
 
-            item.className="online-user";
+            item.className =
+                "online-user";
 
-            item.innerHTML=`
+            item.innerHTML = `
                 <img src="${user.photo}">
-                <span>${user.name}</span>
+
+                <span>
+                    ${user.name}
+                </span>
             `;
 
             onlineList.appendChild(item);
@@ -787,83 +800,152 @@ function renderOnlineList(){
         lucide.createIcons();
 
         return;
+
     }
 
-    const pemain = sambungkataData.pemain || [];
-    
-    const spectator = onlineUsers.filter(user =>
-        !pemain.some(p => p.uid === user.uid)
-    );
-    
-    const titlePlayer = document.createElement("div");
-    titlePlayer.className = "online-title";
+
+    /*
+    ==================================
+    GAME SEDANG BERMAIN
+    ==================================
+    */
+
+    const pemain =
+        sambungkataData.pemain || [];
+
+
+    /*
+    ==================================
+    PLAYER
+    ==================================
+    */
+
+    const titlePlayer =
+        document.createElement("div");
+
+    titlePlayer.className =
+        "online-title";
+
     titlePlayer.innerHTML =
         `🎮 PLAYER (${pemain.length})`;
-    
+
     onlineList.appendChild(titlePlayer);
-    
-    pemain.forEach((player,index)=>{
-    
-        const div=document.createElement("div");
-    
-        div.className="online-user";
-    
+
+
+    pemain.forEach((player, index) => {
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "online-user";
+
+
         const giliran =
-            index===sambungkataData.giliran;
-    
-        div.innerHTML=`
+            index === sambungkataData.giliran;
+
+
+        const playerOnline =
+            onlineUsers.find(
+                u => u.uid === player.uid
+            );
+
+
+        div.innerHTML = `
+
             <img src="${
-                onlineUsers.find(
-                    u=>u.uid===player.uid
-                )?.photo || avatar.src
+                playerOnline?.photo ||
+                avatar.src
             }">
-    
+
             <span>
+
                 ${
                     giliran
                     ? "▶ "
                     : ""
                 }
+
                 ${player.nama}
+
             </span>
-    
+
             <span style="margin-left:auto">
+
                 ${"❤️".repeat(player.hati)}
+
             </span>
+
         `;
-    
+
         onlineList.appendChild(div);
-    
+
     });
-    
-    const garis=document.createElement("hr");
-    
+
+
+    /*
+    ==================================
+    PEMISAH
+    ==================================
+    */
+
+    const garis =
+        document.createElement("hr");
+
     onlineList.appendChild(garis);
-    
-    const titleSpec=document.createElement("div");
-    
-    titleSpec.className="online-title";
-    
-    titleSpec.innerHTML=
+
+
+    /*
+    ==================================
+    SPECTATOR
+    ==================================
+    */
+
+    const spectator =
+        onlineUsers.filter(user =>
+
+            !pemain.some(
+                p => p.uid === user.uid
+            )
+
+        );
+
+
+    const titleSpec =
+        document.createElement("div");
+
+    titleSpec.className =
+        "online-title";
+
+    titleSpec.innerHTML =
         `👀 SPECTATOR (${spectator.length})`;
-    
+
     onlineList.appendChild(titleSpec);
-    
-    spectator.forEach(user=>{
-    
-        const div=document.createElement("div");
-    
-        div.className="online-user";
-    
-        div.innerHTML=`
+
+
+    spectator.forEach(user => {
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "online-user";
+
+        div.innerHTML = `
+
             <img src="${user.photo}">
-            <span>${user.name}</span>
+
+            <span>
+                ${user.name}
+            </span>
+
         `;
-    
+
         onlineList.appendChild(div);
-    
+
     });
-    
+
+
     lucide.createIcons();
 
 }
@@ -1846,31 +1928,17 @@ onSnapshot(
             sambungkataData = null;
 
             renderGamePanel();
+            renderOnlineList();
 
             return;
 
         }
 
-
         sambungkataData = snap.data();
-
-
-        /*
-        ==================================
-        UPDATE PANEL
-        ==================================
-        */
 
         renderGamePanel();
 
         renderOnlineList();
-
-
-        /*
-        ==================================
-        TIMER HANYA SAAT GAME BERMAIN
-        ==================================
-        */
 
         if(gameTimerInterval){
 
@@ -1880,16 +1948,16 @@ onSnapshot(
 
         }
 
-
         if(
             sambungkataData.aktif &&
             sambungkataData.status === "playing"
         ){
 
-            gameTimerInterval = setInterval(
-                updateGameTimer,
-                250
-            );
+            gameTimerInterval =
+                setInterval(
+                    updateGameTimer,
+                    250
+                );
 
         }
 

@@ -656,141 +656,93 @@ input.style.overflowY = "hidden";
 
 function renderGamePanel(){
 
-    /*
-    ==================================
-    GAME PANEL HANYA SAAT BERMAIN
-    ==================================
-    */
-
     if(
         !sambungkataData ||
-        !sambungkataData.aktif ||
-        sambungkataData.status !== "playing"
+        !sambungkataData.aktif
     ){
-
+    
         if(gameTimerInterval){
-
             clearInterval(gameTimerInterval);
-
             gameTimerInterval = null;
-
         }
-
+    
         gamePanel.style.display = "none";
-
+    
         return;
-
     }
-
-
-    /*
-    ==================================
-    GAME SEDANG BERMAIN
-    ==================================
-    */
 
     const pemain =
         sambungkataData.pemain || [];
 
-
     const giliran =
         pemain[sambungkataData.giliran];
-
 
     gamePlayer.textContent =
         giliran
         ? giliran.nama
         : "-";
 
-
-    /*
-    ==================================
-    HEART
-    ==================================
-    */
-
     if(giliran){
-
+    
         gameHeart.textContent =
             "♥️".repeat(giliran.hati) +
-            "🤍".repeat(3 - giliran.hati);
-
+            "🤍".repeat(3-giliran.hati);
+    
     }else{
-
+    
         gameHeart.textContent = "";
-
+    
     }
-
-
-    /*
-    ==================================
-    HURUF
-    ==================================
-    */
 
     gameHuruf.textContent =
         sambungkataData.huruf
-        ? sambungkataData.huruf.toUpperCase()
-        : "-";
-
-
-    /*
-    ==================================
-    INPUT KATA YANG SEDANG DIKETIK
-    ==================================
-    */
-
-    gameTyping.textContent =
-        sambungkataData.typing || "...";
-
-
-    /*
-    ==================================
-    TAMPILKAN PANEL
-    ==================================
-    */
+            ? sambungkataData.huruf.toUpperCase()
+            : "-";
 
     gamePanel.style.display = "block";
 
+    if(sambungkataData.typingUid){
 
+        const pemainTyping =
+            pemain.find(
+                p => p.uid === sambungkataData.typingUid
+            );
+
+              gameTyping.textContent =
+                  sambungkataData.typing || "...";
+
+    }else{
+
+        gameTyping.textContent =
+            sambungkataData.typing || "";
+
+    }
+    
     updateGameTimer();
 
 }
 
 function renderOnlineList(){
 
-    onlineList.innerHTML = "";
+    onlineList.innerHTML="";
 
-    onlineBtn.innerHTML =
+    onlineBtn.innerHTML=
         `<i data-lucide="user"></i> ${onlineUsers.length}`;
-
-
-    /*
-    ==================================
-    LOBBY / BELUM BERMAIN
-    ==================================
-    */
 
     if(
         !sambungkataData ||
-        !sambungkataData.aktif ||
-        sambungkataData.status !== "playing"
+        !sambungkataData.aktif
     ){
 
-        onlineUsers.forEach(user => {
+        onlineUsers.forEach(user=>{
 
-            const item =
-                document.createElement("div");
+            const item=document.createElement("div");
 
-            item.className =
-                "online-user";
+            item.className="online-user";
 
-            item.innerHTML = `
+            item.innerHTML=`
                 <img src="${user.photo}">
-
-                <span>
-                    ${user.name}
-                </span>
+                <span>${user.name}</span>
             `;
 
             onlineList.appendChild(item);
@@ -800,152 +752,83 @@ function renderOnlineList(){
         lucide.createIcons();
 
         return;
-
     }
 
-
-    /*
-    ==================================
-    GAME SEDANG BERMAIN
-    ==================================
-    */
-
-    const pemain =
-        sambungkataData.pemain || [];
-
-
-    /*
-    ==================================
-    PLAYER
-    ==================================
-    */
-
-    const titlePlayer =
-        document.createElement("div");
-
-    titlePlayer.className =
-        "online-title";
-
+    const pemain = sambungkataData.pemain || [];
+    
+    const spectator = onlineUsers.filter(user =>
+        !pemain.some(p => p.uid === user.uid)
+    );
+    
+    const titlePlayer = document.createElement("div");
+    titlePlayer.className = "online-title";
     titlePlayer.innerHTML =
         `🎮 PLAYER (${pemain.length})`;
-
+    
     onlineList.appendChild(titlePlayer);
-
-
-    pemain.forEach((player, index) => {
-
-        const div =
-            document.createElement("div");
-
-        div.className =
-            "online-user";
-
-
+    
+    pemain.forEach((player,index)=>{
+    
+        const div=document.createElement("div");
+    
+        div.className="online-user";
+    
         const giliran =
-            index === sambungkataData.giliran;
-
-
-        const playerOnline =
-            onlineUsers.find(
-                u => u.uid === player.uid
-            );
-
-
-        div.innerHTML = `
-
+            index===sambungkataData.giliran;
+    
+        div.innerHTML=`
             <img src="${
-                playerOnline?.photo ||
-                avatar.src
+                onlineUsers.find(
+                    u=>u.uid===player.uid
+                )?.photo || avatar.src
             }">
-
+    
             <span>
-
                 ${
                     giliran
                     ? "▶ "
                     : ""
                 }
-
                 ${player.nama}
-
             </span>
-
+    
             <span style="margin-left:auto">
-
                 ${"❤️".repeat(player.hati)}
-
             </span>
-
         `;
-
+    
         onlineList.appendChild(div);
-
+    
     });
-
-
-    /*
-    ==================================
-    PEMISAH
-    ==================================
-    */
-
-    const garis =
-        document.createElement("hr");
-
+    
+    const garis=document.createElement("hr");
+    
     onlineList.appendChild(garis);
-
-
-    /*
-    ==================================
-    SPECTATOR
-    ==================================
-    */
-
-    const spectator =
-        onlineUsers.filter(user =>
-
-            !pemain.some(
-                p => p.uid === user.uid
-            )
-
-        );
-
-
-    const titleSpec =
-        document.createElement("div");
-
-    titleSpec.className =
-        "online-title";
-
-    titleSpec.innerHTML =
+    
+    const titleSpec=document.createElement("div");
+    
+    titleSpec.className="online-title";
+    
+    titleSpec.innerHTML=
         `👀 SPECTATOR (${spectator.length})`;
-
+    
     onlineList.appendChild(titleSpec);
-
-
-    spectator.forEach(user => {
-
-        const div =
-            document.createElement("div");
-
-        div.className =
-            "online-user";
-
-        div.innerHTML = `
-
+    
+    spectator.forEach(user=>{
+    
+        const div=document.createElement("div");
+    
+        div.className="online-user";
+    
+        div.innerHTML=`
             <img src="${user.photo}">
-
-            <span>
-                ${user.name}
-            </span>
-
+            <span>${user.name}</span>
         `;
-
+    
         onlineList.appendChild(div);
-
+    
     });
-
-
+    
     lucide.createIcons();
 
 }
@@ -955,27 +838,18 @@ function updateGameTimer(){
     if(
         !sambungkataData ||
         !sambungkataData.aktif ||
-        sambungkataData.status !== "playing" ||
         !sambungkataData.batasWaktu
     ){
-
         gameTimer.textContent = "-";
-
-        return;
-
     }
-
 
     const sisa = Math.max(
         0,
         Math.ceil(
-            (
-                sambungkataData.batasWaktu
-                - Date.now()
-            ) / 1000
+            (sambungkataData.batasWaktu - Date.now())
+            / 1000
         )
     );
-
 
     gameTimer.textContent = sisa;
 
@@ -1923,44 +1797,23 @@ onSnapshot(
     sambungkataRef,
     (snap) => {
 
-        if (!snap.exists()) {
-
-            sambungkataData = null;
-
-            renderGamePanel();
-            renderOnlineList();
-
-            return;
-
-        }
+        if (!snap.exists()) return;
 
         sambungkataData = snap.data();
-
+        
         renderGamePanel();
-
         renderOnlineList();
-
+        updateGameTimer();
+        
         if(gameTimerInterval){
-
             clearInterval(gameTimerInterval);
-
-            gameTimerInterval = null;
-
         }
-
-        if(
-            sambungkataData.aktif &&
-            sambungkataData.status === "playing"
-        ){
-
-            gameTimerInterval =
-                setInterval(
-                    updateGameTimer,
-                    250
-                );
-
-        }
-
+        
+        gameTimerInterval = setInterval(
+            updateGameTimer,
+            250
+        );
+        
     }
 );
 

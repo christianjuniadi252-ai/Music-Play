@@ -740,18 +740,8 @@ function renderGamePanel(){
     ==================================
     */
 
-    const typingText =
-    sambungkataData.typing || "...";
-
-
-    if(
-        gameTyping.textContent !== typingText
-    ){
-    
-        gameTyping.textContent =
-            typingText;
-    
-    }
+    gameTyping.textContent =
+        sambungkataData.typing || "...";
 
 
     /*
@@ -1537,6 +1527,17 @@ try {
             giliran = 0;
         
         }
+        
+        await updateDoc(
+            sambungkataRef,
+            {
+                kataDipakai,
+                huruf:hurufBaru,
+                giliran,
+                waktuMulai:Date.now(),
+                batasWaktu:Date.now()+20000
+            }
+        );
         
         await sendBotMessage(
         

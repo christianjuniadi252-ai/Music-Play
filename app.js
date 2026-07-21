@@ -656,68 +656,103 @@ input.style.overflowY = "hidden";
 
 function renderGamePanel(){
 
+    /*
+    ==================================
+    GAME PANEL HANYA SAAT BERMAIN
+    ==================================
+    */
+
     if(
         !sambungkataData ||
-        !sambungkataData.aktif
+        !sambungkataData.aktif ||
+        sambungkataData.status !== "playing"
     ){
-    
+
         if(gameTimerInterval){
+
             clearInterval(gameTimerInterval);
+
             gameTimerInterval = null;
+
         }
-    
+
         gamePanel.style.display = "none";
-    
+
         return;
+
     }
+
+
+    /*
+    ==================================
+    GAME SEDANG BERMAIN
+    ==================================
+    */
 
     const pemain =
         sambungkataData.pemain || [];
 
+
     const giliran =
         pemain[sambungkataData.giliran];
+
 
     gamePlayer.textContent =
         giliran
         ? giliran.nama
         : "-";
 
+
+    /*
+    ==================================
+    HEART
+    ==================================
+    */
+
     if(giliran){
-    
+
         gameHeart.textContent =
             "♥️".repeat(giliran.hati) +
-            "🤍".repeat(3-giliran.hati);
-    
+            "🤍".repeat(3 - giliran.hati);
+
     }else{
-    
+
         gameHeart.textContent = "";
-    
+
     }
+
+
+    /*
+    ==================================
+    HURUF
+    ==================================
+    */
 
     gameHuruf.textContent =
         sambungkataData.huruf
-            ? sambungkataData.huruf.toUpperCase()
-            : "-";
+        ? sambungkataData.huruf.toUpperCase()
+        : "-";
+
+
+    /*
+    ==================================
+    INPUT KATA YANG SEDANG DIKETIK
+    ==================================
+    */
+
+    gameTyping.textContent =
+        sambungkataData.typing || "...";
+
+
+    /*
+    ==================================
+    TAMPILKAN PANEL
+    ==================================
+    */
 
     gamePanel.style.display = "block";
 
-    if(sambungkataData.typingUid){
 
-        const pemainTyping =
-            pemain.find(
-                p => p.uid === sambungkataData.typingUid
-            );
-
-              gameTyping.textContent =
-                  sambungkataData.typing || "...";
-
-    }else{
-
-        gameTyping.textContent =
-            sambungkataData.typing || "";
-
-    }
-    
     updateGameTimer();
 
 }
@@ -838,18 +873,27 @@ function updateGameTimer(){
     if(
         !sambungkataData ||
         !sambungkataData.aktif ||
+        sambungkataData.status !== "playing" ||
         !sambungkataData.batasWaktu
     ){
+
         gameTimer.textContent = "-";
+
+        return;
+
     }
+
 
     const sisa = Math.max(
         0,
         Math.ceil(
-            (sambungkataData.batasWaktu - Date.now())
-            / 1000
+            (
+                sambungkataData.batasWaktu
+                - Date.now()
+            ) / 1000
         )
     );
+
 
     gameTimer.textContent = sisa;
 
@@ -1797,23 +1841,58 @@ onSnapshot(
     sambungkataRef,
     (snap) => {
 
-        if (!snap.exists()) return;
+        if (!snap.exists()) {
+
+            sambungkataData = null;
+
+            renderGamePanel();
+
+            return;
+
+        }
+
 
         sambungkataData = snap.data();
-        
+
+
+        /*
+        ==================================
+        UPDATE PANEL
+        ==================================
+        */
+
         renderGamePanel();
+
         renderOnlineList();
-        updateGameTimer();
-        
+
+
+        /*
+        ==================================
+        TIMER HANYA SAAT GAME BERMAIN
+        ==================================
+        */
+
         if(gameTimerInterval){
+
             clearInterval(gameTimerInterval);
+
+            gameTimerInterval = null;
+
         }
-        
-        gameTimerInterval = setInterval(
-            updateGameTimer,
-            250
-        );
-        
+
+
+        if(
+            sambungkataData.aktif &&
+            sambungkataData.status === "playing"
+        ){
+
+            gameTimerInterval = setInterval(
+                updateGameTimer,
+                250
+            );
+
+        }
+
     }
 );
 

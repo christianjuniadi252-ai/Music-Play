@@ -861,137 +861,62 @@ button:hover{
 }
 
 #gamePanel{
-
-    display:none;
-
     background:#181818;
-
     border-bottom:1px solid #333;
-
-    padding:6px 12px;
-
+    align-items: center;
+    padding: 8px 12px;
 }
 
 #gameTop{
-
     display:flex;
-
-    justify-content:space-between;
-
+    justify-content: center;
     align-items:center;
-
-    font-size:14px;
-
+    font-size:16px;
     font-weight:bold;
-
 }
 
 #gamePlayer{
-
     flex:1;
-
     text-align:center;
-
     overflow:hidden;
-
     white-space:nowrap;
-
     text-overflow:ellipsis;
-
     margin:0 10px;
+}
 
+#gameTimer {
+    position: absolute;
+    left: 6px;
 }
 
 #gameHuruf{
-
+    position: absolute;
+    left: 6px;
     font-size:30px;
-
     font-weight:bold;
-
-    line-height:30px;
-
     text-align:center;
-
-}
-
-#gameTyping{
-
-    text-align:center;
-
-    font-size:18px;
-
-    font-weight:bold;
-
-    color:#aaa;
-
-    min-height:22px;
-
-    white-space:nowrap;
-
-    overflow:hidden;
-
-    text-overflow:ellipsis;
-
-}
-
-#gameTyping{
-
-    flex:1;
-
-    font-size:18px;
-
-    font-weight:bold;
-
-    color:#bbb;
-
-    overflow:hidden;
-
-    white-space:nowrap;
-
-    text-overflow:ellipsis;
-
-}
-
-#gameHuruf{
-
-    width:34px;
-
-    font-size:30px;
-
-    font-weight:bold;
-
-    text-align:center;
-
     flex-shrink:0;
+    margin-bottom: -4px;
+}
 
+#gameTyping{
+    flex:1;
+    text-align:center;
+    font-size:18px;
+    font-weight:bold;
+    color:#aaa;
+    min-height:22px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
 #gameBottom{
-
     display:flex;
-
-    align-items:center;
-
-    gap:14px;
-
-    margin-top:2px;
-
-}
-
-@keyframes typingCursor{
-
-    50%{
-
-        opacity:0;
-
-    }
-
-}
-
-#gameTyping{
-
-    animation:typingCursor .8s infinite;
-
+    justify-content: center;
+    align-items: flex-end;
+    font-size: 14px;
+    margin-top:8px;
 }
 </style>
 </head>  
@@ -1033,21 +958,14 @@ button:hover{
 <div id="gamePanel">
 
     <div id="gameTop">
-
         <span id="gameTimer">20s</span>
-
-        <span id="gamePlayer">-</span>
-
-        <span id="gameHeart">♥️♥️♥️</span>
-
+        <span id="gamePlayer">Nama</span>
+        <span id="gameHeart"></span>
     </div>
 
     <div id="gameBottom">
-    
-        <div id="gameHuruf">-</div>
-    
-        <div id="gameTyping"></div>
-    
+        <div id="gameHuruf">A</div>
+        <div id="gameTyping">TEKS</div>
     </div>
 
 </div>

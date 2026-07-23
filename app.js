@@ -750,7 +750,7 @@ function renderGamePanel(){
     ==================================
     */
 
-    gamePanel.style.display = "block";
+    gamePanel.style.display = "flex";
 
 
     updateGameTimer();

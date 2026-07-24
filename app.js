@@ -695,7 +695,21 @@ function renderGamePanel(){
 
     const giliran =
         pemain[sambungkataData.giliran];
-
+        
+    const giliranSaya =
+        auth.currentUser &&
+        giliran &&
+        giliran.uid === auth.currentUser.uid;
+        
+    if (giliranSaya) {
+    
+        gamePanel.classList.add("your-turn");
+    
+    } else {
+    
+        gamePanel.classList.remove("your-turn");
+    
+    }
 
     gamePlayer.textContent =
         giliran

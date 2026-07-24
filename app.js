@@ -847,54 +847,51 @@ function renderOnlineList(){
 
 
     pemain.forEach((player, index) => {
-
+    
         const div =
             document.createElement("div");
-
+    
+        const giliran =
+            index === sambungkataData.giliran;
+    
         div.className =
             "online-user" +
             (giliran ? " current-turn" : "");
-
-
-        const giliran =
-            index === sambungkataData.giliran;
-
-
+    
         const playerOnline =
             onlineUsers.find(
                 u => u.uid === player.uid
             );
-
-
+    
         div.innerHTML = `
-
+    
             <img src="${
                 playerOnline?.photo ||
                 avatar.src
             }">
-
+    
             <span>
-
+    
                 ${
                     giliran
                     ? "▶ "
                     : ""
                 }
-
+    
                 ${player.nama}
-
+    
             </span>
-
+    
             <span style="margin-left:auto">
-
+    
                 ${"❤️".repeat(player.hati)}
-
+    
             </span>
-
+    
         `;
-
+    
         onlineList.appendChild(div);
-
+    
     });
 
 

@@ -3018,13 +3018,30 @@ async function cekWaktuSambungKata(){
         Maka giliran = 1 = C
         */
 
-        let giliran =
-            index;
-
-        if(giliran >= pemain.length){
-
-            giliran = 0;
-
+        let giliran;
+        
+        // Jika pemain tereliminasi
+        if (pemainKena.hati - 1 <= 0) {
+        
+            // Karena pemain dihapus dari array,
+            // index yang sama sekarang menunjuk ke pemain berikutnya
+            giliran = index;
+        
+            // Jika index sudah melewati pemain terakhir
+            if (giliran >= pemain.length) {
+                giliran = 0;
+            }
+        
+        } else {
+        
+            // Jika hanya kehilangan 1 nyawa,
+            // lanjut ke pemain setelahnya
+            giliran = index + 1;
+        
+            if (giliran >= pemain.length) {
+                giliran = 0;
+            }
+        
         }
 
 

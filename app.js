@@ -1544,16 +1544,18 @@ try {
         
         await sendBotMessage(
         
-        `✅ ${auth.currentUser.displayName}
-        berhasil menjawab.
+        `✅ <b>${auth.currentUser.displayName}</b>
+        berhasil menjawab:
         
-        Huruf berikutnya
+        📝 <b>${text.toUpperCase()}</b>
         
-        <b>${hurufBaru.toUpperCase()}</b>
+        Huruf berikutnya:
         
-        Giliran
+        🔤 <b>${hurufBaru.toUpperCase()}</b>
         
-        <b>${sambungkataData.pemain[giliran].nama}</b>`
+        Giliran berikutnya:
+        
+        ▶️ <b>${sambungkataData.pemain[giliran].nama}</b>`
         
         );
         

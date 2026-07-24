@@ -1553,13 +1553,13 @@ try {
         
         await sendBotMessage(
         
-        `✅ ${auth.currentUser.displayName} Berhasil menjawab<br>
+        `✅ ${auth.currentUser.displayName} Berhasil menjawab
         
         📝 Kata :
-        <b>${text}</b><br>
+        <b>${text}</b>
         
         🔤 Huruf :
-        <b>${hurufBaru.toUpperCase()}</b><br>
+        <b>${hurufBaru.toUpperCase()}</b>
         
         ▶️ Giliran :
         <b>${sambungkataData.pemain[giliran].nama}</b>`

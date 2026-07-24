@@ -3131,16 +3131,9 @@ async function cekWaktuSambungKata(){
 
         await sendBotMessage(
 
-            `🏆 <b>PERMAINAN SELESAI!</b>
+            `🏆 <b>PERMAINAN SELESAI!</b><br>
 
-            💀 <b>${hasilGame.pemainKena.nama}</b>
-            tereliminasi karena kehabisan waktu.
-
-            🎉 PEMENANG:
-
-            👑 <b>${hasilGame.pemenang.nama}</b>
-
-            🏆 Selamat!`
+            👑 <b>${hasilGame.pemenang.nama}</b> 👑`
 
         );
 

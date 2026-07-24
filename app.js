@@ -1535,7 +1535,10 @@ try {
                 huruf:hurufBaru,
                 giliran,
                 waktuMulai:Date.now(),
-                batasWaktu:Date.now()+20000
+                batasWaktu:Date.now()+20000,
+                lastTimeout: sambungkataData.batasWaktu,
+                typing: "",
+                typingUid: ""
             }
         );
         
@@ -2700,9 +2703,11 @@ if(
         updateDoc(
             sambungkataRef,
             {
-                typing: input.value,
-
-                typingUid: auth.currentUser.uid
+                typing:
+                    input.value.toUpperCase() + "_",
+        
+                typingUid:
+                    auth.currentUser.uid
             }
         );
 

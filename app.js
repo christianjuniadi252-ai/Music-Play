@@ -2900,6 +2900,8 @@ async function cekWaktuSambungKata(){
         return;
     }
 
+    let hasilGame = null;
+
     await runTransaction(db, async (transaction) => {
 
         const snap =
@@ -2917,20 +2919,23 @@ async function cekWaktuSambungKata(){
             return;
         }
 
+
         /*
         =========================
         PEMAIN YANG KEHABISAN WAKTU
         =========================
         */
 
-        const pemain =
-            [...game.pemain];
+        const pemain = [
+            ...game.pemain
+        ];
 
         const index =
             game.giliran;
 
-        const pemainKena =
-            {...pemain[index]};
+        const pemainKena = {
+            ...pemain[index]
+        };
 
 
         /*
@@ -2944,11 +2949,15 @@ async function cekWaktuSambungKata(){
 
         /*
         =========================
-        JIKA ELIMINASI
+        ELIMINASI
         =========================
         */
 
-        if(pemain[index].hati <= 0){
+        const tereliminasi =
+            pemain[index].hati <= 0;
+
+
+        if(tereliminasi){
 
             pemain.splice(index, 1);
 
@@ -2962,6 +2971,9 @@ async function cekWaktuSambungKata(){
         */
 
         if(pemain.length <= 1){
+
+            const pemenang =
+                pemain[0];
 
             transaction.update(
                 sambungkataRef,
@@ -2983,6 +2995,19 @@ async function cekWaktuSambungKata(){
                 }
             );
 
+
+            // Simpan hasil untuk pesan setelah transaction
+            hasilGame = {
+
+                tipe: "menang",
+
+                pemainKena,
+
+                pemenang
+
+            };
+
+
             return;
 
         }
@@ -2992,56 +3017,41 @@ async function cekWaktuSambungKata(){
         =========================
         GILIRAN BERIKUTNYA
         =========================
-
-        index tetap digunakan.
-
-        Contoh:
-
-        A → B → C
-
-        Jika B timeout:
-
-        index = 1
-
-        Setelah B kehilangan nyawa:
-
-        giliran = 2
-
-        Jadi langsung ke C.
-
-        Jika B tereliminasi:
-
-        A → C
-
-        index tetap 1
-
-        Maka giliran = 1 = C
         */
 
         let giliran;
-        
+
+
         // Jika pemain tereliminasi
-        if (pemainKena.hati - 1 <= 0) {
-        
-            // Karena pemain dihapus dari array,
-            // index yang sama sekarang menunjuk ke pemain berikutnya
+        if(tereliminasi){
+
+            // Karena pemain sudah dihapus,
+            // index sekarang menunjuk pemain berikutnya
             giliran = index;
-        
-            // Jika index sudah melewati pemain terakhir
-            if (giliran >= pemain.length) {
+
+
+            if(giliran >= pemain.length){
+
                 giliran = 0;
+
             }
-        
-        } else {
-        
-            // Jika hanya kehilangan 1 nyawa,
-            // lanjut ke pemain setelahnya
+
+        }
+
+
+        // Jika hanya kehilangan nyawa
+        else{
+
+            // Lanjut ke pemain berikutnya
             giliran = index + 1;
-        
-            if (giliran >= pemain.length) {
+
+
+            if(giliran >= pemain.length){
+
                 giliran = 0;
+
             }
-        
+
         }
 
 
@@ -3076,53 +3086,120 @@ async function cekWaktuSambungKata(){
         );
 
 
-        /*
-        =========================
-        PESAN BOT
-        =========================
-        */
+        hasilGame = {
 
-        // Pesan dikirim setelah transaksi
-        // agar tidak mengganggu proses transaksi
+            tipe:
+                tereliminasi
+                ? "eliminasi"
+                : "kehilangan_nyawa",
 
-        setTimeout(async () => {
+            pemainKena,
 
-            if(pemainKena.hati - 1 <= 0){
+            pemain,
 
-                await sendBotMessage(
+            giliran
 
-                    `💀 <b>${pemainKena.nama}</b>
-                    tereliminasi karena kehabisan waktu.`
-
-                );
-
-            }else{
-
-                await sendBotMessage(
-
-                    `⏰ Waktu habis!
-
-                    <b>${pemainKena.nama}</b>
-                    kehilangan 1 ❤️
-
-                    Sisa ❤️:
-                    ${"❤️".repeat(
-                        Math.max(
-                            0,
-                            pemainKena.hati - 1
-                        )
-                    )}
-
-                    Giliran berikutnya:
-                    <b>${pemain[giliran].nama}</b>`
-
-                );
-
-            }
-
-        }, 100);
+        };
 
     });
+
+
+    /*
+    =========================
+    KIRIM PESAN SETELAH TRANSACTION
+    =========================
+    */
+
+    if(!hasilGame) return;
+
+
+    /*
+    =========================
+    PEMENANG
+    =========================
+    */
+
+    if(hasilGame.tipe === "menang"){
+
+        await sendBotMessage(
+
+            `🏆 <b>PERMAINAN SELESAI!</b>
+
+            💀 <b>${hasilGame.pemainKena.nama}</b>
+            tereliminasi karena kehabisan waktu.
+
+            🎉 PEMENANG:
+
+            👑 <b>${hasilGame.pemenang.nama}</b>
+
+            🏆 Selamat!`
+
+        );
+
+        return;
+
+    }
+
+
+    /*
+    =========================
+    ELIMINASI
+    =========================
+    */
+
+    if(hasilGame.tipe === "eliminasi"){
+
+        await sendBotMessage(
+
+            `💀 <b>${hasilGame.pemainKena.nama}</b>
+            tereliminasi karena kehabisan waktu.
+
+            Giliran berikutnya:
+
+            ▶️ <b>${
+                hasilGame.pemain[
+                    hasilGame.giliran
+                ].nama
+            }</b>`
+
+        );
+
+        return;
+
+    }
+
+
+    /*
+    =========================
+    KEHILANGAN NYAWA
+    =========================
+    */
+
+    await sendBotMessage(
+
+        `⏰ Waktu habis!
+
+        <b>${hasilGame.pemainKena.nama}</b>
+        kehilangan 1 ❤️
+
+        Sisa ❤️:
+
+        ${"❤️".repeat(
+            Math.max(
+                0,
+                hasilGame.pemainKena.hati - 1
+            )
+        )}
+
+        Giliran berikutnya:
+
+        ▶️ <b>${
+            hasilGame.pemain[
+                hasilGame.giliran
+            ].nama
+        }</b>`
+
+    );
 
 }
 

@@ -726,8 +726,8 @@ function renderGamePanel(){
     if(giliran){
 
         gameHeart.textContent =
-            "🤍".repeat(3 - giliran.hati);
             "♥️".repeat(giliran.hati) +
+            "🤍".repeat(3 - giliran.hati);
 
     }else{
 
@@ -854,7 +854,6 @@ function renderOnlineList(){
         div.className =
             "online-user" +
             (giliran ? " current-turn" : "");
-
 
         const giliran =
             index === sambungkataData.giliran;

@@ -852,7 +852,8 @@ function renderOnlineList(){
             document.createElement("div");
 
         div.className =
-            "online-user";
+            "online-user" +
+            (giliran ? " current-turn" : "");
 
 
         const giliran =

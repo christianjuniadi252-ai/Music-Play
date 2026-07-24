@@ -726,8 +726,8 @@ function renderGamePanel(){
     if(giliran){
 
         gameHeart.textContent =
-            "♥️".repeat(giliran.hati) +
             "🤍".repeat(3 - giliran.hati);
+            "♥️".repeat(giliran.hati) +
 
     }else{
 

@@ -3182,7 +3182,7 @@ async function cekWaktuSambungKata(){
         <b>${hasilGame.pemainKena.nama}</b>
         kehilangan 1 ❤️
 
-        Sisa ❤️:
+        Sisa 
 
         ${"❤️".repeat(
             Math.max(

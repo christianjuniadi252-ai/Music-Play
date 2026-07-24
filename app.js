@@ -2899,184 +2899,213 @@ async function cekWaktuSambungKata(){
     if(Date.now() < sambungkataData.batasWaktu){
         return;
     }
-    
-    if(
-        sambungkataData.lastTimeout >=
-        sambungkataData.batasWaktu
-    ){
-        return;
-    }
-    
+
     await runTransaction(db, async (transaction) => {
-    
-        const snap = await transaction.get(sambungkataRef);
-    
-        if(!snap.exists()){
-            return;
-        }
-    
+
+        const snap =
+            await transaction.get(sambungkataRef);
+
+        if(!snap.exists()) return;
+
         const game = snap.data();
-    
-        if(!game.aktif){
-            return;
-        }
-    
-        if(game.status !== "playing"){
-            return;
-        }
-    
+
+        if(!game.aktif) return;
+
+        if(game.status !== "playing") return;
+
         if(Date.now() < game.batasWaktu){
             return;
         }
-    
-        if(game.lastTimeout >= game.batasWaktu){
-            return;
-        }
-    
-        const pemain = [...game.pemain];
-        
-        const index = game.giliran;
-        
+
+        /*
+        =========================
+        PEMAIN YANG KEHABISAN WAKTU
+        =========================
+        */
+
+        const pemain =
+            [...game.pemain];
+
+        const index =
+            game.giliran;
+
+        const pemainKena =
+            {...pemain[index]};
+
+
+        /*
+        =========================
+        KURANGI NYAWA
+        =========================
+        */
+
         pemain[index].hati--;
-        
+
+
+        /*
+        =========================
+        JIKA ELIMINASI
+        =========================
+        */
+
         if(pemain[index].hati <= 0){
-        
-            pemain.splice(index,1);
-        
+
+            pemain.splice(index, 1);
+
         }
-        
+
+
+        /*
+        =========================
+        JIKA TINGGAL 1 PEMAIN
+        =========================
+        */
+
         if(pemain.length <= 1){
-        
+
             transaction.update(
                 sambungkataRef,
                 {
-        
-                    aktif:false,
-        
-                    status:"finish",
-        
+
+                    aktif: false,
+
+                    status: "finish",
+
                     pemain,
-        
-                    lastTimeout:game.batasWaktu
-        
+
+                    typing: "",
+
+                    typingUid: "",
+
+                    lastTimeout:
+                        game.batasWaktu
+
                 }
             );
-        
+
             return;
-        
+
         }
-        
-        let giliran = index;
-        
+
+
+        /*
+        =========================
+        GILIRAN BERIKUTNYA
+        =========================
+
+        index tetap digunakan.
+
+        Contoh:
+
+        A → B → C
+
+        Jika B timeout:
+
+        index = 1
+
+        Setelah B kehilangan nyawa:
+
+        giliran = 2
+
+        Jadi langsung ke C.
+
+        Jika B tereliminasi:
+
+        A → C
+
+        index tetap 1
+
+        Maka giliran = 1 = C
+        */
+
+        let giliran =
+            index;
+
         if(giliran >= pemain.length){
+
             giliran = 0;
+
         }
-        
+
+
+        /*
+        =========================
+        UPDATE GAME
+        =========================
+        */
+
         transaction.update(
             sambungkataRef,
             {
-        
+
                 pemain,
-        
+
                 giliran,
-        
-                waktuMulai: Date.now(),
-        
-                batasWaktu: Date.now() + 20000,
-        
-                lastTimeout: game.batasWaktu,
-        
+
+                waktuMulai:
+                    Date.now(),
+
+                batasWaktu:
+                    Date.now() + 20000,
+
+                lastTimeout:
+                    game.batasWaktu,
+
                 typing: "",
-        
+
                 typingUid: ""
-        
+
             }
         );
-    
+
+
+        /*
+        =========================
+        PESAN BOT
+        =========================
+        */
+
+        // Pesan dikirim setelah transaksi
+        // agar tidak mengganggu proses transaksi
+
+        setTimeout(async () => {
+
+            if(pemainKena.hati - 1 <= 0){
+
+                await sendBotMessage(
+
+                    `💀 <b>${pemainKena.nama}</b>
+                    tereliminasi karena kehabisan waktu.`
+
+                );
+
+            }else{
+
+                await sendBotMessage(
+
+                    `⏰ Waktu habis!
+
+                    <b>${pemainKena.nama}</b>
+                    kehilangan 1 ❤️
+
+                    Sisa ❤️:
+                    ${"❤️".repeat(
+                        Math.max(
+                            0,
+                            pemainKena.hati - 1
+                        )
+                    )}
+
+                    Giliran berikutnya:
+                    <b>${pemain[giliran].nama}</b>`
+
+                );
+
+            }
+
+        }, 100);
+
     });
-    
-    const pemain = [...sambungkataData.pemain];
-    
-    const index = sambungkataData.giliran;
-    
-    const pemainKena = {
-        ...pemain[index]
-    };
-    
-    pemain[index].hati--;
-    
-    if (pemain[index].hati <= 0) {
-    
-        pemain.splice(index, 1);
-    
-        await sendBotMessage(
-            `💀 <b>${pemainKena.nama}</b> tereliminasi.`
-        );
-    
-    }
-    
-    if (pemain.length === 1) {
-    
-        await updateDoc(sambungkataRef,{
-    
-            aktif:false,
-    
-            status:"finish",
-    
-            pemain
-    
-        });
-    
-        await sendBotMessage(
-    
-            `🏆 Permainan selesai!
-    
-    Pemenangnya adalah
-    
-    <b>${pemain[0].nama}</b> 🎉`
-    
-        );
-    
-        return;
-    
-    }
-    
-    let giliran = sambungkataData.giliran;
-    
-    if (giliran >= pemain.length) {
-    
-        giliran = 0;
-    
-    }
-    
-    await updateDoc(
-        sambungkataRef,
-        {
-            pemain,
-            giliran,
-            batasWaktu: Date.now() + 20000,
-            waktuMulai: Date.now(),
-            lastTimeout:sambungkataData.batasWaktu
-        }
-    );
-    
-    await sendBotMessage(
-    
-    `⏰ Waktu habis!
-    
-    ${pemain[index].nama}
-    kehilangan 1 ❤️
-    
-    Sisa ❤️:
-    ${"❤️".repeat(
-        Math.max(0,pemain[index].hati)
-    )}
-    
-    Giliran berikutnya:
-    
-    <b>${pemain[giliran].nama}</b>`
-    
-    );
 
 }
 

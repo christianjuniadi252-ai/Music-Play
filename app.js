@@ -993,6 +993,64 @@ function updateGameTimer(){
 
 }
 
+function getGameSettings(game){
+
+    const waktu = game.waktu || 20;
+
+    /*
+    =========================
+    WAKTU 10 DETIK
+    =========================
+    */
+
+    if(waktu === 10){
+
+        return {
+            waktu: 10,
+            jumlahHuruf: 2
+        };
+
+    }
+
+
+    /*
+    =========================
+    WAKTU 5 DETIK
+    =========================
+    */
+
+    if(waktu === 5){
+
+        return {
+            waktu: 5,
+            jumlahHuruf:
+                game.putaranDi5Detik >= 10
+                ? 3
+                : 2
+        };
+
+    }
+
+
+    /*
+    =========================
+    WAKTU NORMAL
+    =========================
+    */
+
+    return {
+
+        waktu,
+
+        jumlahHuruf:
+            waktu <= 10
+            ? 2
+            : 1
+
+    };
+
+}
+
 async function sendMessage() {
 
 if (sending) return;  
@@ -1281,12 +1339,22 @@ try {
         
                 waktuMulai: Date.now(),
         
-                batasWaktu: Date.now() + 20000,
-                
-                lastTimeout:0,
-                
+                batasWaktu:
+                    Date.now() + 20000,
+        
+                // Waktu awal
+                waktu: 20,
+        
+                // Jumlah putaran saat 10 detik
+                putaranDi10Detik: 0,
+        
+                // Jumlah putaran saat 5 detik
+                putaranDi5Detik: 0,
+        
+                lastTimeout: 0,
+        
                 typing: "",
-
+        
                 typingUid: ""
         
             }
@@ -1499,20 +1567,32 @@ try {
             return;
         }
     
-        if (
-            !text
-                .toLowerCase()
-                .startsWith(
-                    sambungkataData.huruf
-                )
-        ) {
-    
+        const kataInput =
+            text.toLowerCase();
+        
+        const jumlahHuruf =
+            getGameSettings(
+                sambungkataData
+            ).jumlahHuruf;
+        
+        const targetHuruf =
+            sambungkataData.huruf
+                .toLowerCase();
+        
+        
+        if(
+            !kataInput.startsWith(
+                targetHuruf
+            )
+        ){
+        
             alert(
                 "Kata harus diawali huruf " +
-                sambungkataData.huruf.toUpperCase()
+                targetHuruf.toUpperCase()
             );
-    
+        
             return;
+        
         }
         
         const kataDipakai = [
@@ -1520,10 +1600,21 @@ try {
             text.toLowerCase()
         ];
         
+        const gameSettings =
+            getGameSettings(
+                sambungkataData
+            );
+        
+        const jumlahHuruf =
+            gameSettings.jumlahHuruf;
+        
+        
         const hurufBaru =
             text
                 .toLowerCase()
-                .at(-1);
+                .slice(
+                    -jumlahHuruf
+                );
         
         let giliran =
             sambungkataData.giliran + 1;
@@ -1534,17 +1625,132 @@ try {
         
         }
         
+        let waktuBaru =
+            sambungkataData.waktu || 20;
+        
+        let putaranDi10Detik =
+            sambungkataData.putaranDi10Detik || 0;
+        
+        let putaranDi5Detik =
+            sambungkataData.putaranDi5Detik || 0;
+        
+        
+        /*
+        =========================
+        JIKA SUDAH 10 DETIK
+        =========================
+        */
+        
+        if(waktuBaru === 10){
+        
+            putaranDi10Detik++;
+        
+            /*
+            Tetap 10 detik selama
+            3 putaran
+            */
+        
+            if(putaranDi10Detik >= 3){
+        
+                waktuBaru = 9;
+        
+                putaranDi10Detik = 0;
+        
+            }
+        
+        }
+        
+        
+        /*
+        =========================
+        JIKA WAKTU 20 - 11
+        =========================
+        */
+        
+        else if(
+            waktuBaru > 10
+        ){
+        
+            waktuBaru--;
+        
+        }
+        
+        
+        /*
+        =========================
+        JIKA WAKTU 9 - 6
+        =========================
+        */
+        
+        else if(
+            waktuBaru > 5
+        ){
+        
+            waktuBaru--;
+        
+        }
+        
+        
+        /*
+        =========================
+        JIKA SUDAH 5 DETIK
+        =========================
+        */
+        
+        else if(
+            waktuBaru === 5
+        ){
+        
+            putaranDi5Detik++;
+        
+            /*
+            Tetap 5 detik selama
+            10 putaran
+            */
+        
+            if(
+                putaranDi5Detik >= 10
+            ){
+        
+                // Tetap 5 detik
+                waktuBaru = 5;
+        
+            }
+        
+        }
+        
         await updateDoc(
             sambungkataRef,
             {
+        
                 kataDipakai,
-                huruf:hurufBaru,
+        
+                huruf: hurufBaru,
+        
                 giliran,
-                waktuMulai:Date.now(),
-                batasWaktu:Date.now()+20000,
-                lastTimeout: sambungkataData.batasWaktu,
+        
+                waktuMulai:
+                    Date.now(),
+        
+                batasWaktu:
+                    Date.now()
+                    +
+                    (waktuBaru * 1000),
+        
+                waktu:
+                    waktuBaru,
+        
+                putaranDi10Detik,
+        
+                putaranDi5Detik,
+        
+                lastTimeout:
+                    sambungkataData.batasWaktu,
+        
                 typing: "",
+        
                 typingUid: ""
+        
             }
         );
         

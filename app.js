@@ -1296,19 +1296,13 @@ try {
         
         await sendBotMessage(
         
-        `🎮 Permainan dimulai!
+        `🎮 Permainan di mulai!
         
-        Huruf pertama:
-        
-        <b>${huruf.toUpperCase()}</b>
-        
-        Giliran pertama:
-        
+        ▶️ Giliran :
         <b>${sambungkataData.pemain[0].nama}</b>
         
-        Waktu:
-        
-        <b>20 detik</b>`
+        🔤 Huruf :
+        <b>${huruf.toUpperCase()}</b>`
         
         );
         

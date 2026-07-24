@@ -852,8 +852,8 @@ function renderOnlineList(){
             document.createElement("div");
 
         div.className =
-            "online-user" +
-            (giliran ? " current-turn" : "");
+            "online-user";
+
 
         const giliran =
             index === sambungkataData.giliran;

@@ -2704,7 +2704,7 @@ if(
             sambungkataRef,
             {
                 typing:
-                    input.value.toUpperCase() + "_",
+                    input.value.toUpperCase(),
         
                 typingUid:
                     auth.currentUser.uid

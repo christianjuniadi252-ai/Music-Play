@@ -3184,29 +3184,18 @@ async function cekWaktuSambungKata(){
     */
 
     await sendBotMessage(
-
-        `⏰ Waktu habis!
-
-        <b>${hasilGame.pemainKena.nama}</b>
-        kehilangan 1 ❤️
-
-        Sisa 
-
-        ${"❤️".repeat(
-            Math.max(
-                0,
-                hasilGame.pemainKena.hati - 1
-            )
-        )}
-
-        Giliran berikutnya:
-
-        ▶️ <b>${
-            hasilGame.pemain[
-                hasilGame.giliran
-            ].nama
-        }</b>`
-
+    
+    `⏰ ${pemainKena.nama} Waktu habis!
+    
+    ♥️ Tersisa :
+    <b>${Math.max(
+        0,
+        pemainKena.hati - 1
+    )}</b>
+    
+    ▶️ Giliran :
+    <b>${pemain[giliran].nama}</b>`
+    
     );
 
 }

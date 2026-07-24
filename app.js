@@ -2965,10 +2965,14 @@ async function cekWaktuSambungKata(){
             pemain[index].hati <= 0;
 
 
-        if(tereliminasi){
-
+        if(pemain[index].hati <= 0){
+        
+            // Simpan pemain yang tereliminasi
+            const pemainEliminasi = pemain[index];
+        
+            // Hapus dari daftar pemain aktif
             pemain.splice(index, 1);
-
+        
         }
 
 
@@ -2979,47 +2983,44 @@ async function cekWaktuSambungKata(){
         */
 
         if(pemain.length <= 1){
-
-            const pemenang =
-                pemain[0];
-
+        
+            const pemenang = pemain[0];
+        
             transaction.update(
                 sambungkataRef,
                 {
-
+        
                     aktif: false,
-
+        
                     status: "finish",
-
+        
                     pemain,
-
+        
                     typing: "",
-
+        
                     typingUid: "",
-
+        
                     lastTimeout:
                         game.batasWaktu
-
+        
                 }
             );
-
-
-            // Simpan hasil untuk pesan setelah transaction
-            hasilGame = {
-
-                tipe: "menang",
-
-                pemainKena,
-
-                pemenang
-
-            };
-
-
+        
+            setTimeout(async () => {
+        
+                await sendBotMessage(
+        
+        `🏆 Permainan Selesai!
+        
+        🥇: 👑 <b>${pemenang.nama}</b> 👑`
+        
+                );
+        
+            }, 100);
+        
             return;
-
+        
         }
-
 
         /*
         =========================

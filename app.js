@@ -1004,6 +1004,108 @@ function getWaktuRonde(ronde){
 
 }
 
+async function cekBatasMulaiSambungKata(){
+
+    if (!sambungkataData) return;
+
+    if (!sambungkataData.aktif) return;
+
+    if (sambungkataData.status !== "waiting") {
+        return;
+    }
+
+    if (!sambungkataData.batasMulai) {
+        return;
+    }
+
+
+    // Belum mencapai 1 menit
+    if (
+        Date.now() <
+        sambungkataData.batasMulai
+    ) {
+
+        return;
+
+    }
+
+
+    let dibatalkan = false;
+
+
+    await runTransaction(
+        db,
+        async (transaction) => {
+
+            const snap =
+                await transaction.get(
+                    sambungkataRef
+                );
+
+
+            if (!snap.exists()) return;
+
+
+            const game =
+                snap.data();
+
+
+            // Pastikan masih lobby
+            if (
+                !game.aktif ||
+                game.status !== "waiting"
+            ) {
+
+                return;
+
+            }
+
+
+            // Pastikan benar-benar sudah lewat 1 menit
+            if (
+                Date.now() <
+                game.batasMulai
+            ) {
+
+                return;
+
+            }
+
+
+            transaction.update(
+                sambungkataRef,
+                {
+
+                    aktif: false,
+
+                    status: "cancelled",
+
+                    batasMulai: 0
+
+                }
+            );
+
+
+            dibatalkan = true;
+
+        }
+    );
+
+
+    if (!dibatalkan) return;
+
+
+    await sendBotMessage(
+
+        `⏰ <b>Lobby Sambung Kata dibatalkan.</b>
+
+        Host tidak memulai permainan
+        dalam waktu 1 menit.`
+
+    );
+
+}
+
 async function sendMessage() {
 
 if (sending) return;  
@@ -3458,5 +3560,22 @@ setInterval(async () => {
         await cekWaktuSambungKata();
 
     }catch(e){}
+
+},1000);
+
+setInterval(async () => {
+
+    try{
+
+        await cekBatasMulaiSambungKata();
+
+    }catch(e){
+
+        console.error(
+            "Gagal mengecek batas mulai:",
+            e
+        );
+
+    }
 
 },1000);

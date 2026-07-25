@@ -997,29 +997,7 @@ function getGameSettings(game){
 
     const waktu = game.waktu || 20;
 
-    /*
-    =========================
-    WAKTU 10 DETIK
-    =========================
-    */
-
-    if(waktu === 10){
-
-        return {
-            waktu: 10,
-            jumlahHuruf: 2
-        };
-
-    }
-
-
-    /*
-    =========================
-    WAKTU 5 DETIK
-    =========================
-    */
-
-    if(waktu === 5){
+    if(waktu <= 5){
 
         return {
             waktu: 5,
@@ -1031,22 +1009,18 @@ function getGameSettings(game){
 
     }
 
+    if(waktu <= 10){
 
-    /*
-    =========================
-    WAKTU NORMAL
-    =========================
-    */
+        return {
+            waktu,
+            jumlahHuruf: 2
+        };
+
+    }
 
     return {
-
         waktu,
-
-        jumlahHuruf:
-            waktu <= 10
-            ? 2
-            : 1
-
+        jumlahHuruf: 1
     };
 
 }
@@ -1340,7 +1314,7 @@ try {
                 waktuMulai: Date.now(),
         
                 batasWaktu:
-                    Date.now() + 20000,
+                    Date.now() + ((game.waktu || 20) * 1000),
         
                 // Waktu awal
                 waktu: 20,
@@ -3285,7 +3259,7 @@ async function cekWaktuSambungKata(){
                     Date.now(),
 
                 batasWaktu:
-                    Date.now() + 20000,
+                    Date.now() + ((game.waktu || 20) * 1000),
 
                 lastTimeout:
                     game.batasWaktu,

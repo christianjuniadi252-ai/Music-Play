@@ -1379,7 +1379,7 @@ try {
         
         `🎮 <b>${auth.currentUser.displayName}</b> membuat lobby <b>Sambung Kata</b>.
         
-        Ketik <code>/y</code> untuk bergabung.
+        Ketik <code>/join</code> untuk bergabung dan <code>/left</code> untuk batal mengikuti.
         
         Host dapat memulai permainan dengan:
         
@@ -1409,7 +1409,7 @@ try {
     
     }
     
-    if (text === "/y") {
+    if (text === "/join") {
     
         if (
             !sambungkataData ||

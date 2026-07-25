@@ -1361,7 +1361,7 @@ try {
         
             huruf: "",
         
-            ronde: 1,
+            ronde: 0,
         
             waktu: 20,
         
@@ -1370,8 +1370,11 @@ try {
             status: "waiting",
         
             dibuat: Date.now(),
-            
-            lastTimeout:0
+        
+            // Batas waktu host untuk memulai game
+            batasMulai: Date.now() + 60000,
+        
+            lastTimeout: 0
         
         });
     

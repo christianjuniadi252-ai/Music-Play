@@ -993,6 +993,17 @@ function updateGameTimer(){
 
 }
 
+function getWaktuRonde(ronde){
+
+    // Setiap 2 ronde, waktu berkurang 1 detik
+    const waktu =
+        20 - Math.floor(ronde / 2);
+
+    // Minimal 3 detik
+    return Math.max(3, waktu);
+
+}
+
 async function sendMessage() {
 
 if (sending) return;  
@@ -1283,6 +1294,10 @@ try {
         
                 batasWaktu: Date.now() + 20000,
                 
+                ronde: 0,
+                
+                waktu: 20,
+                
                 lastTimeout:0,
                 
                 typing: "",
@@ -1528,23 +1543,65 @@ try {
         let giliran =
             sambungkataData.giliran + 1;
         
-        if(giliran >= sambungkataData.pemain.length){
+        
+        // Apakah semua pemain sudah menjawab?
+        const selesaiSatuPutaran =
+            giliran >= sambungkataData.pemain.length;
+        
+        
+        // Jika semua pemain sudah menjawab
+        if(selesaiSatuPutaran){
         
             giliran = 0;
         
         }
         
+        
+        // Ronde yang sudah selesai
+        let ronde =
+            sambungkataData.ronde || 0;
+        
+        
+        // Jika kembali ke pemain pertama,
+        // berarti satu putaran selesai
+        if(selesaiSatuPutaran){
+        
+            ronde++;
+        
+        }
+        
+        
+        // Hitung waktu berdasarkan ronde
+        const waktu =
+            getWaktuRonde(ronde);
+        
+        
         await updateDoc(
             sambungkataRef,
             {
+        
                 kataDipakai,
-                huruf:hurufBaru,
+        
+                huruf: hurufBaru,
+        
                 giliran,
-                waktuMulai:Date.now(),
-                batasWaktu:Date.now()+20000,
-                lastTimeout: sambungkataData.batasWaktu,
+        
+                ronde,
+        
+                waktu,
+        
+                waktuMulai: Date.now(),
+        
+                batasWaktu:
+                    Date.now() + (waktu * 1000),
+        
+                lastTimeout:
+                    sambungkataData.batasWaktu,
+        
                 typing: "",
+        
                 typingUid: ""
+        
             }
         );
         
@@ -3067,30 +3124,57 @@ async function cekWaktuSambungKata(){
         =========================
         */
 
+        // Apakah timeout ini menyelesaikan satu putaran?
+        const selesaiSatuPutaran =
+            giliran === 0;
+        
+        
+        // Ronde saat ini
+        let ronde =
+            game.ronde || 0;
+        
+        
+        // Jika kembali ke pemain pertama,
+        // satu putaran selesai
+        if(selesaiSatuPutaran){
+        
+            ronde++;
+        
+        }
+        
+        
+        // Hitung waktu baru
+        const waktu =
+            getWaktuRonde(ronde);
+        
+        
         transaction.update(
             sambungkataRef,
             {
-
+        
                 pemain,
-
+        
                 giliran,
-
+        
+                ronde,
+        
+                waktu,
+        
                 waktuMulai:
                     Date.now(),
-
+        
                 batasWaktu:
-                    Date.now() + 20000,
-
+                    Date.now() + (waktu * 1000),
+        
                 lastTimeout:
                     game.batasWaktu,
-
+        
                 typing: "",
-
+        
                 typingUid: ""
-
+        
             }
         );
-
 
         hasilGame = {
 

@@ -1616,7 +1616,7 @@ try {
         
         Host dapat memulai permainan dengan:
         
-        <code>/sambungkata mulai</code>`
+        <code>/sambungkata mulai</code> atau <code>/sambungkata batal</code> untuk membatalkan`
         
         );
     

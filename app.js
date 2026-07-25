@@ -1292,7 +1292,7 @@ try {
         
                 waktuMulai: Date.now(),
         
-                batasWaktu: Date.now() + 20000,
+                bataWaktu: Date.now() + 20000,
                 
                 ronde: 0,
                 
@@ -1309,10 +1309,10 @@ try {
         
         await sendBotMessage(
         
-        `🎮 Permainan di mulai!
+        `🎮 Permainan di mulai!<br>
         
         ▶️ Giliran :
-        <b>${sambungkataData.pemain[0].nama}</b>
+        <b>${sambungkataData.pemain[0].nama}</b><br>
         
         🔤 Huruf :
         <b>${huruf.toUpperCase()}</b>`
@@ -1607,7 +1607,7 @@ try {
         
         await sendBotMessage(
         
-        `✅ ${auth.currentUser.displayName} Berhasil menjawab
+        `✅ ${auth.currentUser.displayName} Berhasil menjawab<br>
         
         📝 Kata :
         <b>${text}</b><br>
@@ -3260,13 +3260,13 @@ async function cekWaktuSambungKata(){
 
     await sendBotMessage(
     
-    `⏰ ${pemainKena.nama} Waktu habis!
-    
+    `⏰ ${pemainKena.nama} Waktu habis!<br>
+
     ♥️ Tersisa :
     <b>${Math.max(
         0,
         pemainKena.hati - 1
-    )}</b>
+    )}</b><br>
     
     ▶️ Giliran :
     <b>${pemain[giliran].nama}</b>`

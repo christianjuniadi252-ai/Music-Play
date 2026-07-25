@@ -1610,13 +1610,13 @@ try {
         `✅ ${auth.currentUser.displayName} Berhasil menjawab
         
         📝 Kata :
-        <b>${text}</b>
+        <b>${text}</b><br>
         
         🔤 Huruf :
-        <b>${hurufBaru.toUpperCase()}</b>
+        <b>${hurufBaru.toUpperCase()}</b><br>
         
         ▶️ Giliran :
-        <b>${sambungkataData.pemain[giliran].nama}</b>`
+        <b>${sambungkataData.pemain[giliran].nama}</b><br>`
         
         );
         

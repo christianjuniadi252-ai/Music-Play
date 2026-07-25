@@ -1625,7 +1625,7 @@ try {
         return;
     }
     
-    if (text === "/sambungkata !") {
+    /*if (text === "/sambungkata !") {
 
         await setDoc(sambungkataRef,{
             aktif:false,
@@ -1640,7 +1640,7 @@ try {
     
         return;
     
-    }
+    }*/
     
         /* ================= LEFT ================= */
     

@@ -1106,6 +1106,37 @@ async function cekBatasMulaiSambungKata(){
 
 }
 
+async function musikSedangAktif(){
+
+    const snap = await getDoc(roomRef);
+
+    if(!snap.exists()) return false;
+
+    const room = snap.data();
+
+    return (
+        room.videoId &&
+        (
+            room.status === "playing" ||
+            room.status === "paused"
+        )
+    );
+
+}
+
+function gameSedangAktif(){
+
+    return (
+        sambungkataData &&
+        sambungkataData.aktif &&
+        (
+            sambungkataData.status === "waiting" ||
+            sambungkataData.status === "playing"
+        )
+    );
+
+}
+
 async function sendMessage() {
 
 if (sending) return;  
@@ -1425,6 +1456,17 @@ try {
     
     if (text === "/sambungkata mulai") {
     
+        if (await musikSedangAktif()) {
+    
+            alert(
+                "Musik sedang diputar. " +
+                "Hentikan musik terlebih dahulu."
+            );
+    
+            return;
+    
+        }
+    
         if (!sambungkataData || !sambungkataData.aktif) {
             alert("Belum ada lobby Sambung Kata.");
             return;
@@ -1502,6 +1544,17 @@ try {
     
     if (text === "/sambungkata") {
       
+        if (await musikSedangAktif()) {
+    
+            alert(
+                "Musik sedang diputar. " +
+                "Hentikan musik terlebih dahulu."
+            );
+    
+            return;
+    
+        }
+        
         if (
             sambungkataData &&
             sambungkataData.aktif
@@ -1925,6 +1978,17 @@ try {
     /* ================= PLAY ================= */  
 
     if (text.startsWith("/play")) {  
+      
+        if (gameSedangAktif()) {
+    
+            alert(
+                "Sambung Kata sedang berlangsung. " +
+                "Selesaikan atau batalkan game terlebih dahulu."
+            );
+    
+            return;
+    
+        }
 
         const raw = text.replace("/play", "").trim();  
           
@@ -2068,6 +2132,16 @@ try {
       
     if (text === "/pause") {  
       
+        if (gameSedangAktif()) {
+    
+            alert(
+                "Sambung Kata sedang berlangsung."
+            );
+    
+            return;
+    
+        }
+      
         if (!roomData || !roomData.videoId) {  
             alert("Tidak ada musik yang sedang diputar.");  
             return;  
@@ -2089,6 +2163,16 @@ try {
     /* ================= RESUME ================= */  
       
     if (text === "/resume") {  
+      
+        if (gameSedangAktif()) {
+    
+            alert(
+                "Sambung Kata sedang berlangsung."
+            );
+    
+            return;
+    
+        }
       
         if (!roomData || !roomData.videoId) {  
             alert("Tidak ada musik.");  
@@ -2114,6 +2198,16 @@ try {
     /* ================= SKIP ================= */  
       
     if (text === "/skip") {  
+      
+        if (gameSedangAktif()) {
+    
+            alert(
+                "Sambung Kata sedang berlangsung."
+            );
+    
+            return;
+    
+        }
       
         const q = query(  
             playlistRef,  
@@ -2164,6 +2258,16 @@ try {
     /* ================= REPLAY ================= */  
       
     if (text === "/replay") {  
+      
+        if (gameSedangAktif()) {
+    
+            alert(
+                "Sambung Kata sedang berlangsung."
+            );
+    
+            return;
+    
+        }
       
         const roomSnap = await getDoc(roomRef);  
       

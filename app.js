@@ -652,6 +652,8 @@ input.value = "";
 input.style.height = "44px";  
 input.style.overflowY = "hidden";
 
+commandMenu.style.display = "none";
+
 }
 
 function renderGamePanel(){

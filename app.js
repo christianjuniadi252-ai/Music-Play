@@ -613,7 +613,7 @@ privateUid = null
 
 await addDoc(collection(db, "messages"), {  
     uid: "music-bot",  
-    name: "Music-Bot",  
+    name: "Bot QT",  
     photo: "music-bot.png",  
     message,  
     title,  

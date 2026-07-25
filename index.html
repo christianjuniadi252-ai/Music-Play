@@ -933,6 +933,238 @@ button:hover{
 .online-user.current-turn {
     background: goldenrod;
 }
+
+#winnerOverlay{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:9999;
+
+    display:none;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:16px;
+
+    background:white;
+
+    color:black;
+
+    overflow:hidden;
+
+}
+
+
+#winnerOverlay .card{
+
+    display:flex;
+
+    position:relative;
+
+    overflow:hidden;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    transform:translateX(-100%);
+
+    color:white;
+
+    width:100%;
+
+    height:100px;
+
+    background:#2f2f2f;
+
+}
+
+
+#winnerOverlay .card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-50px;
+
+    width:50px;
+
+    height:100%;
+
+    background:rgba(180,180,180,.7);
+
+    z-index:1;
+
+    transform:skewX(-25deg);
+
+    animation:shimmer 2s linear infinite;
+
+}
+
+
+#winnerOverlay .win{
+
+    font-size:4em;
+
+    font-family:"Archivo Black",sans-serif;
+
+    margin-bottom:-4px;
+
+    margin-top:-4px;
+
+    z-index:2;
+
+    transition:color .3s ease;
+
+}
+
+
+#winnerOverlay .nama{
+
+    font-family:"Archivo",sans-serif;
+
+    font-weight:bold;
+
+    font-size:20px;
+
+    color:#ccc;
+
+    z-index:2;
+
+    transform:scaleY(0);
+
+    transform-origin:top;
+
+    transition:transform .3s linear;
+
+}
+
+
+#winnerOverlay .tes{
+
+    position:absolute;
+
+    font-size:16em;
+
+    transform:scale(0);
+
+    margin-bottom:60px;
+
+}
+
+
+@keyframes shimmer{
+
+    from{
+
+        left:-50px;
+
+    }
+
+    to{
+
+        left:calc(100% + 50px);
+
+    }
+
+}
+
+
+@keyframes putar{
+
+    0%{
+
+        transform:rotateY(0deg) scale(0);
+
+    }
+
+    100%{
+
+        transform:rotateY(720deg) scale(1);
+
+    }
+
+}
+
+
+@keyframes getar{
+
+    0%{
+
+        transform:rotate(-8deg);
+
+    }
+
+    25%{
+
+        transform:rotate(8deg);
+
+    }
+
+    50%{
+
+        transform:rotate(-8deg);
+
+    }
+
+    75%{
+
+        transform:rotate(8deg);
+
+    }
+
+    100%{
+
+        transform:rotate(-8deg);
+
+    }
+
+}
+
+
+@keyframes geser{
+
+    from{
+
+        transform:translateX(-100%);
+
+    }
+
+    to{
+
+        transform:translateX(0);
+
+    }
+
+}
+
+
+@keyframes winnerFade{
+
+    from{
+
+        opacity:0;
+
+    }
+
+    to{
+
+        opacity:1;
+
+    }
+
+}
 </style>
 </head>  
 <body>
@@ -1087,6 +1319,22 @@ button:hover{
     </div>
 
     <div id="playlistList"></div>
+
+</div>
+
+<div id="winnerOverlay">
+
+    <div class="tes">
+        <div class="tos">🏆</div>
+    </div>
+
+    <div class="card">
+
+        <span class="win"></span>
+
+        <span class="nama"></span>
+
+    </div>
 
 </div>
 

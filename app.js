@@ -175,22 +175,22 @@ const commands = [
 },
 
 {
-    cmd:"/list",
+    cmd:"/music list",
     desc:"Daftar musik"
 },
 
 {
-    cmd:"/list add",
+    cmd:"/music add",
     desc:"Tambah list"
 },
 
 {
-    cmd:"/list delete",
+    cmd:"/music delete",
     desc:"Hapus list"
 },
 
 {
-    cmd:"/list rename",
+    cmd:"/music rename",
     desc:"Ganti nama list"
 },
 
@@ -1178,12 +1178,12 @@ try {
 
     /* ================= MUSIC LIST ================= */  
 
-    if (text.startsWith("/list add")) {  
+    if (text.startsWith("/music add")) {  
 
         const args = text.split(" ");  
 
         if (args.length < 4) {  
-            alert("Format:\n/list add Nama URL");  
+            alert("Format:\n/music add Nama URL");  
             return;  
         }  
 
@@ -1228,12 +1228,12 @@ try {
         return;  
     }  
       
-    if (text.startsWith("/list delete")) {  
+    if (text.startsWith("/music delete")) {  
       
         const args = text.split(" ");  
       
         if (args.length < 3) {  
-            alert("Format:\n/list delete Nama");  
+            alert("Format:\n/music delete Nama");  
             return;  
         }  
       
@@ -1269,12 +1269,12 @@ try {
         return;  
     }  
       
-    if (text.startsWith("/list rename")) {
+    if (text.startsWith("/music rename")) {
       
         const args = text.split(" ");  
       
         if (args.length < 4) {  
-            alert("Format:\n/list rename NamaLama NamaBaru");  
+            alert("Format:\n/music rename NamaLama NamaBaru");  
             return;  
         }  
       
@@ -1330,7 +1330,7 @@ try {
       
     //list  
       
-    if (text === "/list") {  
+    if (text === "/music list") {  
       
         const snap = await getDocs(  
             query(  

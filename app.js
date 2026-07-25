@@ -1468,6 +1468,106 @@ try {
         return;
     }
     
+    /* ================= LEFT ================= */
+    
+    if (text === "/left") {
+    
+        if (
+            !sambungkataData ||
+            !sambungkataData.aktif
+        ) {
+    
+            alert("Anda tidak sedang mengikuti permainan.");
+    
+            return;
+    
+        }
+    
+    
+        // Cari posisi pemain yang ingin keluar
+        const index =
+            sambungkataData.pemain.findIndex(
+                p =>
+                    p.uid === auth.currentUser.uid
+            );
+    
+    
+        // Jika bukan pemain
+        if (index === -1) {
+    
+            alert("Anda bukan pemain.");
+    
+            return;
+    
+        }
+    
+    
+        /*
+        =========================
+        JIKA HOST KELUAR
+        =========================
+        */
+    
+        if (
+            sambungkataData.host.uid ===
+            auth.currentUser.uid
+        ) {
+    
+            alert(
+                "Host tidak dapat keluar. " +
+                "Gunakan /sambungkata ! untuk menghentikan lobby."
+            );
+    
+            return;
+    
+        }
+    
+    
+        /*
+        =========================
+        HAPUS PEMAIN
+        =========================
+        */
+    
+        const pemain =
+            [...sambungkataData.pemain];
+    
+        pemain.splice(index, 1);
+    
+    
+        const setuju =
+            sambungkataData.setuju.filter(
+                uid =>
+                    uid !== auth.currentUser.uid
+            );
+    
+    
+        await updateDoc(
+            sambungkataRef,
+            {
+    
+                pemain,
+    
+                setuju
+    
+            }
+        );
+    
+    
+        await sendBotMessage(
+    
+            `🚪 <b>${auth.currentUser.displayName}</b>
+            keluar dari permainan.`
+    
+        );
+    
+    
+        resetInput();
+    
+        return;
+    
+    }
+    
     /* ================= SAMBUNG KATA MAIN ================= */
     
     if (

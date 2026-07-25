@@ -1246,6 +1246,79 @@ try {
       
     }
     
+    /* ================= BATALKAN LOBBY ================= */
+    
+    if (text === "/sambungkata batal") {
+    
+        if (
+            !sambungkataData ||
+            !sambungkataData.aktif
+        ) {
+    
+            alert(
+                "Tidak ada lobby Sambung Kata."
+            );
+    
+            return;
+    
+        }
+    
+    
+        if (
+            sambungkataData.status !== "waiting"
+        ) {
+    
+            alert(
+                "Permainan sudah dimulai."
+            );
+    
+            return;
+    
+        }
+    
+    
+        if (
+            sambungkataData.host.uid !==
+            auth.currentUser.uid
+        ) {
+    
+            alert(
+                "Hanya host yang dapat membatalkan permainan."
+            );
+    
+            return;
+    
+        }
+    
+    
+        await updateDoc(
+            sambungkataRef,
+            {
+    
+                aktif: false,
+    
+                status: "cancelled",
+    
+                batasMulai: 0
+    
+            }
+        );
+    
+    
+        await sendBotMessage(
+    
+            `🛑 <b>${auth.currentUser.displayName}</b>
+            membatalkan lobby Sambung Kata.`
+    
+        );
+    
+    
+        resetInput();
+    
+        return;
+    
+    }
+    
     /* ================= SAMBUNG KATA ================= */
     
     if (text === "/sambungkata mulai") {
@@ -1412,66 +1485,7 @@ try {
     
     }
     
-    if (text === "/join") {
-    
-        if (
-            !sambungkataData ||
-            !sambungkataData.aktif
-        ){
-            alert("Belum ada lobby Sambung Kata.");
-            return;
-        }
-        
-        if (
-            sambungkataData.status !== "waiting"
-        ){
-            alert(
-                "Permainan sudah dimulai. Tunggu ronde berikutnya."
-            );
-            return;
-        }
-    
-        if (
-            sambungkataData.setuju.includes(auth.currentUser.uid)
-        ){
-            alert("Anda sudah bergabung.");
-            return;
-        }
-    
-        const setuju = [
-            ...sambungkataData.setuju,
-            auth.currentUser.uid
-        ];
-    
-        const pemain = [
-            ...sambungkataData.pemain,
-            {
-                uid: auth.currentUser.uid,
-                nama: auth.currentUser.displayName,
-                hati: 3
-            }
-        ];
-    
-        await updateDoc(sambungkataRef,{
-            setuju,
-            pemain
-        });
-    
-        await sendBotMessage(
-        
-            `✅ <b>${auth.currentUser.displayName}</b> bergabung ke permainan.
-        
-            Total pemain:
-            <b>${pemain.length}</b>`
-        
-        );
-    
-        resetInput();
-    
-        return;
-    }
-    
-    /* ================= LEFT ================= */
+        /* ================= LEFT ================= */
     
     if (text === "/left") {
     
@@ -1569,6 +1583,65 @@ try {
     
         return;
     
+    }
+    
+    if (text === "/join") {
+    
+        if (
+            !sambungkataData ||
+            !sambungkataData.aktif
+        ){
+            alert("Belum ada lobby Sambung Kata.");
+            return;
+        }
+        
+        if (
+            sambungkataData.status !== "waiting"
+        ){
+            alert(
+                "Permainan sudah dimulai. Tunggu ronde berikutnya."
+            );
+            return;
+        }
+    
+        if (
+            sambungkataData.setuju.includes(auth.currentUser.uid)
+        ){
+            alert("Anda sudah bergabung.");
+            return;
+        }
+    
+        const setuju = [
+            ...sambungkataData.setuju,
+            auth.currentUser.uid
+        ];
+    
+        const pemain = [
+            ...sambungkataData.pemain,
+            {
+                uid: auth.currentUser.uid,
+                nama: auth.currentUser.displayName,
+                hati: 3
+            }
+        ];
+    
+        await updateDoc(sambungkataRef,{
+            setuju,
+            pemain
+        });
+    
+        await sendBotMessage(
+        
+            `✅ <b>${auth.currentUser.displayName}</b> bergabung ke permainan.
+        
+            Total pemain:
+            <b>${pemain.length}</b>`
+        
+        );
+    
+        resetInput();
+    
+        return;
     }
     
     /* ================= SAMBUNG KATA MAIN ================= */

@@ -125,6 +125,24 @@ const gameTimer =
 document.getElementById("gameTimer");
 
 const presenceRef = collection(db, "presence");
+
+const winnerOverlay =
+    document.getElementById("winnerOverlay");
+
+const winnerText =
+    winnerOverlay.querySelector(".win");
+
+const winnerName =
+    winnerOverlay.querySelector(".nama");
+
+const winnerTrophy =
+    winnerOverlay.querySelector(".tos");
+
+const winnerTes =
+    winnerOverlay.querySelector(".tes");
+
+const winnerCard =
+    winnerOverlay.querySelector(".card");
 /* ================= STATE ================= */
 
 let sortable = null;
@@ -3210,17 +3228,23 @@ async function cekWaktuSambungKata(){
     */
 
     if(hasilGame.tipe === "menang"){
-
+    
         await sendBotMessage(
-
+    
             `🏆 <b>PERMAINAN SELESAI!</b><br>
-
+    
             👑 <b>${hasilGame.pemenang.nama}</b> 👑`
-
+    
         );
-
+    
+    
+        tampilkanPemenang(
+            hasilGame.pemenang.nama
+        );
+    
+    
         return;
-
+    
     }
 
 
@@ -3284,3 +3308,156 @@ setInterval(async () => {
     }catch(e){}
 
 },1000);
+
+function tampilkanPemenang(nama){
+
+    winnerOverlay.style.display = "flex";
+
+    winnerOverlay.style.animation =
+        "winnerFade .3s ease";
+
+
+    winnerText.innerHTML = "";
+
+    winnerText.style.color = "white";
+
+    winnerName.style.transform =
+        "scaleY(0)";
+
+    winnerTrophy.style.animation = "none";
+
+    winnerTes.style.animation = "none";
+
+    winnerCard.style.animation = "none";
+
+    winnerCard.style.transform =
+        "translateX(-100%)";
+
+
+    const text = "WINNER";
+
+
+    // Suara kemenangan
+    const clickSound =
+        new Audio("booyah.mp3");
+
+    clickSound.currentTime = 0;
+
+    clickSound.play().catch(() => {});
+
+
+    /*
+    =========================
+    TULIS WINNER PER HURUF
+    =========================
+    */
+
+    text.split("").forEach(
+        (char, index) => {
+
+            setTimeout(() => {
+
+                winnerText.innerHTML += char;
+
+            }, index * 560);
+
+        }
+    );
+
+
+    const selesai =
+        text.length * 560;
+
+
+    /*
+    =========================
+    EFEK WARNA
+    =========================
+    */
+
+    setTimeout(() => {
+
+        winnerText.style.color =
+            "gold";
+
+    }, selesai + 100);
+
+
+    setTimeout(() => {
+
+        winnerText.style.color =
+            "white";
+
+    }, selesai + 300);
+
+
+    setTimeout(() => {
+
+        winnerText.style.color =
+            "gold";
+
+    }, selesai + 500);
+
+
+    /*
+    =========================
+    NAMA PEMENANG
+    =========================
+    */
+
+    setTimeout(() => {
+
+        winnerName.textContent =
+            nama;
+
+        winnerName.style.transform =
+            "scaleY(1)";
+
+    }, selesai + 400);
+
+
+    /*
+    =========================
+    TROPHY
+    =========================
+    */
+
+    setTimeout(() => {
+
+        winnerTrophy.style.animation =
+            "putar .6s linear 1";
+
+    }, 0);
+
+
+    /*
+    =========================
+    GETAR
+    =========================
+    */
+
+    setTimeout(() => {
+
+        winnerTes.style.animation =
+            "getar 10s ease-in-out 4";
+
+    }, 0);
+
+
+    /*
+    =========================
+    CARD MASUK
+    =========================
+    */
+
+    setTimeout(() => {
+
+        winnerCard.style.animation =
+            "geser .6s linear";
+
+        winnerCard.style.transform =
+            "translateX(0)";
+
+    }, 0);
+
+}

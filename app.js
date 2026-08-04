@@ -1929,7 +1929,7 @@ try {
                     Date.now() + (waktu * 1000),
         
                 lastTimeout:
-                    sambungkataData.batasWaktu,
+                    sambungkataData.batasWaktu ?? 0,
         
                 typing: "",
         
@@ -3437,7 +3437,7 @@ async function cekWaktuSambungKata(){
                     typingUid: "",
 
                     lastTimeout:
-                        game.batasWaktu
+                        game.batasWaktu ?? 0
 
                 }
             );
@@ -3551,7 +3551,7 @@ async function cekWaktuSambungKata(){
                     Date.now() + (waktu * 1000),
         
                 lastTimeout:
-                    game.batasWaktu,
+                    game.batasWaktu ?? 0,
         
                 typing: "",
         

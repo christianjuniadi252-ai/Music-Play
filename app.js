@@ -3530,7 +3530,8 @@ async function cekWaktuSambungKata(){
         // Hitung waktu baru
         const waktu =
             getWaktuRonde(ronde);
-        
+            
+        const hurufBaru = randomHuruf();
         
         transaction.update(
             sambungkataRef,
@@ -3539,6 +3540,8 @@ async function cekWaktuSambungKata(){
                 pemain,
         
                 giliran,
+                
+                huruf: hurufBaru,
         
                 ronde,
         

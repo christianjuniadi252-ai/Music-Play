@@ -1511,7 +1511,7 @@ try {
         
                 waktuMulai: Date.now(),
         
-                bataWaktu: Date.now() + 20000,
+                batasWaktu: Date.now() + 20000,
                 
                 ronde: 0,
                 
@@ -3642,20 +3642,15 @@ async function cekWaktuSambungKata(){
     =========================
     */
 
-    await sendBotMessage(
+    await sendBotMessage(`
+    ⏰ ${hasilGame.pemainKena.nama} Waktu habis!
     
-    `⏰ ${pemainKena.nama} Waktu habis!<br>
-
     ♥️ Tersisa :
-    <b>${Math.max(
-        0,
-        pemainKena.hati - 1
-    )}</b><br>
+    <b>${Math.max(0, hasilGame.pemainKena.hati - 1)}</b>
     
     ▶️ Giliran :
-    <b>${pemain[giliran].nama}</b>`
-    
-    );
+    <b>${hasilGame.pemain[hasilGame.giliran].nama}</b>
+    `);
 
 }
 

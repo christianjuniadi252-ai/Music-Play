@@ -201,7 +201,32 @@ const commands = [
 
 {
     cmd:"/sambungkata",
+    desc:"Membuat lobby permainan sambung kata"
+},
+
+{
+    cmd:"/sambungkata mulai",
     desc:"Memulai permainan sambung kata"
+},
+
+{
+    cmd:"/sambungkata batal",
+    desc:"Membatalkan lobby permainan sambung kata"
+},
+
+{
+    cmd:"/sambungkata waktu",
+    desc:"Mengatur waktu permainan sambung kata"
+},
+
+{
+    cmd:"/join",
+    desc:"Join ke lobby permainan"
+},
+
+{
+    cmd:"/left",
+    desc:"Keluar dari lobby permainan"
 }
 
 ];

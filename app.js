@@ -43,16 +43,6 @@ import {
     censorText
 } from "./profanity.js";
 
-const commandAlias = {
-    "/sk": "/sambungkata",
-    "/p": "/play",
-    "/ps": "/pause",
-    "/r": "/resume",
-    "/s": "/skip",
-    "/st": "/stop",
-    "/l": "/list"
-};
-
 /* ================= FIREBASE ================= */
 
 const firebaseConfig = {
@@ -1192,13 +1182,21 @@ if (sending) return;
 
 let text = input.value.trim();
 
-// Alias command
-const parts = text.split(" ");
-const cmd = parts[0].toLowerCase();
+const alias = {
+    "/sk": "/sambungkata",
+    "/p": "/play",
+    "/st": "/stop",
+    "/pa": "/pause",
+    "/r": "/resume",
+    "/s": "/skip",
+    "/rp": "/replay",
+    "/c": "/clear"
+};
 
-if (commandAlias[cmd]) {
-    parts[0] = commandAlias[cmd];
-    text = parts.join(" ");
+const cmd = text.split(/\s+/)[0].toLowerCase();
+
+if (alias[cmd]) {
+    text = alias[cmd] + text.slice(cmd.length);
 }
 
 text = censorText(text);

@@ -68,6 +68,11 @@ function createPattern(word){
 /* =========================
    SENSOR
 ========================= */
+function removeDuplicateLetters(text){
+
+    return text.replace(/([a-z])\1+/gi, "$1");
+
+}
 
 export function censorText(text){
 
@@ -107,11 +112,5 @@ export function censorText(text){
     });
 
     return hasil;
-
-}
-
-function removeDuplicateLetters(text){
-
-    return text.replace(/([a-z])\1+/gi, "$1");
 
 }

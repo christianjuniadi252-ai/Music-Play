@@ -73,26 +73,45 @@ export function censorText(text){
 
     let hasil = text;
 
-    badWords.forEach(word=>{
+    // Untuk pengecekan
+    const normal = removeDuplicateLetters(
+        text.toLowerCase()
+    );
+
+    badWords.forEach(word => {
 
         const regex = new RegExp(
-
             createPattern(word),
-
             "gi"
-
         );
 
         hasil = hasil.replace(
-
             regex,
-
             match => "*".repeat(match.length)
+        );
 
+        // Tambahan untuk huruf ganda
+        const duplicateRegex = new RegExp(
+            word
+                .split("")
+                .map(h => `${h}+`)
+                .join("[^a-zA-Z0-9]*"),
+            "gi"
+        );
+
+        hasil = hasil.replace(
+            duplicateRegex,
+            match => "*".repeat(match.length)
         );
 
     });
 
     return hasil;
+
+}
+
+function removeDuplicateLetters(text){
+
+    return text.replace(/([a-z])\1+/gi, "$1");
 
 }

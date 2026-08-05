@@ -43,6 +43,16 @@ import {
     censorText
 } from "./profanity.js";
 
+const commandAlias = {
+    "/sk": "/sambungkata",
+    "/p": "/play",
+    "/ps": "/pause",
+    "/r": "/resume",
+    "/s": "/skip",
+    "/st": "/stop",
+    "/l": "/list"
+};
+
 /* ================= FIREBASE ================= */
 
 const firebaseConfig = {
@@ -146,16 +156,6 @@ let hold = null;
 let editingMessage = null;
 let sending = false;
 let gameTimerInterval = null;
-
-const commandAlias = {
-    "/sk": "/sambungkata",
-    "/p": "/play",
-    "/ps": "/pause",
-    "/r": "/resume",
-    "/s": "/skip",
-    "/st": "/stop",
-    "/l": "/list"
-};
 
 const commands = [
 

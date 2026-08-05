@@ -12,7 +12,7 @@ export async function loadProfanity(){
     badWords = await bad.json();
 
 
-    const allow = await fetch("./allowword.json");
+    const allow = await fetch("./aman-aja.json");
     allowWords = await allow.json();
 
 }

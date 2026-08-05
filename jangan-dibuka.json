@@ -1,0 +1,10 @@
+[
+    "anjing",
+    "bangsat",
+    "goblok",
+    "tolol",
+    "kontol",
+    "memek",
+    "ngentot",
+    "tai"
+]

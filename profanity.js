@@ -1,73 +1,97 @@
 let badWords = [];
 
+/* =========================
+   LOAD BAD WORDS
+========================= */
 
 export async function loadBadWords(){
 
-    const res =
-        await fetch("./jangan-dibuka.json");
+    const res = await fetch("./jangan-dibuka.json");
 
-    badWords =
-        await res.json();
+    badWords = await res.json();
 
 }
 
 
-// Menghilangkan variasi penulisan
-function normalizeText(text){
+/* =========================
+   HURUF YANG SERING DIGANTI
+========================= */
 
-    return text
+const map = {
+
+    a: "[a4@]",
+
+    b: "[b8]",
+
+    c: "[c(<]",
+
+    e: "[e3]",
+
+    g: "[g69]",
+
+    i: "[i1!|]",
+
+    l: "[l1|]",
+
+    o: "[o0]",
+
+    s: "[s5$]",
+
+    t: "[t7+]",
+
+    z: "[z2]"
+
+};
+
+
+/* =========================
+   BUAT REGEX
+========================= */
+
+function createPattern(word){
+
+    return word
         .toLowerCase()
+        .split("")
+        .map(char =>
 
-        // angka pengganti huruf
-        .replace(/0/g,"o")
-        .replace(/1/g,"i")
-        .replace(/3/g,"e")
-        .replace(/4/g,"a")
-        .replace(/5/g,"s")
-        .replace(/7/g,"t")
+            map[char] || char
 
-        // hapus simbol
-        .replace(/[^a-z]/g,"");
+        )
+
+        // memperbolehkan simbol/spasi di antara huruf
+        .join("[^a-zA-Z0-9]*");
 
 }
 
 
-// Cek apakah ada kata kasar
-function findBadWord(text){
+/* =========================
+   SENSOR
+========================= */
 
-    const normal =
-        normalizeText(text);
-
-
-    return badWords.find(word =>
-        normal.includes(word)
-    );
-
-}
-
-
-// Sensor kata
 export function censorText(text){
 
     let hasil = text;
 
-
     badWords.forEach(word=>{
 
-        const regex =
-            new RegExp(
-                word,
-                "gi"
-            );
+        const regex = new RegExp(
 
-        hasil =
-            hasil.replace(
-                regex,
-                "*".repeat(word.length)
-            );
+            createPattern(word),
+
+            "gi"
+
+        );
+
+        hasil = hasil.replace(
+
+            regex,
+
+            match => "*".repeat(match.length)
+
+        );
 
     });
-
 
     return hasil;
 

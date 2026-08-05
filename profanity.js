@@ -1,126 +1,191 @@
 let badWords = [];
+let allowWords = [];
+
 
 /* =========================
-   LOAD BAD WORDS
+   LOAD DATA
 ========================= */
 
-export async function loadBadWords() {
-    const res = await fetch("./jangan-dibuka.json");
-    badWords = await res.json();
+export async function loadProfanity(){
+
+    const bad = await fetch("./jangan-dibuka.json");
+    badWords = await bad.json();
+
+
+    const allow = await fetch("./allowword.json");
+    allowWords = await allow.json();
+
 }
 
 
 /* =========================
-   HURUF YANG SERING DIGANTI
+   NORMALISASI HURUF
 ========================= */
 
 const map = {
-    a: "[a4@]",
-    b: "[b8]",
-    c: "[c(<]",
-    d: "[d]",
-    e: "[e3]",
-    f: "[f]",
-    g: "[g69]",
-    h: "[h#]",
-    i: "[i1!|]",
-    j: "[j]",
-    k: "[k]",
-    l: "[l1|]",
-    m: "[m]",
-    n: "[n]",
-    o: "[o0]",
-    p: "[p]",
-    q: "[q9]",
-    r: "[r]",
-    s: "[s5$2]",
-    t: "[t7+]",
-    u: "[uv]",
-    v: "[vu]",
-    w: "[w]",
-    x: "[x%]",
-    y: "[y]",
-    z: "[z2]"
+
+    a: "[a4@*#_\\-.]",
+
+    b: "[b8*#_\\-.]",
+
+    c: "[c(<*#_\\-.]",
+
+    d: "[d*#_\\-.]",
+
+    e: "[e3€*#_\\-.]",
+
+    g: "[g69*#_\\-.]",
+
+    i: "[i1!|:*#_\\-.]",
+
+    l: "[l1|*#_\\-.]",
+
+    o: "[o0∅*#_\\-.]",
+
+    s: "[s5$2*#_\\-.]",
+
+    t: "[t7+*#_\\-.]",
+
+    z: "[z2*#_\\-.]"
+
 };
 
 
+
 /* =========================
-   ESCAPE REGEX
+   CEK ALLOW WORD
 ========================= */
 
-function escapeRegex(text) {
-    return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+function isAllowWord(word){
+
+    return allowWords.includes(
+        word.toLowerCase()
+    );
+
 }
 
 
+
 /* =========================
-   BUAT REGEX
+   BUAT POLA REGEX
 ========================= */
 
-function createPattern(word) {
+function createPattern(word){
 
     return word
         .toLowerCase()
         .split("")
         .map(char => {
 
-            const chars = map[char] || escapeRegex(char);
-
-            // huruf boleh berulang
-            return `(?:${chars})+`;
+            return map[char] || char;
 
         })
-        // simbol, angka, spasi di antara huruf
-        .join("[^a-zA-Z]*");
+        .join("[^a-zA-Z0-9]*");
 
 }
+
+
+
+/* =========================
+   NORMALISASI HURUF GANDA
+========================= */
+
+function removeDuplicateLetters(text){
+
+    return text.replace(
+        /([a-z])\1+/gi,
+        "$1"
+    );
+
+}
+
 
 
 /* =========================
    SENSOR
 ========================= */
 
-export function censorText(text) {
+export function censorText(text){
 
     let hasil = text;
 
-    for (const word of badWords) {
 
-        const regex = new RegExp(
-            createPattern(word),
-            "gi"
-        );
-
-        hasil = hasil.replace(regex, match =>
-            "*".repeat(match.length)
-        );
-
-    }
-
-    return hasil;
-
-}
+    // Pisahkan kata
+    const words = text.split(
+        /(\s+)/
+    );
 
 
-/* =========================
-   CEK ADA KATA KOTOR
-========================= */
+    words.forEach((word,index)=>{
 
-export function containsBadWord(text) {
 
-    for (const word of badWords) {
+        const clean = word
+            .replace(
+                /[^a-zA-Z0-9]/g,
+                ""
+            )
+            .toLowerCase();
 
-        const regex = new RegExp(
-            createPattern(word),
-            "i"
-        );
 
-        if (regex.test(text)) {
-            return true;
+
+        // Jika allowword, lewati
+        if(
+            clean &&
+            isAllowWord(clean)
+        ){
+            return;
         }
 
-    }
 
-    return false;
+
+        badWords.forEach(bad=>{
+
+
+            const regex = new RegExp(
+                createPattern(bad),
+                "gi"
+            );
+
+
+            if(
+                regex.test(word)
+            ){
+
+                hasil = hasil.replace(
+                    word,
+                    "*".repeat(word.length)
+                );
+
+            }
+
+
+
+            // Anti huruf ganda
+            const duplicateRegex =
+                new RegExp(
+                    bad
+                    .split("")
+                    .map(h=>`${h}+`)
+                    .join("[^a-zA-Z0-9]*"),
+                    "gi"
+                );
+
+
+            hasil = hasil.replace(
+                duplicateRegex,
+                match =>
+                    "*".repeat(
+                        match.length
+                    )
+            );
+
+
+        });
+
+
+    });
+
+
+    return hasil;
 
 }

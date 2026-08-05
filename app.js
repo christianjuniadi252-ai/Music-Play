@@ -1192,15 +1192,13 @@ if (sending) return;
 
 let text = input.value.trim();
 
-let pesan = text;
-
-const parts = pesan.split(" ");
-
+// Alias command
+const parts = text.split(" ");
 const cmd = parts[0].toLowerCase();
 
 if (commandAlias[cmd]) {
     parts[0] = commandAlias[cmd];
-    pesan = parts.join(" ");
+    text = parts.join(" ");
 }
 
 text = censorText(text);

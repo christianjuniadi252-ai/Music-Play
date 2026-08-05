@@ -3792,10 +3792,13 @@ async function cekWaktuSambungKata(){
     */
 
     await sendBotMessage(`
-    ⏰ ${hasilGame.pemainKena.nama} Waktu habis!
+    ⏰ ${hasilGame.pemainKena.nama} Waktu habis!<br>
     
     ♥️ Tersisa :
-    <b>${Math.max(0, hasilGame.pemainKena.hati - 1)}</b>
+    <b>${Math.max(0, hasilGame.pemainKena.hati - 1)}</b><br>
+    
+    🔤 Huruf :
+    <b>${huruf.toUpperCase()}</b><br>
     
     ▶️ Giliran :
     <b>${hasilGame.pemain[hasilGame.giliran].nama}</b>

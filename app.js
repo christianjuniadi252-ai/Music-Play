@@ -373,7 +373,7 @@ ytPlayer = new YT.Player("playerFrame", {
 
 createPlayer();
 
-await loadBadWords();
+await loadProfanity();
 
 await initSambungKata();
 

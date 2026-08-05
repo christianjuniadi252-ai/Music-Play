@@ -4,7 +4,7 @@ let badWords = [];
 export async function loadBadWords(){
 
     const res =
-        await fetch(".dilarangdibuka.json");
+        await fetch("./jangan-dibuka.json");
 
     badWords =
         await res.json();

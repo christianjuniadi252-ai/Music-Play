@@ -353,6 +353,10 @@ createPlayer();
 
 await initSambungKata();
 
+await loadBadWords();
+
+await initSambungKata();
+
 /* ================= LOGIN ================= */
 
 loginBtn.onclick = async () => {
@@ -1153,7 +1157,9 @@ async function sendMessage() {
 
 if (sending) return;  
 
-const text = input.value.trim();  
+let text = input.value.trim();
+
+text = censorText(text);
 
 if (!text) return;  
 

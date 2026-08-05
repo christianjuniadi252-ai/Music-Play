@@ -1187,7 +1187,10 @@ const alias = {
     "/r": "/resume",
     "/s": "/skip",
     "/rp": "/replay",
-    "/c": "/clear"
+    "/c": "/clear",
+    "/m": "/musik"
+    "/j": "/join",
+    "/l": "/left"
 };
 
 const cmd = text.split(/\s+/)[0].toLowerCase();

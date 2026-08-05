@@ -38,6 +38,11 @@ import {
     cekKata
 } from "./sambungkata.js";
 
+import {
+    loadBadWords,
+    censorText
+} from "./profanity.js";
+
 /* ================= FIREBASE ================= */
 
 const firebaseConfig = {
@@ -345,6 +350,10 @@ ytPlayer = new YT.Player("playerFrame", {
 }
 
 createPlayer();
+
+await initSambungKata();
+
+await loadBadWords();
 
 await initSambungKata();
 
@@ -1148,7 +1157,9 @@ async function sendMessage() {
 
 if (sending) return;  
 
-const text = input.value.trim();  
+let text = input.value.trim();
+
+text = censorText(text);
 
 if (!text) return;  
 

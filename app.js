@@ -355,8 +355,6 @@ await loadBadWords();
 
 await initSambungKata();
 
-await initSambungKata();
-
 /* ================= LOGIN ================= */
 
 loginBtn.onclick = async () => {

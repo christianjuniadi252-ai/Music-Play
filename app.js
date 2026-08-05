@@ -995,14 +995,19 @@ function updateGameTimer(){
 
 }
 
-function getWaktuRonde(ronde){
+function getWaktuRonde(game){
 
-    // Setiap 2 ronde, waktu berkurang 1 detik
-    const waktu =
-        20 - Math.floor(ronde / 2);
+    const ronde = game.ronde || 0;
 
-    // Minimal 3 detik
-    return Math.max(3, waktu);
+    const turun =
+        Math.floor(
+            ronde / game.turunSetiap
+        ) * game.waktuTurun;
+
+    return Math.max(
+        game.waktuMinimal,
+        game.waktuAwal - turun
+    );
 
 }
 
@@ -1544,6 +1549,85 @@ try {
     
     }
     
+    if(text.startsWith("/sambungkata waktu")){
+    
+        if(
+            !sambungkataData ||
+            !sambungkataData.aktif
+        ){
+            alert("Belum ada lobby.");
+            return;
+        }
+    
+        if(
+            sambungkataData.host.uid !==
+            auth.currentUser.uid
+        ){
+            alert("Hanya host.");
+            return;
+        }
+    
+        if(
+            sambungkataData.status !== "waiting"
+        ){
+            alert("Game sudah dimulai.");
+            return;
+        }
+    
+        const args=text.split(" ");
+    
+        if(args.length!==6){
+            alert(
+                "Format:\n"+
+                "/sambungkata waktu waktuAwal waktuTurun setiapRonde waktuMinimal"
+            );
+            return;
+        }
+    
+        const waktuAwal=Number(args[2]);
+        const waktuTurun=Number(args[3]);
+        const turunSetiap=Number(args[4]);
+        const waktuMinimal=Number(args[5]);
+    
+        if(
+            waktuAwal<=0 ||
+            waktuTurun<=0 ||
+            turunSetiap<=0 ||
+            waktuMinimal<=0
+        ){
+            alert("Semua angka harus lebih dari 0.");
+            return;
+        }
+    
+        if(waktuMinimal>waktuAwal){
+            alert("Waktu minimal tidak boleh lebih besar dari waktu awal.");
+            return;
+        }
+    
+        await updateDoc(
+            sambungkataRef,
+            {
+                waktuAwal,
+                waktuTurun,
+                turunSetiap,
+                waktuMinimal,
+                waktu:waktuAwal
+            }
+        );
+    
+        await sendBotMessage(
+            `⏱️ Pengaturan waktu diubah.
+    
+    Awal : ${waktuAwal} detik
+    Turun : ${waktuTurun} detik
+    Setiap : ${turunSetiap} ronde
+    Minimal : ${waktuMinimal} detik`
+        );
+    
+        resetInput();
+        return;
+    }
+    
     if (text === "/sambungkata") {
       
         if (await musikSedangAktif()) {
@@ -1590,6 +1674,11 @@ try {
             giliran: 0,
         
             huruf: "",
+            
+            waktuAwal:20,
+            waktuTurun:1,
+            turunSetiap:2,
+            waktuMinimal:3,
         
             ronde: 0,
         
@@ -1906,7 +1995,10 @@ try {
         
         // Hitung waktu berdasarkan ronde
         const waktu =
-            getWaktuRonde(ronde);
+            getWaktuRonde({
+                ...sambungkataData,
+                ronde
+            });
         
         
         await updateDoc(
@@ -3529,7 +3621,10 @@ async function cekWaktuSambungKata(){
         
         // Hitung waktu baru
         const waktu =
-            getWaktuRonde(ronde);
+            getWaktuRonde({
+                ...sambungkataData,
+                ronde
+            });
             
         const hurufBaru = randomHuruf();
         

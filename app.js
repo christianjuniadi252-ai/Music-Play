@@ -147,6 +147,16 @@ let editingMessage = null;
 let sending = false;
 let gameTimerInterval = null;
 
+const commandAlias = {
+    "/sk": "/sambungkata",
+    "/p": "/play",
+    "/ps": "/pause",
+    "/r": "/resume",
+    "/s": "/skip",
+    "/st": "/stop",
+    "/l": "/list"
+};
+
 const commands = [
 
 {
@@ -1181,6 +1191,17 @@ async function sendMessage() {
 if (sending) return;  
 
 let text = input.value.trim();
+
+let pesan = text;
+
+const parts = pesan.split(" ");
+
+const cmd = parts[0].toLowerCase();
+
+if (commandAlias[cmd]) {
+    parts[0] = commandAlias[cmd];
+    pesan = parts.join(" ");
+}
 
 text = censorText(text);
 

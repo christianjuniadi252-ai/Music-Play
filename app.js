@@ -38,6 +38,11 @@ import {
     cekKata
 } from "./sambungkata.js";
 
+import {
+    loadBadWords,
+    censorText
+} from "./profanity.js";
+
 /* ================= FIREBASE ================= */
 
 const firebaseConfig = {

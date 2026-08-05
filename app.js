@@ -1700,7 +1700,7 @@ try {
             dibuat: Date.now(),
         
             // Batas waktu host untuk memulai game
-            batasMulai: Date.now() + 60000,
+            batasMulai: Date.now() + 300000,
         
             lastTimeout: 0
         

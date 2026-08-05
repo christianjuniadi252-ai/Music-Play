@@ -351,9 +351,9 @@ ytPlayer = new YT.Player("playerFrame", {
 
 createPlayer();
 
-await initSambungKata();
-
 await loadBadWords();
+
+await initSambungKata();
 
 await initSambungKata();
 

@@ -23,23 +23,27 @@ let game = {
 };
 
 export async function initSambungKata() {
+    const files = ["wordlist.txt", "english.txt"];
 
-    const response = await fetch("wordlist.txt");
+    const responses = await Promise.all(
+        files.map(file => fetch(file))
+    );
 
-    const text = await response.text();
+    const texts = await Promise.all(
+        responses.map(res => res.text())
+    );
 
-    text.split(/\r?\n/).forEach(line => {
+    texts.forEach(text => {
+        text.split(/\r?\n/).forEach(line => {
+            const kata = line.trim().toLowerCase();
 
-        const kata = line.trim().toLowerCase();
-
-        if (/^[a-z]+$/.test(kata)) {
-            kamus.add(kata);
-        }
-
+            if (/^[a-z]+$/.test(kata)) {
+                kamus.add(kata);
+            }
+        });
     });
 
     console.log("Kamus berhasil dimuat:", kamus.size);
-
 }
 
 export function cekKata(kata){

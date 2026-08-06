@@ -1188,7 +1188,7 @@ const alias = {
     "/s": "/skip",
     "/rp": "/replay",
     "/c": "/clear",
-    "/m": "/musik"
+    "/m": "/musik",
     "/j": "/join",
     "/l": "/left"
 };

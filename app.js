@@ -2083,7 +2083,7 @@ try {
         
         await sendBotMessage(
         
-        `✅ ${auth.currentUser.displayName} Berhasil menjawab<br>
+        `✅ <b>${auth.currentUser.displayName}</b> Berhasil menjawab<br>
         
         📝 Kata :
         <b>${text}</b><br>

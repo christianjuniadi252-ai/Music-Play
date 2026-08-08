@@ -30,7 +30,7 @@ body{
 body{
     display:flex;
     flex-direction:column;
-    min-height: 100dvh;
+    min-height: 100vh;
     background:#121212;
     color:white;
     overflow:hidden;
@@ -38,6 +38,9 @@ body{
   
 header {
     position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     background:#1f1f1f;
     padding:15px;
     justify-content: space-between;
@@ -52,7 +55,8 @@ header {
     overflow-y:auto;
     min-height:0;
     padding:0;
-    padding-bottom: 15px;
+    padding-top: 60px;
+    padding-bottom: 120px;
     gap:16px;
 }
   
@@ -149,6 +153,10 @@ button:hover{
 
 #userInfo{
     display:flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     justify-content:space-between;
     align-items:center;
     padding:10px 15px;
@@ -369,6 +377,10 @@ button:hover{
 .bottom {
   display: flex;
   flex-direction: column;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: #1f1f1f;
   padding: 15px;
   gap: 15px;
@@ -1061,7 +1073,7 @@ button:hover{
     <textarea
       id="commandInput"
       rows="1"
-      placeholder="Pesan atau /play URL 864"></textarea>
+      placeholder="Pesan atau /play URL 865"></textarea>
 
     <button id="sendBtn">
         <i data-lucide="send-horizontal"></i>
@@ -1101,6 +1113,14 @@ button:hover{
 
 </div>
 
+<script>
+function updateHeight() {
+    document.body.style.height = window.visualViewport.height + "px";
+}
+
+window.visualViewport.addEventListener("resize", updateHeight);
+updateHeight();
+</script>
 <script>lucide.createIcons();</script>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>

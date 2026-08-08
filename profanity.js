@@ -1,5 +1,5 @@
 let badWords = [];
-let allowWords = [];
+let allowWords = new Set();
 
 
 /* =========================
@@ -8,12 +8,27 @@ let allowWords = [];
 
 export async function loadProfanity(){
 
+    // Daftar kata toxic
     const bad = await fetch("./jangan-dibuka.json");
+
     badWords = await bad.json();
 
+    // Daftar kata yang dianggap kata valid
+    const allow = await fetch("./wordlist.txt");
 
-    const allow = await fetch("./aman-aja.json");
-    allowWords = await allow.json();
+    const text = await allow.text();
+
+    text.split(/\r?\n/).forEach(line => {
+
+        const kata = line
+            .trim()
+            .toLowerCase();
+
+        if(/^[a-z]+$/.test(kata)){
+            allowWords.add(kata);
+        }
+
+    });
 
 }
 
@@ -58,7 +73,7 @@ const map = {
 
 function isAllowWord(word){
 
-    return allowWords.includes(
+    return allowWords.has(
         word.toLowerCase()
     );
 

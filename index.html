@@ -30,17 +30,22 @@ body{
 body{
     display:flex;
     flex-direction:column;
-    min-height: 100vh;
+    height:100vh;
+    min-height:100vh;
     background:#121212;
     color:white;
     overflow:hidden;
 }
+
+@supports (height: 100svh){
+    body{
+        height:100svh;
+        min-height:100svh;
+    }
+}
   
 header {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
     background:#1f1f1f;
     padding:15px;
     justify-content: space-between;
@@ -50,14 +55,16 @@ header {
   
 .chat-container{
     flex:1;
+    min-height:0;
     display:flex;
     flex-direction:column;
     overflow-y:auto;
-    min-height:0;
-    padding:0;
-    padding-top: 60px;
-    padding-bottom: 120px;
+
+    padding:0 0 15px;
     gap:16px;
+
+    /* Penting */
+    flex-shrink:1;
 }
   
 .message{  
@@ -151,18 +158,15 @@ button:hover{
     text-align:center;
 }
 
-#userInfo{
+#userInfo {
     display:flex;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
     justify-content:space-between;
     align-items:center;
     padding:10px 15px;
     background:#1f1f1f;
     border-bottom:1px solid #333;
-    margin-top: -20px;
+    margin-top:0;
+    flex-shrink:0;
 }
 
 .account{
@@ -375,15 +379,13 @@ button:hover{
 }
 
 .bottom {
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #1f1f1f;
-  padding: 15px;
-  gap: 15px;
+    display:flex;
+    flex-direction:column;
+    background:#1f1f1f;
+    padding:15px;
+    gap:15px;
+
+    flex-shrink:0;
 }
 
 #commandInput{
@@ -1073,7 +1075,7 @@ button:hover{
     <textarea
       id="commandInput"
       rows="1"
-      placeholder="Pesan atau /play URL 865"></textarea>
+      placeholder="Pesan atau /play URL 864"></textarea>
 
     <button id="sendBtn">
         <i data-lucide="send-horizontal"></i>
@@ -1113,14 +1115,6 @@ button:hover{
 
 </div>
 
-<script>
-function updateHeight() {
-    document.body.style.height = window.visualViewport.height + "px";
-}
-
-window.visualViewport.addEventListener("resize", updateHeight);
-updateHeight();
-</script>
 <script>lucide.createIcons();</script>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>

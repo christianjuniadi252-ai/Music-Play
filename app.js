@@ -3769,11 +3769,12 @@ async function cekWaktuSambungKata(){
         await sendBotMessage(
 
             `💀 <b>${hasilGame.pemainKena.nama}</b>
-            tereliminasi karena kehabisan waktu.
+            tereliminasi karena kehabisan waktu.<br>
+            
+            🔤 Huruf :
+            <b>${hasilGame.huruf.toUpperCase()}</b><br>
 
-            Giliran berikutnya:
-
-            ▶️ <b>${
+            ▶️ Giliran : <b>${
                 hasilGame.pemain[
                     hasilGame.giliran
                 ].nama

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">  
 <meta
   name="viewport"
-  content="width=device-width, initial-scale=1, viewport-fit=cover">
+  content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Qris Media</title>
 <script src="https://unpkg.com/lucide@latest"></script>
 <meta name="theme-color" content="#1f1f1f">
@@ -25,27 +25,19 @@ body{
     margin:0;
     width:100%;
     height:100%;
+    overflow:hidden;
 }
 
 body{
     display:flex;
     flex-direction:column;
-    height:100vh;
-    min-height:100vh;
+    height:100%;
     background:#121212;
     color:white;
     overflow:hidden;
 }
 
-@supports (height: 100svh){
-    body{
-        height:100svh;
-        min-height:100svh;
-    }
-}
-  
 header {
-    position: fixed;
     background:#1f1f1f;
     padding:15px;
     justify-content: space-between;
@@ -59,12 +51,22 @@ header {
     display:flex;
     flex-direction:column;
     overflow-y:auto;
+    overflow-x:hidden;
 
     padding:0 0 15px;
     gap:16px;
 
-    /* Penting */
     flex-shrink:1;
+    overscroll-behavior:contain;
+}
+
+.bottom{
+    display:flex;
+    flex-direction:column;
+    background:#1f1f1f;
+    padding:15px;
+    gap:15px;
+    flex-shrink:0;
 }
   
 .message{  
@@ -158,7 +160,7 @@ button:hover{
     text-align:center;
 }
 
-#userInfo {
+#userInfo{
     display:flex;
     justify-content:space-between;
     align-items:center;
@@ -376,16 +378,6 @@ button:hover{
   justify-content: center;
   align-items: center;
   padding: 8px;
-}
-
-.bottom {
-    display:flex;
-    flex-direction:column;
-    background:#1f1f1f;
-    padding:15px;
-    gap:15px;
-
-    flex-shrink:0;
 }
 
 #commandInput{
@@ -1075,7 +1067,7 @@ button:hover{
     <textarea
       id="commandInput"
       rows="1"
-      placeholder="Pesan atau /play URL 864"></textarea>
+      placeholder="Pesan atau /play URL 865"></textarea>
 
     <button id="sendBtn">
         <i data-lucide="send-horizontal"></i>
@@ -1114,7 +1106,6 @@ button:hover{
     <div id="playlistList"></div>
 
 </div>
-
 <script>lucide.createIcons();</script>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
@@ -1122,6 +1113,25 @@ button:hover{
 <script>
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js");
+}
+</script>
+<script>
+const input = document.getElementById("commandInput");
+
+function lockPagePosition() {
+    if (document.activeElement === input) {
+        window.scrollTo(0, 0);
+    }
+}
+
+input.addEventListener("focus", () => {
+    setTimeout(lockPagePosition, 50);
+    setTimeout(lockPagePosition, 150);
+    setTimeout(lockPagePosition, 300);
+});
+
+if (window.visualViewport) {
+    window.visualViewport.addEventListener("scroll", lockPagePosition);
 }
 </script>
 </body>

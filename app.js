@@ -3710,18 +3710,19 @@ async function cekWaktuSambungKata(){
         );
 
         hasilGame = {
-
             tipe:
                 tereliminasi
                 ? "eliminasi"
                 : "kehilangan_nyawa",
-
+        
             pemainKena,
-
+        
             pemain,
-
-            giliran
-
+        
+            giliran,
+        
+            huruf: hurufBaru
+        
         };
 
     });
@@ -3792,16 +3793,16 @@ async function cekWaktuSambungKata(){
     */
 
     await sendBotMessage(`
-    ⏰ ${hasilGame.pemainKena.nama} Waktu habis!<br>
+        ⏰ <b>${hasilGame.pemainKena.nama}</b> waktu habis!<br>
     
-    ♥️ Tersisa :
-    <b>${Math.max(0, hasilGame.pemainKena.hati - 1)}</b><br>
+        ❤️ Nyawa tersisa :
+        <b>${hasilGame.pemainKena.hati}</b><br>
     
-    🔤 Huruf :
-    <b>${huruf.toUpperCase()}</b><br>
+        🔤 Huruf :
+        <b>${hasilGame.huruf.toUpperCase()}</b><br>
     
-    ▶️ Giliran :
-    <b>${hasilGame.pemain[hasilGame.giliran].nama}</b>
+        ▶️ Giliran :
+        <b>${hasilGame.pemain[hasilGame.giliran].nama}</b>
     `);
 
 }

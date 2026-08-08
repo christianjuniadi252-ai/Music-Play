@@ -193,8 +193,6 @@ export function censorText(text){
 
             }
 
-
-
             // Anti huruf ganda
             const duplicateRegex =
                 new RegExp(

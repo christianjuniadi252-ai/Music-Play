@@ -23,7 +23,7 @@ let game = {
 };
 
 export async function initSambungKata() {
-    const files = ["wordlist.txt", "english.txt"];
+    const files = ["wordlist.txt", "jawa.txt", "english.txt"];
 
     const responses = await Promise.all(
         files.map(file => fetch(file))

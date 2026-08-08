@@ -131,29 +131,49 @@ export function censorText(text){
     );
 
 
-    words.forEach((word,index)=>{
-
-
-        const clean = word
-            .replace(
-                /[^a-zA-Z0-9]/g,
-                ""
-            )
-            .toLowerCase();
-
-
-
-        // Jika allowword, lewati
-        if(
-            clean &&
-            isAllowWord(clean)
-        ){
-            return;
-        }
-
-
-
-        badWords.forEach(bad=>{
+        words.forEach((word,index)=>{
+        
+            const clean = word
+                .replace(
+                    /[^a-zA-Z0-9]/g,
+                    ""
+                )
+                .toLowerCase();
+        
+        
+            // Jika kata ada di daftar toxic,
+            // tetap sensor meskipun ada di worldlist.txt
+            const isToxic = badWords.some(bad => {
+        
+                return clean === bad.toLowerCase().trim();
+        
+            });
+        
+            if(isToxic){
+        
+                hasil = hasil.replace(
+                    word,
+                    "*".repeat(word.length)
+                );
+        
+                return;
+        
+            }
+        
+        
+            // Jika bukan toxic dan ada di worldlist,
+            // jangan sensor
+            if(
+                clean &&
+                isAllowWord(clean)
+            ){
+        
+                return;
+        
+            }
+        
+        
+            badWords.forEach(bad=>{
 
 
             const regex = new RegExp(

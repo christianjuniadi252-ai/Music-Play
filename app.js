@@ -3798,7 +3798,7 @@ async function cekWaktuSambungKata(){
         ⏰ <b>${hasilGame.pemainKena.nama}</b> waktu habis!<br>
     
         ❤️ Nyawa tersisa :
-        <b>${hasilGame.pemainKena.hati}</b><br>
+        <b>${hasilGame.pemainKena.hati - 1}</b><br>
     
         🔤 Huruf :
         <b>${hasilGame.huruf.toUpperCase()}</b><br>

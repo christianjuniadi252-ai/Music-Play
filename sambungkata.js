@@ -13,6 +13,11 @@ let game = {
         jawa: true,
         eng: true
     },
+    
+    double: {
+        aktif: false,
+        detik: 10
+    },
 
     host: null,
 
@@ -117,6 +122,39 @@ export function getBahasa(){
 
 }
 
+export function setDouble(aktif, detik = 10){
+
+    game.double.aktif = aktif;
+
+    if(aktif){
+        game.double.detik = detik;
+    }
+
+    return true;
+
+}
+
+export function setDoubleConfig(config){
+
+    if(!config){
+        return;
+    }
+
+    game.double.aktif =
+        config.aktif === true;
+
+    if(
+        Number.isInteger(config.detik) &&
+        config.detik >= 1
+    ){
+
+        game.double.detik =
+            config.detik;
+
+    }
+
+}
+
 export function randomHuruf(){
 
     const huruf = "abcdefghijklmnopqrstuvwxyz";
@@ -184,7 +222,7 @@ export function mulaiGame(host){
 
 }
 
-export function validasiKata(kata){
+export function validasiKata(kata, sisaDetik){
 
     kata = kata.toLowerCase().trim();
 
@@ -196,13 +234,14 @@ export function validasiKata(kata){
         return false;
     }
 
-    if(!kata.startsWith(game.huruf)){
+    const awalan =
+        game.huruf;
+
+    if(!kata.startsWith(awalan)){
         return false;
     }
 
     game.kataDipakai.add(kata);
-
-    game.huruf = kata.at(-1);
 
     return true;
 
@@ -211,6 +250,36 @@ export function validasiKata(kata){
 export function getGame(){
 
     return game;
+
+}
+
+export function getAwalanKata(kata, sisaDetik){
+
+    kata = kata.toLowerCase().trim();
+
+    if(!kata){
+        return "";
+    }
+
+    /*
+     * DOUBLE AKTIF
+     */
+
+    if(
+        game.double.aktif &&
+        sisaDetik <= game.double.detik &&
+        kata.length >= 2
+    ){
+
+        return kata.slice(-2);
+
+    }
+
+    /*
+     * NORMAL
+     */
+
+    return kata.slice(-1);
 
 }
 

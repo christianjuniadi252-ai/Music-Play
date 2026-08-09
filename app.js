@@ -44,194 +44,87 @@ import { loadProfanity, censorText } from "./profanity.js";
 
 /* ================= FIREBASE ================= */
 
-const firebaseConfig = {
-apiKey: "AIzaSyAk5vpwEms61MGUMHf42v-5l5YsCKZxPcU",
-authDomain: "music-e4d6a.firebaseapp.com",
-projectId: "music-e4d6a",
-storageBucket: "music-e4d6a.firebasestorage.app",
-messagingSenderId: "485779946327",
-appId: "1:485779946327:web:3c8ddebb80c8eab59fdc12"
-};
+import {
+    app,
+    auth,
+    db,
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const roomRef = doc(db,"room","main");
-const playlistRef = collection(db,"playlist");
-const sambungkataRef =
-    doc(db, "games", "sambungkata");
-const provider = new GoogleAuthProvider();
+    roomRef,
+    playlistRef,
+    sambungkataRef,
+    provider,
 
-/* ================= ELEMENT ================= */
+    loginBtn,
+    userInfo,
+    avatar,
+    username,
 
-const loginBtn = document.getElementById("loginBtn");
-const userInfo = document.getElementById("userInfo");
-const avatar = document.getElementById("avatar");
-const username = document.getElementById("username");
+    chat,
+    input,
+    sendBtn,
 
-const chat = document.getElementById("chat");
-const input = document.getElementById("commandInput");
-const sendBtn = document.getElementById("sendBtn");
+    player,
 
-const player = document.getElementById("playerFrame");
+    replyPreview,
+    replyText,
+    cancelReply,
 
-const replyPreview = document.getElementById("replyPreview");
-const replyText = document.getElementById("replyText");
-const cancelReply = document.getElementById("cancelReply");
+    menuOverlay,
+    menuPreview,
 
-const menuOverlay=document.getElementById("menuOverlay");
+    copyBtn,
+    editBtn,
+    deleteBtn,
+    replyBtn,
 
-const menuPreview=document.getElementById("menuPreview");
+    refreshBtn,
 
-const copyBtn=document.getElementById("copyBtn");
+    musicHeader,
+    musicTitle,
+    musicTime,
+    musicBar,
 
-const editBtn=document.getElementById("editBtn");
+    playlistBtn,
+    playlistModal,
+    playlistList,
+    musicListRef,
 
-const deleteBtn=document.getElementById("deleteBtn");
+    scrollBottomBtn,
 
-const replyBtn=document.getElementById("replyBtn");
+    commandMenu,
 
-const refreshBtn = document.getElementById("refreshBtn");
+    onlineBtn,
+    onlineModal,
+    onlineList,
 
-const musicHeader = document.getElementById("musicHeader");
-const musicTitle = document.getElementById("musicTitle");
-const musicTime = document.getElementById("musicTime");
-const musicBar = document.getElementById("musicBar");
+    gamePanel,
+    gamePlayer,
+    gameHeart,
+    gameTyping,
+    gameHuruf,
+    gameTimer,
 
-const playlistBtn = document.getElementById("playlistBtn");
-const playlistModal = document.getElementById("playlistModal");
-const playlistList = document.getElementById("playlistList");
-const musicListRef = collection(db,"musicList");
-const scrollBottomBtn =
-document.getElementById("scrollBottomBtn");
-const commandMenu =
-document.getElementById("commandMenu");
-const onlineBtn = document.getElementById("onlineBtn");
-const onlineModal = document.getElementById("onlineModal");
-const onlineList = document.getElementById("onlineList");
+    presenceRef,
+    gameError,
 
-const gamePanel =
-document.getElementById("gamePanel");
+    sortable,
+    replyData,
+    currentVideo,
+    ytPlayer,
+    roomData,
+    sambungkataData,
+    onlineUsers,
+    playerReady,
+    syncTimer,
+    selectedMessage,
+    hold,
+    editingMessage,
+    sending,
+    gameTimerInterval,
+    gameErrorTimeout,
 
-const gamePlayer =
-document.getElementById("gamePlayer");
-
-const gameHeart =
-document.getElementById("gameHeart");
-
-const gameTyping =
-document.getElementById("gameTyping");
-
-const gameHuruf =
-document.getElementById("gameHuruf");
-
-const gameTimer =
-document.getElementById("gameTimer");
-
-const presenceRef = collection(db, "presence");
-const gameError = document.getElementById("gameError");
-
-/* ================= STATE ================= */
-
-let sortable = null;
-let replyData = null;
-let currentVideo = "";
-let ytPlayer = null;
-let roomData = null;
-let sambungkataData = null;
-let onlineUsers = [];
-let playerReady = false;
-let syncTimer = null;
-let selectedMessage = null;
-let hold = null;
-let editingMessage = null;
-let sending = false;
-let gameTimerInterval = null;
-let gameErrorTimeout = null;
-
-const commands = [
-
-{
-    cmd:"/play",
-    desc:"Memutar musik 822"
-},
-
-{
-    cmd:"/pause",
-    desc:"Menjeda musik"
-},
-
-{
-    cmd:"/resume",
-    desc:"Melanjutkan musik"
-},
-
-{
-    cmd:"/skip",
-    desc:"Lewati lagu"
-},
-
-{
-    cmd:"/stop",
-    desc:"Hentikan musik"
-},
-
-{
-    cmd:"/clear",
-    desc:"Hapus playlist"
-},
-
-{
-    cmd:"/music list",
-    desc:"Daftar musik"
-},
-
-{
-    cmd:"/music add",
-    desc:"Tambah list"
-},
-
-{
-    cmd:"/music delete",
-    desc:"Hapus list"
-},
-
-{
-    cmd:"/music rename",
-    desc:"Ganti nama list"
-},
-
-{
-    cmd:"/sambungkata",
-    desc:"Membuat lobby permainan sambung kata"
-},
-
-{
-    cmd:"/sambungkata mulai",
-    desc:"Memulai permainan sambung kata"
-},
-
-{
-    cmd:"/sambungkata batal",
-    desc:"Membatalkan lobby permainan sambung kata"
-},
-
-{
-    cmd:"/sambungkata waktu",
-    desc:"Mengatur waktu permainan sambung kata"
-},
-
-{
-    cmd:"/join",
-    desc:"Join ke lobby permainan"
-},
-
-{
-    cmd:"/left",
-    desc:"Keluar dari lobby permainan"
-}
-
-];
+    commands
+} from "./definitions.js";
 
 async function showCommandMenu(){
 

@@ -4,20 +4,14 @@ let kamus = {
     eng: new Set()
 };
 
-
 let game = {
 
     aktif: false,
-
+    
     bahasa: {
         indo: true,
         jawa: true,
         eng: true
-    },
-
-    double: {
-        aktif: false,
-        detik: 10
     },
 
     host: null,
@@ -25,7 +19,7 @@ let game = {
     pemain: [],
 
     setuju: [],
-
+    
     giliran: 0,
 
     huruf: "",
@@ -38,13 +32,6 @@ let game = {
 
 };
 
-
-/*
-========================================
-LOAD KAMUS
-========================================
-*/
-
 export async function initSambungKata() {
 
     const files = {
@@ -53,66 +40,28 @@ export async function initSambungKata() {
         eng: "english.txt"
     };
 
-
     for (const bahasa in files) {
 
-        try {
+        const response =
+            await fetch(files[bahasa]);
 
-            const response =
-                await fetch(files[bahasa]);
+        const text =
+            await response.text();
 
+        text.split(/\r?\n/).forEach(line => {
 
-            if (!response.ok) {
+            const kata =
+                line.trim().toLowerCase();
 
-                console.error(
-                    `Gagal memuat ${files[bahasa]}`
-                );
+            if (/^[a-z]+$/.test(kata)) {
 
-                continue;
+                kamus[bahasa].add(kata);
 
             }
 
-
-            const text =
-                await response.text();
-
-
-            text
-                .split(/\r?\n/)
-                .forEach(line => {
-
-                    const kata =
-                        line
-                            .trim()
-                            .toLowerCase();
-
-
-                    /*
-                    Hanya menerima
-                    huruf a-z
-                    */
-
-                    if (
-                        /^[a-z]+$/.test(kata)
-                    ) {
-
-                        kamus[bahasa].add(kata);
-
-                    }
-
-                });
-
-        } catch(error) {
-
-            console.error(
-                `Error memuat ${files[bahasa]}:`,
-                error
-            );
-
-        }
+        });
 
     }
-
 
     console.log(
         "Kamus Indo:",
@@ -131,77 +80,36 @@ export async function initSambungKata() {
 
 }
 
+export function cekKata(kata){
 
-/*
-========================================
-CEK KATA
-========================================
-*/
-
-export function cekKata(kata) {
-
-    kata =
-        kata
-            .toLowerCase()
-            .trim();
-
+    kata = kata.toLowerCase().trim();
 
     return (
+        (game.bahasa.indo &&
+            kamus.indo.has(kata)) ||
 
-        (
-            game.bahasa.indo &&
-            kamus.indo.has(kata)
-        )
+        (game.bahasa.jawa &&
+            kamus.jawa.has(kata)) ||
 
-        ||
-
-        (
-            game.bahasa.jawa &&
-            kamus.jawa.has(kata)
-        )
-
-        ||
-
-        (
-            game.bahasa.eng &&
-            kamus.eng.has(kata)
-        )
-
+        (game.bahasa.eng &&
+            kamus.eng.has(kata))
     );
 
 }
 
+export function setBahasa(bahasa, aktif){
 
-/*
-========================================
-BAHASA
-========================================
-*/
-
-export function setBahasa(
-    bahasa,
-    aktif
-) {
-
-    if (
-        !(bahasa in game.bahasa)
-    ) {
-
+    if (!(bahasa in game.bahasa)) {
         return false;
-
     }
 
-
-    game.bahasa[bahasa] =
-        aktif;
-
+    game.bahasa[bahasa] = aktif;
 
     return true;
 
 }
 
-
-export function getBahasa() {
+export function getBahasa(){
 
     return {
         ...game.bahasa
@@ -209,322 +117,104 @@ export function getBahasa() {
 
 }
 
+export function randomHuruf(){
 
-/*
-========================================
-DOUBLE
-========================================
-*/
-
-export function setDouble(
-    aktif,
-    detik = 10
-) {
-
-    game.double.aktif =
-        aktif;
-
-
-    if (aktif) {
-
-        game.double.detik =
-            detik;
-
-    }
-
-
-    return true;
-
-}
-
-
-/*
-========================================
-SINKRONISASI DOUBLE
-DARI FIRESTORE
-========================================
-*/
-
-export function setDoubleConfig(
-    config
-) {
-
-    if (!config) {
-
-        return;
-
-    }
-
-
-    game.double.aktif =
-        config.aktif === true;
-
-
-    if (
-        Number.isInteger(
-            config.detik
-        )
-        &&
-        config.detik >= 1
-    ) {
-
-        game.double.detik =
-            config.detik;
-
-    }
-
-}
-
-
-/*
-========================================
-GET DOUBLE
-========================================
-*/
-
-export function getDouble() {
-
-    return {
-        ...game.double
-    };
-
-}
-
-
-/*
-========================================
-RANDOM HURUF
-========================================
-*/
-
-export function randomHuruf() {
-
-    const huruf =
-        "abcdefghijklmnopqrstuvwxyz";
-
+    const huruf = "abcdefghijklmnopqrstuvwxyz";
 
     return huruf[
         Math.floor(
-            Math.random() *
-            huruf.length
+            Math.random() * huruf.length
         )
     ];
 
 }
 
+function acakPemain(array){
 
-/*
-========================================
-ACAK PEMAIN
-========================================
-*/
-
-export function acakPemain(
-    array
-) {
-
-    const hasil =
-        [...array];
-
-
-    for (
-        let i = hasil.length - 1;
+    for(
+        let i = array.length - 1;
         i > 0;
         i--
-    ) {
+    ){
 
         const j =
             Math.floor(
-                Math.random() *
-                (i + 1)
+                Math.random() * (i + 1)
             );
 
-
         [
-            hasil[i],
-            hasil[j]
+            array[i],
+            array[j]
         ] = [
-            hasil[j],
-            hasil[i]
+            array[j],
+            array[i]
         ];
 
     }
 
-
-    return hasil;
+    return array;
 
 }
 
+export function mulaiGame(host){
 
-/*
-========================================
-MULAI GAME
-========================================
-*/
+    game.aktif = true;
 
-export function mulaiGame(
-    host
-) {
+    game.host = host;
 
-    game.aktif =
-        true;
+    game.pemain = [];
 
+    game.setuju = [];
 
-    game.host =
-        host;
+    game.huruf = randomHuruf();
 
+    game.giliran = 0;
 
-    game.pemain =
-        [];
+    game.waktu = 20;
 
-
-    game.setuju =
-        [];
-
-
-    game.huruf =
-        randomHuruf();
-
-
-    game.giliran =
-        0;
-
-
-    game.waktu =
-        20;
-
-
-    game.ronde =
-        1;
-
+    game.ronde = 1;
 
     game.kataDipakai.clear();
-
-
+    
     game.pemain.push({
-
-        uid:
-            host.uid,
-
-        nama:
-            host.nama,
-
-        hati:
-            3
-
+        uid: host.uid,
+        nama: host.nama,
+        hati: 3
     });
-
-
-    return game;
 
 }
 
+export function validasiKata(kata){
 
-/*
-========================================
-VALIDASI KATA
-========================================
-*/
+    kata = kata.toLowerCase().trim();
 
-export function validasiKata(
-    kata
-) {
-
-    kata =
-        kata
-            .toLowerCase()
-            .trim();
-
-
-    /*
-    Cek kamus
-    */
-
-    if (
-        !cekKata(kata)
-    ) {
-
+    if(!cekKata(kata)){
         return false;
-
     }
 
-
-    /*
-    Cek kata sudah digunakan
-    */
-
-    if (
-        game.kataDipakai.has(
-            kata
-        )
-    ) {
-
+    if(game.kataDipakai.has(kata)){
         return false;
-
     }
 
-
-    /*
-    Cek awalan
-    */
-
-    const awalan =
-        game.huruf;
-
-
-    if (
-        !kata.startsWith(
-            awalan
-        )
-    ) {
-
+    if(!kata.startsWith(game.huruf)){
         return false;
-
     }
 
+    game.kataDipakai.add(kata);
 
-    /*
-    Simpan kata
-    */
-
-    game.kataDipakai.add(
-        kata
-    );
-
-
-    /*
-    Huruf terakhir
-    */
-
-    game.huruf =
-        kata.at(-1);
-
+    game.huruf = kata.at(-1);
 
     return true;
 
 }
 
-
-/*
-========================================
-GET GAME
-========================================
-*/
-
-export function getGame() {
+export function getGame(){
 
     return game;
 
 }
 
-
-/*
-========================================
-PEMAIN SEKARANG
-========================================
-*/
-
-export function pemainSekarang() {
+export function pemainSekarang(){
 
     return game.pemain[
         game.giliran
@@ -532,76 +222,31 @@ export function pemainSekarang() {
 
 }
 
-
-/*
-========================================
-GANTI GILIRAN
-========================================
-*/
-
-export function nextTurn() {
+export function nextTurn(){
 
     game.giliran++;
 
-
-    if (
-        game.giliran >=
-        game.pemain.length
-    ) {
-
-        game.giliran =
-            0;
-
+    if(game.giliran >= game.pemain.length){
+        game.giliran = 0;
     }
-
 
     return pemainSekarang();
 
 }
 
+export function playerSetuju(uid, nama){
 
-/*
-========================================
-PEMAIN SETUJU
-========================================
-*/
-
-export function playerSetuju(
-    uid,
-    nama
-) {
-
-    /*
-    Jangan masukkan
-    pemain yang sama dua kali
-    */
-
-    if (
-        game.setuju.includes(
-            uid
-        )
-    ) {
-
+    if(game.setuju.includes(uid)){
         return false;
-
     }
 
-
-    game.setuju.push(
-        uid
-    );
-
+    game.setuju.push(uid);
 
     game.pemain.push({
-
         uid,
-
         nama,
-
         hati: 3
-
     });
-
 
     return true;
 

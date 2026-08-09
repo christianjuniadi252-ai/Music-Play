@@ -109,14 +109,6 @@ export function setBahasa(bahasa, aktif){
 
 }
 
-export function getBahasa(){
-
-    return {
-        ...game.bahasa
-    };
-
-}
-
 export function randomHuruf(){
 
     const huruf = "abcdefghijklmnopqrstuvwxyz";

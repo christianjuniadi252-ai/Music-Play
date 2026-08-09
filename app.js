@@ -36,7 +36,8 @@ import {
     nextTurn,
     validasiKata,
     cekKata,
-    setBahasa
+    setBahasa,
+    getBahasa
 } from "./sambungkata.js";
 
 import { loadProfanity, censorText } from "./profanity.js";

@@ -37,7 +37,10 @@ import {
     validasiKata,
     cekKata,
     setBahasa,
-    getBahasa
+    getBahasa,
+    setDouble,
+    setDoubleConfig,
+    setAwalanKata
 } from "./sambungkata.js";
 
 import { loadProfanity, censorText } from "./profanity.js";
@@ -1624,6 +1627,116 @@ try {
         return;
     }
     
+    if(text.startsWith("/sambungkata double")){
+    
+        if(
+            !sambungkataData ||
+            !sambungkataData.aktif
+        ){
+            alert("Belum ada lobby Sambung Kata.");
+            return;
+        }
+    
+        if(
+            sambungkataData.host.uid !==
+            auth.currentUser.uid
+        ){
+            alert("Hanya host yang dapat mengatur double.");
+            return;
+        }
+    
+        if(
+            sambungkataData.status !== "waiting"
+        ){
+            alert("Game sudah dimulai.");
+            return;
+        }
+    
+        const args = text.split(/\s+/);
+    
+        if(args.length !== 3){
+    
+            alert(
+                "Format:\n" +
+                "/sambungkata double 10/none"
+            );
+    
+            return;
+        }
+    
+        const nilai = args[2].toLowerCase();
+    
+        /*
+         * MATIKAN DOUBLE
+         */
+    
+        if(nilai === "none"){
+    
+            setDouble(false);
+    
+            await updateDoc(
+                sambungkataRef,
+                {
+                    double: {
+                        aktif: false,
+                        detik: 10
+                    }
+                }
+            );
+    
+            await sendBotMessage(
+                `🔤 Double huruf dinonaktifkan ❌`
+            );
+    
+            resetInput();
+    
+            return;
+        }
+    
+        /*
+         * AKTIFKAN DOUBLE
+         */
+    
+        const detik = Number(nilai);
+    
+        if(
+            !Number.isInteger(detik) ||
+            detik < 1
+        ){
+    
+            alert(
+                "Detik harus berupa angka minimal 1."
+            );
+    
+            return;
+        }
+    
+        setDouble(
+            true,
+            detik
+        );
+    
+        await updateDoc(
+            sambungkataRef,
+            {
+                double: {
+                    aktif: true,
+                    detik: detik
+                }
+            }
+        );
+    
+        await sendBotMessage(
+            `🔤 Double huruf aktif.
+            Pada <b>${detik} detik</b> terakhir,
+            pemain harus menggunakan 2 huruf terakhir.`
+        );
+    
+        resetInput();
+    
+        return;
+    }
+    
     /* ================= SAMBUNG KATA ================= */
     
     if (text === "/sambungkata mulai") {
@@ -2153,10 +2266,33 @@ try {
             text.toLowerCase()
         ];
         
+        const sekarang = Date.now();
+        
+        const sisaDetik = Math.max(
+            0,
+            Math.ceil(
+                (
+                    sambungkataData.batasWaktu -
+                    sekarang
+                ) / 1000
+            )
+        );
+        
+        let jumlahHuruf = 1;
+        
+        if (
+            sambungkataData.double &&
+            sambungkataData.double.aktif === true &&
+            sisaDetik <= sambungkataData.double.detik
+        ) {
+            jumlahHuruf = 2;
+        }
+        
+        const kataLower =
+            text.toLowerCase();
+        
         const hurufBaru =
-            text
-                .toLowerCase()
-                .at(-1);
+            kataLower.slice(-jumlahHuruf);
         
         let giliran =
             sambungkataData.giliran + 1;
@@ -2673,6 +2809,10 @@ onSnapshot(
         }
 
         sambungkataData = snap.data();
+        
+        setDoubleConfig(
+            sambungkataData.double
+        );
         
         if(sambungkataData.bahasa){
         

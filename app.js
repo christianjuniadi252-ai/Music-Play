@@ -40,7 +40,7 @@ import {
     getBahasa,
     setDouble,
     setDoubleConfig,
-    setAwalanKata
+    getAwalanKata
 } from "./sambungkata.js";
 
 import { loadProfanity, censorText } from "./profanity.js";

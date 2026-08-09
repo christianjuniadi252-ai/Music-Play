@@ -127,6 +127,8 @@ const gameTimer =
 document.getElementById("gameTimer");
 
 const presenceRef = collection(db, "presence");
+const gameError = document.getElementById("gameError");
+
 /* ================= STATE ================= */
 
 let sortable = null;
@@ -143,6 +145,7 @@ let hold = null;
 let editingMessage = null;
 let sending = false;
 let gameTimerInterval = null;
+let gameErrorTimeout = null;
 
 const commands = [
 
@@ -1971,7 +1974,7 @@ try {
     
         if (!cekKata(text)) {
     
-            alert("Kata tidak ada di kamus.");
+            showGameError("⚠️ Kata tidak ada dalam kamus");
     
             return;
         }
@@ -1982,7 +1985,7 @@ try {
             )
         ) {
     
-            alert("Kata sudah dipakai.");
+            showGameError("⚠️ Kata sudah digunakan");
     
             return;
         }
@@ -3834,3 +3837,21 @@ setInterval(async () => {
     }
 
 },1000);
+
+function showGameError(message) {
+
+    if (!gameError) return;
+
+    clearTimeout(gameErrorTimeout);
+
+    gameError.textContent = message;
+
+    gameError.classList.add("show");
+
+    gameErrorTimeout = setTimeout(() => {
+
+        gameError.classList.remove("show");
+
+    }, 3000);
+
+}

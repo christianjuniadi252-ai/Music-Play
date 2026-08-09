@@ -37,94 +37,204 @@ import {
     validasiKata,
     cekKata,
     setBahasa,
-    getBahasa
+    getBahasa,
+    setDouble,
+    setDoubleConfig,
+    getDouble
 } from "./sambungkata.js";
 
 import { loadProfanity, censorText } from "./profanity.js";
 
 /* ================= FIREBASE ================= */
 
-import {
-    app,
-    auth,
-    db,
+const firebaseConfig = {
+apiKey: "AIzaSyAk5vpwEms61MGUMHf42v-5l5YsCKZxPcU",
+authDomain: "music-e4d6a.firebaseapp.com",
+projectId: "music-e4d6a",
+storageBucket: "music-e4d6a.firebasestorage.app",
+messagingSenderId: "485779946327",
+appId: "1:485779946327:web:3c8ddebb80c8eab59fdc12"
+};
 
-    roomRef,
-    playlistRef,
-    sambungkataRef,
-    provider,
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const roomRef = doc(db,"room","main");
+const playlistRef = collection(db,"playlist");
+const sambungkataRef =
+    doc(db, "games", "sambungkata");
+const provider = new GoogleAuthProvider();
 
-    loginBtn,
-    userInfo,
-    avatar,
-    username,
+/* ================= ELEMENT ================= */
 
-    chat,
-    input,
-    sendBtn,
+const loginBtn = document.getElementById("loginBtn");
+const userInfo = document.getElementById("userInfo");
+const avatar = document.getElementById("avatar");
+const username = document.getElementById("username");
 
-    player,
+const chat = document.getElementById("chat");
+const input = document.getElementById("commandInput");
+const sendBtn = document.getElementById("sendBtn");
 
-    replyPreview,
-    replyText,
-    cancelReply,
+const player = document.getElementById("playerFrame");
 
-    menuOverlay,
-    menuPreview,
+const replyPreview = document.getElementById("replyPreview");
+const replyText = document.getElementById("replyText");
+const cancelReply = document.getElementById("cancelReply");
 
-    copyBtn,
-    editBtn,
-    deleteBtn,
-    replyBtn,
+const menuOverlay=document.getElementById("menuOverlay");
 
-    refreshBtn,
+const menuPreview=document.getElementById("menuPreview");
 
-    musicHeader,
-    musicTitle,
-    musicTime,
-    musicBar,
+const copyBtn=document.getElementById("copyBtn");
 
-    playlistBtn,
-    playlistModal,
-    playlistList,
-    musicListRef,
+const editBtn=document.getElementById("editBtn");
 
-    scrollBottomBtn,
+const deleteBtn=document.getElementById("deleteBtn");
 
-    commandMenu,
+const replyBtn=document.getElementById("replyBtn");
 
-    onlineBtn,
-    onlineModal,
-    onlineList,
+const refreshBtn = document.getElementById("refreshBtn");
 
-    gamePanel,
-    gamePlayer,
-    gameHeart,
-    gameTyping,
-    gameHuruf,
-    gameTimer,
+const musicHeader = document.getElementById("musicHeader");
+const musicTitle = document.getElementById("musicTitle");
+const musicTime = document.getElementById("musicTime");
+const musicBar = document.getElementById("musicBar");
 
-    presenceRef,
-    gameError,
+const playlistBtn = document.getElementById("playlistBtn");
+const playlistModal = document.getElementById("playlistModal");
+const playlistList = document.getElementById("playlistList");
+const musicListRef = collection(db,"musicList");
+const scrollBottomBtn =
+document.getElementById("scrollBottomBtn");
+const commandMenu =
+document.getElementById("commandMenu");
+const onlineBtn = document.getElementById("onlineBtn");
+const onlineModal = document.getElementById("onlineModal");
+const onlineList = document.getElementById("onlineList");
 
-    sortable,
-    replyData,
-    currentVideo,
-    ytPlayer,
-    roomData,
-    sambungkataData,
-    onlineUsers,
-    playerReady,
-    syncTimer,
-    selectedMessage,
-    hold,
-    editingMessage,
-    sending,
-    gameTimerInterval,
-    gameErrorTimeout,
+const gamePanel =
+document.getElementById("gamePanel");
 
-    commands
-} from "./definitions.js";
+const gamePlayer =
+document.getElementById("gamePlayer");
+
+const gameHeart =
+document.getElementById("gameHeart");
+
+const gameTyping =
+document.getElementById("gameTyping");
+
+const gameHuruf =
+document.getElementById("gameHuruf");
+
+const gameTimer =
+document.getElementById("gameTimer");
+
+const presenceRef = collection(db, "presence");
+const gameError = document.getElementById("gameError");
+
+/* ================= STATE ================= */
+
+let sortable = null;
+let replyData = null;
+let currentVideo = "";
+let ytPlayer = null;
+let roomData = null;
+let sambungkataData = null;
+let onlineUsers = [];
+let playerReady = false;
+let syncTimer = null;
+let selectedMessage = null;
+let hold = null;
+let editingMessage = null;
+let sending = false;
+let gameTimerInterval = null;
+let gameErrorTimeout = null;
+
+const commands = [
+
+{
+    cmd:"/play",
+    desc:"Memutar musik 822"
+},
+
+{
+    cmd:"/pause",
+    desc:"Menjeda musik"
+},
+
+{
+    cmd:"/resume",
+    desc:"Melanjutkan musik"
+},
+
+{
+    cmd:"/skip",
+    desc:"Lewati lagu"
+},
+
+{
+    cmd:"/stop",
+    desc:"Hentikan musik"
+},
+
+{
+    cmd:"/clear",
+    desc:"Hapus playlist"
+},
+
+{
+    cmd:"/music list",
+    desc:"Daftar musik"
+},
+
+{
+    cmd:"/music add",
+    desc:"Tambah list"
+},
+
+{
+    cmd:"/music delete",
+    desc:"Hapus list"
+},
+
+{
+    cmd:"/music rename",
+    desc:"Ganti nama list"
+},
+
+{
+    cmd:"/sambungkata",
+    desc:"Membuat lobby permainan sambung kata"
+},
+
+{
+    cmd:"/sambungkata mulai",
+    desc:"Memulai permainan sambung kata"
+},
+
+{
+    cmd:"/sambungkata batal",
+    desc:"Membatalkan lobby permainan sambung kata"
+},
+
+{
+    cmd:"/sambungkata waktu",
+    desc:"Mengatur waktu permainan sambung kata"
+},
+
+{
+    cmd:"/join",
+    desc:"Join ke lobby permainan"
+},
+
+{
+    cmd:"/left",
+    desc:"Keluar dari lobby permainan"
+}
+
+];
 
 async function showCommandMenu(){
 
@@ -1517,6 +1627,116 @@ try {
         return;
     }
     
+    if(text.startsWith("/sambungkata double")){
+    
+        if(
+            !sambungkataData ||
+            !sambungkataData.aktif
+        ){
+            alert("Belum ada lobby Sambung Kata.");
+            return;
+        }
+    
+        if(
+            sambungkataData.host.uid !==
+            auth.currentUser.uid
+        ){
+            alert("Hanya host yang dapat mengatur double.");
+            return;
+        }
+    
+        if(
+            sambungkataData.status !== "waiting"
+        ){
+            alert("Game sudah dimulai.");
+            return;
+        }
+    
+        const args = text.split(/\s+/);
+    
+        if(args.length !== 3){
+    
+            alert(
+                "Format:\n" +
+                "/sambungkata double 10/none"
+            );
+    
+            return;
+        }
+    
+        const nilai = args[2].toLowerCase();
+    
+        /*
+         * MATIKAN DOUBLE
+         */
+    
+        if(nilai === "none"){
+    
+            setDouble(false);
+    
+            await updateDoc(
+                sambungkataRef,
+                {
+                    double: {
+                        aktif: false,
+                        detik: 10
+                    }
+                }
+            );
+    
+            await sendBotMessage(
+                `🔤 Double huruf dinonaktifkan ❌`
+            );
+    
+            resetInput();
+    
+            return;
+        }
+    
+        /*
+         * AKTIFKAN DOUBLE
+         */
+    
+        const detik = Number(nilai);
+    
+        if(
+            !Number.isInteger(detik) ||
+            detik < 1
+        ){
+    
+            alert(
+                "Detik harus berupa angka minimal 1."
+            );
+    
+            return;
+        }
+    
+        setDouble(
+            true,
+            detik
+        );
+    
+        await updateDoc(
+            sambungkataRef,
+            {
+                double: {
+                    aktif: true,
+                    detik: detik
+                }
+            }
+        );
+    
+        await sendBotMessage(
+            `🔤 Double huruf aktif.
+            Pada <b>${detik} detik</b> terakhir,
+            pemain harus menggunakan 2 huruf terakhir.`
+        );
+    
+        resetInput();
+    
+        return;
+    }
+    
     /* ================= SAMBUNG KATA ================= */
     
     if (text === "/sambungkata mulai") {
@@ -1596,6 +1816,8 @@ try {
                 pemain: pemainAcak,
         
                 huruf: huruf,
+                
+                kataTerakhir: "",
         
                 giliran: 0,
         
@@ -2010,79 +2232,214 @@ try {
         }
     
         if (!cekKata(text)) {
-    
-            showGameError("⚠ Kata tidak ada dalam kamus");
-    
+        
+            showGameError(
+                "⚠ Kata tidak ada dalam kamus"
+            );
+        
             return;
+        
         }
-    
+        
+        
+        const kataLower =
+            text.toLowerCase().trim();
+        
+        
         if (
             sambungkataData.kataDipakai.includes(
-                text.toLowerCase()
+                kataLower
             )
         ) {
-    
-            showGameError("⚠ Kata sudah digunakan");
-    
-            return;
-        }
-    
-        if (
-            !text
-                .toLowerCase()
-                .startsWith(
-                    sambungkataData.huruf
-                )
-        ) {
-            showGameError("⚠ Kata di awali huruf" +
-                sambungkataData.huruf.toUpperCase()
+        
+            showGameError(
+                "⚠ Kata sudah digunakan"
             );
-    
+        
             return;
+        
         }
         
-        const kataDipakai = [
-            ...sambungkataData.kataDipakai,
-            text.toLowerCase()
-        ];
+        
+        /*
+        ========================================
+        HITUNG SISA WAKTU
+        ========================================
+        */
+        
+        const sekarang =
+            Date.now();
+        
+        
+        const sisaDetik =
+            Math.max(
+                0,
+                Math.ceil(
+                    (
+                        sambungkataData.batasWaktu -
+                        sekarang
+                    ) / 1000
+                )
+            );
+        
+        
+        /*
+        ========================================
+        TENTUKAN TARGET HURUF
+        ========================================
+        */
+        
+        let hurufTarget =
+            sambungkataData.huruf;
+        
+        
+        /*
+         * DOUBLE AKTIF
+         *
+         * Contoh:
+         *
+         * kataTerakhir = makan
+         * sisa <= 10
+         *
+         * target = an
+         */
+        
+        if (
+            sambungkataData.double &&
+            sambungkataData.double.aktif === true &&
+            sisaDetik <=
+                sambungkataData.double.detik &&
+            sambungkataData.kataTerakhir &&
+            sambungkataData.kataTerakhir.length >= 2
+        ) {
+        
+            hurufTarget =
+                sambungkataData.kataTerakhir.slice(-2);
+        
+        }
+        
+        
+        /*
+        ========================================
+        CEK AWALAN
+        ========================================
+        */
+        
+        if (
+            !kataLower.startsWith(
+                hurufTarget
+            )
+        ) {
+        
+            showGameError(
+                "⚠ Kata diawali huruf " +
+                hurufTarget.toUpperCase()
+            );
+        
+            return;
+        
+        }
+        
+        
+        /*
+        ========================================
+        TENTUKAN HURUF UNTUK GILIRAN BERIKUTNYA
+        ========================================
+        */
+        
+        let jumlahHuruf =
+            1;
+        
+        
+        if (
+            sambungkataData.double &&
+            sambungkataData.double.aktif === true &&
+            sisaDetik <=
+                sambungkataData.double.detik
+        ) {
+        
+            jumlahHuruf =
+                2;
+        
+        }
+        
         
         const hurufBaru =
-            text
-                .toLowerCase()
-                .at(-1);
+            kataLower.slice(
+                -jumlahHuruf
+            );
+        
+        
+        /*
+        ========================================
+        SIMPAN KATA
+        ========================================
+        */
+        
+        const kataDipakai = [
+        
+            ...sambungkataData.kataDipakai,
+        
+            kataLower
+        
+        ];
+        
+        
+        /*
+        ========================================
+        GILIRAN
+        ========================================
+        */
         
         let giliran =
             sambungkataData.giliran + 1;
         
         
-        // Apakah semua pemain sudah menjawab?
+        /*
+         * Apakah semua pemain
+         * sudah mendapat giliran?
+         */
+        
         const selesaiSatuPutaran =
-            giliran >= sambungkataData.pemain.length;
+            giliran >=
+            sambungkataData.pemain.length;
         
         
-        // Jika semua pemain sudah menjawab
-        if(selesaiSatuPutaran){
+        if (
+            selesaiSatuPutaran
+        ) {
         
-            giliran = 0;
+            giliran =
+                0;
         
         }
         
         
-        // Ronde yang sudah selesai
+        /*
+        ========================================
+        RONDE
+        ========================================
+        */
+        
         let ronde =
             sambungkataData.ronde || 0;
         
         
-        // Jika kembali ke pemain pertama,
-        // berarti satu putaran selesai
-        if(selesaiSatuPutaran){
+        if (
+            selesaiSatuPutaran
+        ) {
         
             ronde++;
         
         }
         
         
-        // Hitung waktu berdasarkan ronde
+        /*
+        ========================================
+        WAKTU RONDE BERIKUTNYA
+        ========================================
+        */
+        
         const waktu =
             getWaktuRonde({
                 ...sambungkataData,
@@ -2090,13 +2447,31 @@ try {
             });
         
         
+        /*
+        ========================================
+        UPDATE FIRESTORE
+        ========================================
+        */
+        
         await updateDoc(
             sambungkataRef,
             {
         
                 kataDipakai,
         
-                huruf: hurufBaru,
+                /*
+                 * Kata yang baru dijawab
+                 * menjadi referensi double
+                 */
+                kataTerakhir:
+                    kataLower,
+        
+                /*
+                 * Target untuk giliran
+                 * berikutnya
+                 */
+                huruf:
+                    hurufBaru,
         
                 giliran,
         
@@ -2104,13 +2479,16 @@ try {
         
                 waktu,
         
-                waktuMulai: Date.now(),
+                waktuMulai:
+                    Date.now(),
         
                 batasWaktu:
-                    Date.now() + (waktu * 1000),
+                    Date.now() +
+                    (waktu * 1000),
         
                 lastTimeout:
-                    sambungkataData.batasWaktu ?? 20,
+                    sambungkataData.batasWaktu ??
+                    20,
         
                 typing: "",
         
@@ -2119,20 +2497,28 @@ try {
             }
         );
         
+        
+        /*
+        ========================================
+        PESAN BOT
+        ========================================
+        */
+        
         await sendBotMessage(
         
-        `✅ <b>${auth.currentUser.displayName}</b> Berhasil menjawab<br>
+            `✅ <b>${auth.currentUser.displayName}</b> Berhasil menjawab<br>
         
-        📝 Kata :
-        <b>${text}</b><br>
+            📝 Kata :
+            <b>${text}</b><br>
         
-        🔤 Huruf :
-        <b>${hurufBaru.toUpperCase()}</b><br>
+            🔤 Huruf :
+            <b>${hurufBaru.toUpperCase()}</b><br>
         
-        ▶️ Giliran :
-        <b>${sambungkataData.pemain[giliran].nama}</b><br>`
+            ▶️ Giliran :
+            <b>${sambungkataData.pemain[giliran].nama}</b><br>`
         
         );
+        
         
         resetInput();
         
@@ -2566,6 +2952,10 @@ onSnapshot(
         }
 
         sambungkataData = snap.data();
+        
+        setDoubleConfig(
+            sambungkataData.double
+        );
         
         if(sambungkataData.bahasa){
         

@@ -1974,7 +1974,7 @@ try {
     
         if (!cekKata(text)) {
     
-            showGameError("⚠️ Kata tidak ada dalam kamus");
+            showGameError("⚠ Kata tidak ada dalam kamus");
     
             return;
         }
@@ -1985,7 +1985,7 @@ try {
             )
         ) {
     
-            showGameError("⚠️ Kata sudah digunakan");
+            showGameError("⚠ Kata sudah digunakan");
     
             return;
         }
@@ -1997,7 +1997,7 @@ try {
                     sambungkataData.huruf
                 )
         ) {
-            showGameError("⚠️ Kata di awali huruf" +
+            showGameError("⚠ Kata di awali huruf" +
                 sambungkataData.huruf.toUpperCase()
             );
     

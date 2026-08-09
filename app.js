@@ -1997,7 +1997,7 @@ try {
                     sambungkataData.huruf
                 )
         ) {
-            showGameError("⚠️ Kata sudah digunakan" +
+            showGameError("⚠️ Kata di awali huruf" +
                 sambungkataData.huruf.toUpperCase()
             );
     

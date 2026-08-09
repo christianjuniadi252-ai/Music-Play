@@ -1700,7 +1700,7 @@ try {
         
                 status: "playing",
                 
-                pemain: pemainAcak
+                pemain: pemainAcak,
         
                 huruf: huruf,
         

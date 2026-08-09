@@ -3672,6 +3672,8 @@ async function cekWaktuSambungKata(){
         */
 
         pemain[index].hati--;
+        
+        pemainKena.hati = pemain[index].hati;
 
 
         /*
@@ -3698,45 +3700,43 @@ async function cekWaktuSambungKata(){
         */
 
         if(pemain.length <= 1){
-
-            const pemenang =
-                pemain[0];
-
+        
+            const pemenang = pemain[0];
+        
             transaction.update(
                 sambungkataRef,
                 {
-
                     aktif: false,
-
+        
                     status: "finish",
-
+        
                     pemain,
-
+        
                     typing: "",
-
+        
                     typingUid: "",
-
+        
                     lastTimeout:
                         game.batasWaktu ?? 20
-
                 }
             );
-
-
-            // Simpan hasil untuk pesan setelah transaction
+        
             hasilGame = {
-
+        
                 tipe: "menang",
-
+        
+                tereliminasi: true,
+        
                 pemainKena,
-
-                pemenang
-
+        
+                pemenang,
+        
+                huruf: game.huruf
+        
             };
-
-
+        
             return;
-
+        
         }
 
 
@@ -3881,17 +3881,36 @@ async function cekWaktuSambungKata(){
     */
 
     if(hasilGame.tipe === "menang"){
-
-        await sendBotMessage(
-
-            `🏆 <b>PERMAINAN SELESAI!</b><br>
-
-            👑 <b>${hasilGame.pemenang.nama}</b> 👑`
-
-        );
-
+    
+        if(hasilGame.tereliminasi){
+    
+            await sendBotMessage(`
+                ⏰ <b>${hasilGame.pemainKena.nama}</b> waktu habis!<br>
+            
+                ❤️ Nyawa tersisa :
+                <b>${hasilGame.pemainKena.hati}</b><br>
+            
+                🔤 Huruf :
+                <b>${hasilGame.huruf.toUpperCase()}</b><br>
+            
+                ▶️ Giliran :
+                <b>${hasilGame.pemain[hasilGame.giliran].nama}</b>
+            `);
+    
+        } else {
+    
+            await sendBotMessage(
+    
+                `🏆 <b>PERMAINAN SELESAI!</b><br>
+    
+                👑 <b>${hasilGame.pemenang.nama}</b> 👑`
+    
+            );
+    
+        }
+    
         return;
-
+    
     }
 
 

@@ -1,8 +1,18 @@
-let kamus = new Set();
+let kamus = {
+    indo: new Set(),
+    jawa: new Set(),
+    eng: new Set()
+};
 
 let game = {
 
     aktif: false,
+    
+    bahasa: {
+        indo: true,
+        jawa: true,
+        eng: true
+    },
 
     host: null,
 
@@ -23,34 +33,79 @@ let game = {
 };
 
 export async function initSambungKata() {
-    const files = ["wordlist.txt", "jawa.txt", "english.txt"];
 
-    const responses = await Promise.all(
-        files.map(file => fetch(file))
-    );
+    const files = {
+        indo: "wordlist.txt",
+        jawa: "jawa.txt",
+        eng: "english.txt"
+    };
 
-    const texts = await Promise.all(
-        responses.map(res => res.text())
-    );
+    for (const bahasa in files) {
 
-    texts.forEach(text => {
+        const response =
+            await fetch(files[bahasa]);
+
+        const text =
+            await response.text();
+
         text.split(/\r?\n/).forEach(line => {
-            const kata = line.trim().toLowerCase();
+
+            const kata =
+                line.trim().toLowerCase();
 
             if (/^[a-z]+$/.test(kata)) {
-                kamus.add(kata);
-            }
-        });
-    });
 
-    console.log("Kamus berhasil dimuat:", kamus.size);
+                kamus[bahasa].add(kata);
+
+            }
+
+        });
+
+    }
+
+    console.log(
+        "Kamus Indo:",
+        kamus.indo.size
+    );
+
+    console.log(
+        "Kamus Jawa:",
+        kamus.jawa.size
+    );
+
+    console.log(
+        "Kamus English:",
+        kamus.eng.size
+    );
+
 }
 
 export function cekKata(kata){
 
-    return kamus.has(
-        kata.toLowerCase().trim()
+    kata = kata.toLowerCase().trim();
+
+    return (
+        (game.bahasa.indo &&
+            kamus.indo.has(kata)) ||
+
+        (game.bahasa.jawa &&
+            kamus.jawa.has(kata)) ||
+
+        (game.bahasa.eng &&
+            kamus.eng.has(kata))
     );
+
+}
+
+export function setBahasa(bahasa, aktif){
+
+    if (!(bahasa in game.bahasa)) {
+        return false;
+    }
+
+    game.bahasa[bahasa] = aktif;
+
+    return true;
 
 }
 

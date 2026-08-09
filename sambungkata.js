@@ -4,16 +4,17 @@ let kamus = {
     eng: new Set()
 };
 
+
 let game = {
 
     aktif: false,
-    
+
     bahasa: {
         indo: true,
         jawa: true,
         eng: true
     },
-    
+
     double: {
         aktif: false,
         detik: 10
@@ -24,7 +25,7 @@ let game = {
     pemain: [],
 
     setuju: [],
-    
+
     giliran: 0,
 
     huruf: "",
@@ -37,6 +38,13 @@ let game = {
 
 };
 
+
+/*
+========================================
+LOAD KAMUS
+========================================
+*/
+
 export async function initSambungKata() {
 
     const files = {
@@ -45,28 +53,66 @@ export async function initSambungKata() {
         eng: "english.txt"
     };
 
+
     for (const bahasa in files) {
 
-        const response =
-            await fetch(files[bahasa]);
+        try {
 
-        const text =
-            await response.text();
+            const response =
+                await fetch(files[bahasa]);
 
-        text.split(/\r?\n/).forEach(line => {
 
-            const kata =
-                line.trim().toLowerCase();
+            if (!response.ok) {
 
-            if (/^[a-z]+$/.test(kata)) {
+                console.error(
+                    `Gagal memuat ${files[bahasa]}`
+                );
 
-                kamus[bahasa].add(kata);
+                continue;
 
             }
 
-        });
+
+            const text =
+                await response.text();
+
+
+            text
+                .split(/\r?\n/)
+                .forEach(line => {
+
+                    const kata =
+                        line
+                            .trim()
+                            .toLowerCase();
+
+
+                    /*
+                    Hanya menerima
+                    huruf a-z
+                    */
+
+                    if (
+                        /^[a-z]+$/.test(kata)
+                    ) {
+
+                        kamus[bahasa].add(kata);
+
+                    }
+
+                });
+
+        } catch(error) {
+
+            console.error(
+                `Error memuat ${files[bahasa]}:`,
+                error
+            );
+
+        }
 
     }
+
 
     console.log(
         "Kamus Indo:",
@@ -85,36 +131,77 @@ export async function initSambungKata() {
 
 }
 
-export function cekKata(kata){
 
-    kata = kata.toLowerCase().trim();
+/*
+========================================
+CEK KATA
+========================================
+*/
+
+export function cekKata(kata) {
+
+    kata =
+        kata
+            .toLowerCase()
+            .trim();
+
 
     return (
-        (game.bahasa.indo &&
-            kamus.indo.has(kata)) ||
 
-        (game.bahasa.jawa &&
-            kamus.jawa.has(kata)) ||
+        (
+            game.bahasa.indo &&
+            kamus.indo.has(kata)
+        )
 
-        (game.bahasa.eng &&
-            kamus.eng.has(kata))
+        ||
+
+        (
+            game.bahasa.jawa &&
+            kamus.jawa.has(kata)
+        )
+
+        ||
+
+        (
+            game.bahasa.eng &&
+            kamus.eng.has(kata)
+        )
+
     );
 
 }
 
-export function setBahasa(bahasa, aktif){
 
-    if (!(bahasa in game.bahasa)) {
+/*
+========================================
+BAHASA
+========================================
+*/
+
+export function setBahasa(
+    bahasa,
+    aktif
+) {
+
+    if (
+        !(bahasa in game.bahasa)
+    ) {
+
         return false;
+
     }
 
-    game.bahasa[bahasa] = aktif;
+
+    game.bahasa[bahasa] =
+        aktif;
+
 
     return true;
 
 }
 
-export function getBahasa(){
+
+export function getBahasa() {
 
     return {
         ...game.bahasa
@@ -122,31 +209,64 @@ export function getBahasa(){
 
 }
 
-export function setDouble(aktif, detik = 10){
 
-    game.double.aktif = aktif;
+/*
+========================================
+DOUBLE
+========================================
+*/
 
-    if(aktif){
-        game.double.detik = detik;
+export function setDouble(
+    aktif,
+    detik = 10
+) {
+
+    game.double.aktif =
+        aktif;
+
+
+    if (aktif) {
+
+        game.double.detik =
+            detik;
+
     }
+
 
     return true;
 
 }
 
-export function setDoubleConfig(config){
 
-    if(!config){
+/*
+========================================
+SINKRONISASI DOUBLE
+DARI FIRESTORE
+========================================
+*/
+
+export function setDoubleConfig(
+    config
+) {
+
+    if (!config) {
+
         return;
+
     }
+
 
     game.double.aktif =
         config.aktif === true;
 
-    if(
-        Number.isInteger(config.detik) &&
+
+    if (
+        Number.isInteger(
+            config.detik
+        )
+        &&
         config.detik >= 1
-    ){
+    ) {
 
         game.double.detik =
             config.detik;
@@ -155,135 +275,256 @@ export function setDoubleConfig(config){
 
 }
 
-export function randomHuruf(){
 
-    const huruf = "abcdefghijklmnopqrstuvwxyz";
+/*
+========================================
+GET DOUBLE
+========================================
+*/
+
+export function getDouble() {
+
+    return {
+        ...game.double
+    };
+
+}
+
+
+/*
+========================================
+RANDOM HURUF
+========================================
+*/
+
+export function randomHuruf() {
+
+    const huruf =
+        "abcdefghijklmnopqrstuvwxyz";
+
 
     return huruf[
         Math.floor(
-            Math.random() * huruf.length
+            Math.random() *
+            huruf.length
         )
     ];
 
 }
 
-function acakPemain(array){
 
-    for(
-        let i = array.length - 1;
+/*
+========================================
+ACAK PEMAIN
+========================================
+*/
+
+export function acakPemain(
+    array
+) {
+
+    const hasil =
+        [...array];
+
+
+    for (
+        let i = hasil.length - 1;
         i > 0;
         i--
-    ){
+    ) {
 
         const j =
             Math.floor(
-                Math.random() * (i + 1)
+                Math.random() *
+                (i + 1)
             );
 
+
         [
-            array[i],
-            array[j]
+            hasil[i],
+            hasil[j]
         ] = [
-            array[j],
-            array[i]
+            hasil[j],
+            hasil[i]
         ];
 
     }
 
-    return array;
+
+    return hasil;
 
 }
 
-export function mulaiGame(host){
 
-    game.aktif = true;
+/*
+========================================
+MULAI GAME
+========================================
+*/
 
-    game.host = host;
+export function mulaiGame(
+    host
+) {
 
-    game.pemain = [];
+    game.aktif =
+        true;
 
-    game.setuju = [];
 
-    game.huruf = randomHuruf();
+    game.host =
+        host;
 
-    game.giliran = 0;
 
-    game.waktu = 20;
+    game.pemain =
+        [];
 
-    game.ronde = 1;
+
+    game.setuju =
+        [];
+
+
+    game.huruf =
+        randomHuruf();
+
+
+    game.giliran =
+        0;
+
+
+    game.waktu =
+        20;
+
+
+    game.ronde =
+        1;
+
 
     game.kataDipakai.clear();
-    
+
+
     game.pemain.push({
-        uid: host.uid,
-        nama: host.nama,
-        hati: 3
+
+        uid:
+            host.uid,
+
+        nama:
+            host.nama,
+
+        hati:
+            3
+
     });
 
-}
-
-export function validasiKata(kata, sisaDetik){
-
-    kata = kata.toLowerCase().trim();
-
-    if(!cekKata(kata)){
-        return false;
-    }
-
-    if(game.kataDipakai.has(kata)){
-        return false;
-    }
-
-    const awalan =
-        game.huruf;
-
-    if(!kata.startsWith(awalan)){
-        return false;
-    }
-
-    game.kataDipakai.add(kata);
-
-    return true;
-
-}
-
-export function getGame(){
 
     return game;
 
 }
 
-export function getAwalanKata(kata, sisaDetik){
 
-    kata = kata.toLowerCase().trim();
+/*
+========================================
+VALIDASI KATA
+========================================
+*/
 
-    if(!kata){
-        return "";
-    }
+export function validasiKata(
+    kata
+) {
 
-    /*
-     * DOUBLE AKTIF
-     */
+    kata =
+        kata
+            .toLowerCase()
+            .trim();
 
-    if(
-        game.double.aktif &&
-        sisaDetik <= game.double.detik &&
-        kata.length >= 2
-    ){
-
-        return kata.slice(-2);
-
-    }
 
     /*
-     * NORMAL
-     */
+    Cek kamus
+    */
 
-    return kata.slice(-1);
+    if (
+        !cekKata(kata)
+    ) {
+
+        return false;
+
+    }
+
+
+    /*
+    Cek kata sudah digunakan
+    */
+
+    if (
+        game.kataDipakai.has(
+            kata
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    /*
+    Cek awalan
+    */
+
+    const awalan =
+        game.huruf;
+
+
+    if (
+        !kata.startsWith(
+            awalan
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    /*
+    Simpan kata
+    */
+
+    game.kataDipakai.add(
+        kata
+    );
+
+
+    /*
+    Huruf terakhir
+    */
+
+    game.huruf =
+        kata.at(-1);
+
+
+    return true;
 
 }
 
-export function pemainSekarang(){
+
+/*
+========================================
+GET GAME
+========================================
+*/
+
+export function getGame() {
+
+    return game;
+
+}
+
+
+/*
+========================================
+PEMAIN SEKARANG
+========================================
+*/
+
+export function pemainSekarang() {
 
     return game.pemain[
         game.giliran
@@ -291,31 +532,76 @@ export function pemainSekarang(){
 
 }
 
-export function nextTurn(){
+
+/*
+========================================
+GANTI GILIRAN
+========================================
+*/
+
+export function nextTurn() {
 
     game.giliran++;
 
-    if(game.giliran >= game.pemain.length){
-        game.giliran = 0;
+
+    if (
+        game.giliran >=
+        game.pemain.length
+    ) {
+
+        game.giliran =
+            0;
+
     }
+
 
     return pemainSekarang();
 
 }
 
-export function playerSetuju(uid, nama){
 
-    if(game.setuju.includes(uid)){
+/*
+========================================
+PEMAIN SETUJU
+========================================
+*/
+
+export function playerSetuju(
+    uid,
+    nama
+) {
+
+    /*
+    Jangan masukkan
+    pemain yang sama dua kali
+    */
+
+    if (
+        game.setuju.includes(
+            uid
+        )
+    ) {
+
         return false;
+
     }
 
-    game.setuju.push(uid);
+
+    game.setuju.push(
+        uid
+    );
+
 
     game.pemain.push({
+
         uid,
+
         nama,
+
         hati: 3
+
     });
+
 
     return true;
 

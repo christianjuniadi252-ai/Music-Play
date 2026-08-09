@@ -35,7 +35,9 @@ import {
     pemainSekarang,
     nextTurn,
     validasiKata,
-    cekKata
+    cekKata,
+    setBahasa,
+    getBahasa
 } from "./sambungkata.js";
 
 import { loadProfanity, censorText } from "./profanity.js";
@@ -1513,6 +1515,115 @@ try {
     
     }
     
+    if(text.startsWith("/sambungkata bahasa")){
+    
+        if(
+            !sambungkataData ||
+            !sambungkataData.aktif
+        ){
+            alert("Belum ada lobby Sambung Kata.");
+            return;
+        }
+    
+        if(
+            sambungkataData.host.uid !==
+            auth.currentUser.uid
+        ){
+            alert("Hanya host yang dapat mengatur bahasa.");
+            return;
+        }
+    
+        if(
+            sambungkataData.status !== "waiting"
+        ){
+            alert("Game sudah dimulai.");
+            return;
+        }
+    
+        const args = text.split(/\s+/);
+    
+        if(args.length !== 4){
+    
+            alert(
+                "Format:\n" +
+                "/sambungkata bahasa indo/jawa/eng true/false"
+            );
+    
+            return;
+        }
+    
+        const bahasa = args[2].toLowerCase();
+        const nilai = args[3].toLowerCase();
+    
+        if(
+            !["indo", "jawa", "eng"].includes(bahasa)
+        ){
+    
+            alert(
+                "Bahasa harus indo, jawa, atau eng."
+            );
+    
+            return;
+        }
+    
+        if(
+            nilai !== "true" &&
+            nilai !== "false"
+        ){
+    
+            alert(
+                "Nilai harus true atau false."
+            );
+    
+            return;
+        }
+    
+        const aktif = nilai === "true";
+    
+        /*
+         * Jangan sampai semua bahasa dimatikan
+         */
+    
+        const bahasaSekarang =
+            getBahasa();
+    
+        bahasaSekarang[bahasa] = aktif;
+    
+        if(
+            !bahasaSekarang.indo &&
+            !bahasaSekarang.jawa &&
+            !bahasaSekarang.eng
+        ){
+    
+            alert(
+                "Minimal satu bahasa harus aktif."
+            );
+    
+            return;
+        }
+    
+        setBahasa(
+            bahasa,
+            aktif
+        );
+    
+        await updateDoc(
+            sambungkataRef,
+            {
+                bahasa: bahasaSekarang
+            }
+        );
+    
+        await sendBotMessage(
+            `🌐 Bahasa <b>${bahasa}</b>
+            ${aktif ? "diaktifkan ✅" : "dinonaktifkan ❌"}`
+        );
+    
+        resetInput();
+    
+        return;
+    }
+    
     /* ================= SAMBUNG KATA ================= */
     
     if (text === "/sambungkata mulai") {
@@ -1733,6 +1844,12 @@ try {
             waktuTurun:1,
             turunSetiap:2,
             waktuMinimal:3,
+            
+            bahasa: {
+                indo: true,
+                jawa: true,
+                eng: true
+            },
         
             ronde: 0,
         
@@ -2529,6 +2646,25 @@ onSnapshot(
         }
 
         sambungkataData = snap.data();
+        
+        if(sambungkataData.bahasa){
+        
+            setBahasa(
+                "indo",
+                sambungkataData.bahasa.indo
+            );
+        
+            setBahasa(
+                "jawa",
+                sambungkataData.bahasa.jawa
+            );
+        
+            setBahasa(
+                "eng",
+                sambungkataData.bahasa.eng
+            );
+        
+        }
 
         renderGamePanel();
 

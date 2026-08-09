@@ -1667,6 +1667,31 @@ try {
         
         }
         
+        const pemainAcak = [
+            ...sambungkataData.pemain
+        ];
+        
+        for (
+            let i = pemainAcak.length - 1;
+            i > 0;
+            i--
+        ) {
+        
+            const j =
+                Math.floor(
+                    Math.random() * (i + 1)
+                );
+        
+            [
+                pemainAcak[i],
+                pemainAcak[j]
+            ] = [
+                pemainAcak[j],
+                pemainAcak[i]
+            ];
+        
+        }
+        
         const huruf = randomHuruf();
         
         await updateDoc(
@@ -1674,6 +1699,8 @@ try {
             {
         
                 status: "playing",
+                
+                pemain: pemainAcak
         
                 huruf: huruf,
         
@@ -1701,7 +1728,7 @@ try {
         `🎮 Permainan di mulai!<br>
         
         ▶️ Giliran :
-        <b>${sambungkataData.pemain[0].nama}</b><br>
+        <b>${pemainAcak[0].nama}</b><br>
         
         🔤 Huruf :
         <b>${huruf.toUpperCase()}</b>`

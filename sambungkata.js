@@ -53,7 +53,13 @@ export async function initSambungKata() {
             const kata =
                 line.trim().toLowerCase();
 
-            if (/^[a-z]+$/.test(kata)) {
+            // Hanya mengambil kata:
+            // - minimal 3 huruf
+            // - hanya menggunakan a-z
+            if (
+                kata.length >= 3 &&
+                /^[a-z]+$/.test(kata)
+            ) {
 
                 kamus[bahasa].add(kata);
 

@@ -1615,8 +1615,15 @@ try {
         );
     
         await sendBotMessage(
-            `🌐 Bahasa <b>${bahasa}</b>
-            ${aktif ? "diaktifkan ✅" : "dinonaktifkan ❌"}`
+            `${auth.currentUser.displayName || "Host"} ${
+                aktif
+                    ? `mengaktifkan bahasa ${bahasa}`
+                    : `mematikan bahasa ${bahasa}`
+            }
+        
+        Indonesia ${bahasaSekarang.indo ? "✅" : "❌"}
+        Inggris ${bahasaSekarang.eng ? "✅" : "❌"}
+        Jawa ${bahasaSekarang.jawa ? "✅" : "❌"}`
         );
     
         resetInput();
